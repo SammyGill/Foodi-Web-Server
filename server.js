@@ -1,11 +1,16 @@
+"use strict";
 const http = require('http');
 const port = 3000;
 const dir = __dirname;
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 
-app.listen(3000, () => {
-  console.log("Node server running on port 3000");
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+app.listen(port, () => {
+  console.log("Node server running on port " + port);
 })
 
 app.get('/', (req, res) => {
@@ -19,6 +24,13 @@ app.get('/createaccount', (req, res) => {
   res.setHeader('Content-Type', 'text/plain');
   res.end('To be implemented\n');
 })
+
+app.post('/test', (req, res) => {
+  console.log("received button request");
+  res.json({result: "works"});
+})
+
+
 
 /******************************************************************************/
 
