@@ -5,7 +5,7 @@ const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql').createConnection({
-  host: "umami.cuxpgdmnriur.us-east-2.rds.amazonaws.com",
+  host: "umamitest.cplid20zzr4i.us-west-1.rds.amazonaws.com",
   user: "sammygill98",
   password: "4simran1"
 });
