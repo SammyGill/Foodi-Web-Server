@@ -4,14 +4,16 @@ const port = 3000;
 const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql').createConnection({
-  host: "umami.cuxpgdmnriur.us-east-2.rds.amazonaws.com",
+const mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "umamitest.cplid20zzr4i.us-west-1.rds.amazonaws.com",
   user: "sammygill98",
   password: "4simran1"
 });
 const app = express();
 
-mysql.connect((err) => {
+con.connect((err) => {
   if(err) throw err;
   console.log("Connected to db");
 })
