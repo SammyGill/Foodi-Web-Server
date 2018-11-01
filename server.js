@@ -12,6 +12,10 @@ const mysql = require('mysql').createConnection({
   database: process.env.DB_NAME
 });
 const app = express();
+
+const checkUserExistsQuery = "SELECT * FROM users WHERE username = ?";
+
+
 mysql.connect((err) => {
   if(err) throw err;
   console.log("Connected to db");
@@ -30,13 +34,41 @@ app.get('/', (req, res) => {
   res.end('Hello World\n');
 })
 
+app.get('/getFollowers', (req, res) => {
+  res.end('Not implemented');
+})
+
+app.get('/getFollowing', (req, res) => {
+  res.end('Not implemented');
+})
+
+
+// POST routes below
+/******************************************************************************/
+
+app.post('/changepassword', (req, res) => {
+  let getPasswordQuery = "SELECT password FROM users WHERE username = ?";
+  mysql.query(checkUserExistsQuery, [req.body.username] (err, result) => {
+    if(err) {
+      throw err;
+    }
+    mysql.query(getPasswordQuery, [req.body.username], (err, result) => {
+      if(result != req.body.oldPassword) {
+        // IMPLEMENT FAIL
+      }
+      else {
+
+      }
+    })
+  })
+})
+
 app.post('/createaccount', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let fullName = req.body.name;
-  let checkUserExistsQuery = "SELECT * FROM users WHERE username = '" + username + "'";
-  let insertQuery = "INSERT INTO users (username, password, name) VALUES ('" + username + "', '" + password + "', '" + fullName + "')";
-  mysql.query(checkUserExistsQuery, (err, result) => {
+  let insertQuery = "INSERT INTO users (username, password, name) VALUES (?, ?, ?)";
+  mysql.query(checkUserExistsQuery,[req.body.username], (err, result) => {
     if(err) {
       throw err;
     }
@@ -44,7 +76,7 @@ app.post('/createaccount', (req, res) => {
       res.send("already a user created with this username");
     }
     else {
-      mysql.query(insertQuery, (err, result) => {
+      mysql.query(insertQuery, [req.body.username, req.body.password. req.body.name], (err, result) => {
         if (err) throw err;
         res.send("Successfully added user");
       })
@@ -57,16 +89,6 @@ app.post('/createaccount', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-  res.send({username: req.body.username, password: req.body.password});
-})
-
-
-
-/******************************************************************************/
-
-app.post('/createaccount', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('To be implemented\n');
+  res.end('Not implemented');
 })
 
