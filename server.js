@@ -35,10 +35,25 @@ app.get('/', (req, res) => {
 })
 
 app.get('/getFollowers', (req, res) => {
-  res.end('Not implemented');
+  let getFollowersQuery = "SELECT * FROM followers WHERE following = ?";
+  mysql.query(checkUserExists, [/*something*/], (err, result) => {
+    if(err) {
+      throw err;
+    }
+    else if(result.length != 1) {
+      // user does not exist
+    }
+    else {
+      // probably want to check if this is a valid user first
+      mysql.query(getFollowersQuery, [/*something*/], (err, result) => {
+        // process list
+      })
+    }
+  })
 })
 
 app.get('/getFollowing', (req, res) => {
+  let getFollowingQuery = "SELECT * FROM followers where username = ?";
   res.end('Not implemented');
 })
 
