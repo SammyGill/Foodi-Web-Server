@@ -63,7 +63,7 @@ app.get('/getFollowing', (req, res) => {
 
 app.post('/changepassword', (req, res) => {
   let getPasswordQuery = "SELECT password FROM users WHERE username = ?";
-  mysql.query(checkUserExistsQuery, [req.body.username] (err, result) => {
+  mysql.query(checkUserExistsQuery, [req.body.username], (err, result) => {
     if(err) {
       throw err;
     }
@@ -106,4 +106,18 @@ app.post('/createaccount', (req, res) => {
 app.post('/login', (req, res) => {
   res.end('Not implemented');
 })
+
+
+/* new additions here */
+const accountsRoute = require('./routes/accounts');
+const postsRoute    = require('./routes/posts');
+const profilesRoute = require('./routes/profiles');
+const restaurantsRoute = require('./routes/restaurants');
+const commentsRoute = require('./routes/comments');
+
+app.use('/api/accounts', accountsRoute);
+app.use('/api/posts', postsRoute);
+app.use('/api/profiles', profilesRoute);
+app.use('/api/restaurants', restaurantsRoute);
+app.use('/api/comments', commentsRoute);
 
