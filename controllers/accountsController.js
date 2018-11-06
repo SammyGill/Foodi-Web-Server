@@ -37,9 +37,16 @@ exports.signin = (req, res) => {
 }
 
 
+/** Function for signing out
+ */
+exports.signout = (req, res) => {
+  res.end("signout");
+}
+
+
 /** Function for resetting passsword 
  */
-exports.resetPassword = (req, res) => {
+exports.reset_password = (req, res) => {
   let getPasswordQuery = "SELECT password FROM users WHERE username = ?";
   mysql.query(checkUserExistsQuery, [req.body.username], (err, result) => {
     if(err) {
@@ -55,3 +62,11 @@ exports.resetPassword = (req, res) => {
     })
   })
 }
+
+/** Function for deleting account
+ */
+exports.delete_account = (req, res) => {
+  res.end("delete account");
+}
+
+
