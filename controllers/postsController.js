@@ -29,7 +29,7 @@ exports.create_post = (req, res) => {
       res.status(500).json( {"Internal Service Error": err} );
       throw err;
     }
-    res.status(201).json( {"Success": "Post created"} );
+    res.status(201).json( {"Created": "Post created"} );
   })
 
 }

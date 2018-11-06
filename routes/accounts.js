@@ -3,7 +3,6 @@ const router = express.Router();
 
 const accounts_controller = require('../controllers/accountsController');
 
-router.get('/', accounts_controller.test);
 
 // POST request for signing up
 router.post('/signup', accounts_controller.signup);
