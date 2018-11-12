@@ -108,4 +108,12 @@ exports.delete_account = (req, res) => {
   res.end("delete account");
 }
 
+/**
+ * allow user to change username if 
+ * username is not taken
+ */
+exports.change_username = (req, res) => {
+
+}
+
 
