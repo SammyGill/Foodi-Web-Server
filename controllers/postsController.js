@@ -1,4 +1,5 @@
 require('dotenv').config({path: '../../env_variables.env'});
+const dir = __dirname; 
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -6,48 +7,6 @@ const mysql = require('mysql').createConnection({
   database: process.env.DB_NAME
 });
 const checkPostExistsQuery = "SELECT * FROM posts WHERE post_id = ?";
-const multer = require("multer");
-
-
-
-function isImage(fileName) {
-  const extensions = [".jpg", ".jpeg", ".png"];
-  for(let i = 0; i < extensions.length; i++) {
-    if(fileName.endsWith(extensions[i])) {
-    return (null, true);
-    }
-  }
-  return (null,false)
-}
-
-function extractExtension(fileName) {
-  const extensions = [".jpg", ".jpeg", ".png"];
-  for(let i = 0; i < extensions.length; i++) {
-    if(fileName.endsWith(extensions[i])) {
-      return extensions[i];
-    }
-  }
-}
-
-function fileFilter(req, file, callback) {
-  let result = isImage(file.originalname);
-  result ? callback(null, true) : callback(null, false);
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    // Need to figure out directory
-  }
-  filename: (req, file, callback) => {
-    // Going to be of the form post[postID]-image
-  }
-})
-
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter
-})
-
 
 /** Function for creating a post
  */
@@ -56,7 +15,7 @@ exports.create_post = (req, res) => {
   const dish_name = req.body.dish_name;
   const author_id = req.body.author_id;
   const caption = req.body.caption;
-  const picture = req.body.picture;
+  const picture = req.file.path;
   const rating = req.body.rating;
   const date = req.body.date;
   
@@ -73,7 +32,6 @@ exports.create_post = (req, res) => {
     }
     res.status(201).json( {"Created": "Post created"} );
   })
-
 }
 
 /** Functoin for gettting all info related to the post
