@@ -1,0 +1,100 @@
+body {
+  background-color: #33cc99; /* light greu */
+  text-align: center;
+}
+
+h1 {
+  font-family: Roboto;
+  font-weight: regular;
+  font-size: 20px;
+
+}
+
+h3 {
+  font-family: Roboto;
+  font-weight: bold;
+  font-size: 24px;
+
+}
+
+form {
+   width: 314px;
+   height: 42px;
+   margin: auto;
+   position: relative;
+ }
+
+.button {
+  text-decoration: none;
+}
+.log-in {
+  text-decoration: none;
+  color: #FFFFFF;
+  font-family: Roboto;
+  background-color: #F4775A;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid #FFFFFF;
+  border-radius: 24px;
+  width: 256px;
+  box-sizing: border-box; /*very helpful because it counts both the padding and border as part of the width*/
+  margin: 20px auto;
+}
+
+.sign-in {
+  text-decoration: none;
+  color: #F4775A;
+  font-family: Roboto;
+  background-color: #FFFFFF;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  border-radius: 24px;
+  width: 256px;
+  box-sizing: border-box; /*very helpful because it counts both the padding and border as part of the width*/
+  margin: 20px auto;
+}
+
+input[type=text], select {
+    width: 100%;
+    color: #FFFFFF;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    background-color: inherit;
+    border: 1px solid #FFFFFF;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+    font-family: Roboto;
+    font-size: 16pt;
+}
+
+div {
+    padding: 20px;
+}
+
+#site-logo {
+  position: fixed;
+    top: 112px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-family: Roboto;
+    color: white;
+}
