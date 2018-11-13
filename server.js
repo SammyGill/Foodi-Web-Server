@@ -29,7 +29,7 @@ app.listen(port, () => {
 })
 
 app.get('/', (req, res) => {
-  res.sendFile(dir + "/views/login.html")
+  res.sendFile(dir + "/views/loginPage.html")
 })
 
 

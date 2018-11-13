@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='eg'>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-115292039-1');
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset='UTF-8'/>
+  <title>Login Foodie</title>
+  <link rel='stylesheet' href='views/css/login.css'/> 
+</head>
+
+<body>
+  <!-- <img id="site-logo" src='/views/images/logo.png' width=77 alt='Logo for Common Ground'/> -->
+  <div id="login-title">
+    <h1>Foodie Login</h1>
+  </div>
+  <div class="login-container">
+    <form action="/api/accounts/signin" method="post">
+      <label for="username"><b>Username</b></label>
+      <input id="username" type="text" placeholder="Enter Username" required>
+      <br>
+      <label for="passwrod"><b>Password</b></label>
+      <input id="password" type="password" placeholder="Enter Password" required>
+      <br>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+
+  <div class="bottom-container">
+    <div class="row">
+      <div class="col">
+        <a href="/api/accounts/signupPage" class="btn">Create Account</a>
+      </div>
+      <div class="col">
+        <a href="api/accounts/resetPasswordPage" class="btn">Forgot Password</a>
+      </div>
+</body>
+</html>
