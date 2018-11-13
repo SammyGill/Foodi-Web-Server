@@ -1,5 +1,6 @@
 const dir = __dirname;
 const express = require("express");
+const viewsDir = "/home/ubuntu/CSE-110-Server/views"
 const router = express.Router();
 
 const posts_controller = require('../controllers/postsController');
@@ -46,7 +47,12 @@ const upload = multer({
   fileFilter: fileFilter
 })
 
-
+/* if i move this to the bottom, get request will get to router.get('/:post_id') and therefore
+result in post not found error. Moved this to the top but don't know how this will affect getting
+a post*/
+router.get('/createPostPage', (req, res) => {
+  res.sendFile(viewsDir + "/createPostPage.html");
+})
 
 // POST request for creating a post
 router.post('/create', upload.single("test"), posts_controller.create_post);

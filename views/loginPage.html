@@ -22,10 +22,10 @@
   <div class="login-container">
     <form action="/api/accounts/signin" method="post">
       <label for="username"><b>Username</b></label>
-      <input id="username" type="text" placeholder="Enter Username" required>
+      <input name="username" id="username" type="text" placeholder="Enter Username" required>
       <br>
       <label for="passwrod"><b>Password</b></label>
-      <input id="password" type="password" placeholder="Enter Password" required>
+      <input name="password" id="password" type="password" placeholder="Enter Password" required>
       <br>
       <input type="submit" value="Login">
     </form>
@@ -34,7 +34,7 @@
   <div class="bottom-container">
     <div class="row">
       <div class="col">
-        <a href="/api/accounts/signupPage" class="btn">Create Account</a>
+        <a href="api/accounts/signupPage" class="btn">Create Account</a>
       </div>
       <div class="col">
         <a href="api/accounts/resetPasswordPage" class="btn">Forgot Password</a>

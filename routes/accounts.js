@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const viewsDir = "/home/ubuntu/CSE-110-Server/views"
 const accounts_controller = require('../controllers/accountsController');
 
 // POST request for signing up
@@ -17,6 +17,10 @@ router.post('/reset-password', accounts_controller.reset_password);
 
 // DELETE request for deleting account
 router.delete('/delete', accounts_controller.delete_account);
+
+router.get('/signupPage', (req, res) => {
+  res.sendFile(viewsDir + "/signupPage.html");
+})
 
 
 module.exports = router;
