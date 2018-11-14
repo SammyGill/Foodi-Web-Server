@@ -5,6 +5,8 @@ const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({path: '../env_variables.env'});
+const viewsDir = "/home/ubuntu/CSE-110-Server/views"
+
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -28,10 +30,25 @@ app.listen(port, () => {
   console.log("Node server running on port " + port);
 })
 
+/** FOR TESTING W/ HTML; DELETE LATER; to frontend shit **/
+const request = require('request');
 app.get('/', (req, res) => {
   res.sendFile(dir + "/views/loginPage.html")
-})
+});
 
+app.get('/homepage', (req, res) => {
+  res.sendFile(viewsDir + "/homePage.html");
+});
+
+app.post('/signup', (req, res) => {
+  const host = req.headers.origin;
+  const path = '/api/accounts/signup';
+  console.log(req.body);
+});
+
+app.get('/signupPage', (req, res) => {
+  res.sendFile(viewsDir + "/signupPage.html");
+});
 
 /* new additions here */
 const accountsRoute = require('./routes/accounts');
@@ -39,12 +56,12 @@ const postsRoute    = require('./routes/posts');
 const profilesRoute = require('./routes/profiles');
 const restaurantsRoute = require('./routes/restaurants');
 const commentsRoute = require('./routes/comments');
-const homepageRoute = require('./routes/homepage');
+//const homepageRoute = require('./routes/homepage');
 
 app.use('/api/accounts', accountsRoute);
 app.use('/api/posts', postsRoute);
 app.use('/api/profiles', profilesRoute);
 app.use('/api/restaurants', restaurantsRoute);
 app.use('/api/comments', commentsRoute);
-app.use('/api/homepage', homepageRoute);
+//app.use('/api/homepage', homepageRoute);
 

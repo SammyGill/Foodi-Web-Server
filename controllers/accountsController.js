@@ -119,7 +119,7 @@ exports.delete_account = (req, res) => {
  * username is not taken
  */
 exports.change_username = (req, res) => {
-
+  red.end("change usernmae");
 }
 
 

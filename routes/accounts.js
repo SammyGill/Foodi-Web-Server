@@ -18,9 +18,6 @@ router.post('/reset-password', accounts_controller.reset_password);
 // DELETE request for deleting account
 router.delete('/delete', accounts_controller.delete_account);
 
-router.get('/signupPage', (req, res) => {
-  res.sendFile(viewsDir + "/signupPage.html");
-})
-
+//router.patch('/change-username', accounts_controller.change_usernmae);
 
 module.exports = router;
