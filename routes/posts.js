@@ -4,9 +4,7 @@ const viewsDir = "/home/ubuntu/CSE-110-Server/views"
 const router = express.Router();
 
 const posts_controller = require('../controllers/postsController');
-
 const multer = require("multer");
-
 
 
 function isImage(fileName) {
@@ -45,13 +43,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter
-})
-
-/* if i move this to the bottom, get request will get to router.get('/:post_id') and therefore
-result in post not found error. Moved this to the top but don't know how this will affect getting
-a post*/
-router.get('/createPostPage', (req, res) => {
-  res.sendFile(viewsDir + "/createPostPage.html");
 })
 
 // POST request for creating a post

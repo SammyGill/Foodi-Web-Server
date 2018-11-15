@@ -1,6 +1,6 @@
 "use strict";
 const http = require('http');
-const port = 3000;
+const port = process.env.PORT || 3000;
 const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -40,14 +40,61 @@ app.get('/homepage', (req, res) => {
   res.sendFile(viewsDir + "/homePage.html");
 });
 
+
+app.get('/signup', (req, res) => {
+  res.sendFile(viewsDir + "/signupPage.html");
+});
+
 app.post('/signup', (req, res) => {
   const host = req.headers.origin;
   const path = '/api/accounts/signup';
-  console.log(req.body);
+
+  const options = {
+    method: 'post',
+    body: req.body,
+    json: true,
+    url: host + path
+  }
+  request(options, (err, response, body) => {
+    if (err) {
+      console.error('error posting json: ', err)
+      throw err
+    }
+    const statusCode = response.statusCode;
+    if ( statusCode != 201 )
+      res.status(statusCode).json(body);
+    else
+      res.redirect("/homepage"); 
+  });
+
 });
 
-app.get('/signupPage', (req, res) => {
-  res.sendFile(viewsDir + "/signupPage.html");
+app.post('/signin', (req, res) => {
+  const host = req.headers.origin;
+  const path = '/api/accounts/signin';
+
+  const options = {
+    method: 'post',
+    body: req.body,
+    json: true,
+    url: host + path
+  }
+  request(options, (err, response, body) => {
+    if (err) {
+      console.error('error posting json: ', err)
+      throw err
+    }
+    const statusCode = response.statusCode;
+    if ( statusCode != 200 )
+      res.status(statusCode).json(body);
+    else
+      res.redirect("/homepage"); 
+  });
+});
+
+
+app.get('/posts/create', (req, res) => {
+  res.sendFile(viewsDir + "/createPostPage.html");
 });
 
 /* new additions here */

@@ -29,10 +29,7 @@ exports.signup = (req, res) => {
           res.status(500).json( {"Internal Service Error": err} );
           throw err;
         }
-        res.status(201).redirect("/api/homepage/homePage");
-/*        res.status(201).json( {"Created": "Account created"} );
-        res.redirect("/api/homepage/homePage"); 
-*/
+        res.status(201).json( {"Created": "Account created"} );
       });
     }
   });
@@ -45,8 +42,6 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  console.log(username);
-  console.log(password);
   mysql.query(checkUserExistsQuery, [username], (err, result) => {
     if (err) {
       res.status(500).json( {error: err} );
@@ -56,8 +51,7 @@ exports.signin = (req, res) => {
     if (result.length != 0) { // user exists
       console.log("user exists");
       (result[0].password == password)? 
-       // res.status(200).json( {"Success": "Login successful" } ) :
-        res.status(200).redirect("/api/homepage/homePage") :
+        res.status(200).json( {"Success": "Login successful" } ) :
         res.status(401).json( {"Unauthorized": "Incorrect password"} );
     }
     else { // user doesn't exists
