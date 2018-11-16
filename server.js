@@ -99,6 +99,9 @@ app.get('/posts/create', (req, res) => {
   res.sendFile(viewsDir + "/createPostPage.html");
 });
 
+app.get('/restaurants/create', (req, res) => {
+  res.sendFile(viewsDir + '/createRestaurantPage.html');
+});
 /* new additions here */
 const accountsRoute = require('./routes/accounts');
 const postsRoute    = require('./routes/posts');

@@ -12,10 +12,11 @@ const checkRestaurantExistsQuery = "SELECT * FROM restaurants WHERE restaurant_i
 exports.create_restaurant = (req, res) => {
   const name = req.body.name;
   const id = req.body.restaurant_id;
-  const address = req.body.address;
-  const city = req.body.city;
-  const state = req.body.state;
-  const zip = req.body.zip;
+  const street_number = req.body.street_number; //street number
+  const route = req.body.route;      //address
+  const locality = req.body.locality; //city
+  const administrative_area_level_1 = req.body.administrative_area_level_1; //state     
+  const postal_code = req.body.postal_code;
   const hours = req.body.hours;
 
   mysql.query(checkRestaurantExistsQuery, [id], (err, result) => {
@@ -29,16 +30,19 @@ exports.create_restaurant = (req, res) => {
     else {
       const query = 
         `INSERT INTO restaurants 
-         (restaurant_id, name, address, city, state, zip_code, hours) 
-         VALUES (?, ?, ?, ?, ?, ?, ?)`;
+         (restaurant_id, name, street_number, route, locality, administrative_area_level_1, postal_code, hours) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
          
-      mysql.query(query, [id, name, address, city, state, zip, hours], 
+      mysql.query(query, [id, name, street_number, route, locality, administrative_area_level_1, postal_code, hours], 
       (err, result) => {
         if (err) {
           res.status(500).json( {"Internal Service Error": err} );
           throw err;
         }
-        res.status(201).json( {"Created": "Restaurant created"} );
+        res.status(201).json( {
+          "Created": "Restaurant created",
+          restaurant_id: id
+        });
       })
     }    
   });
