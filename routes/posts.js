@@ -36,7 +36,7 @@ const storage = multer.diskStorage({
     callback(null, dir+"/../photos")
   },
   filename: (req, file, callback) => {
-    callback(null, file.originalname + "-" + Date.now());
+    callback(null, Date.now() + "-" + file.originalname);
   }
 })
 
@@ -44,7 +44,6 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter
 });
-
 
 // POST request for creating a post
 router.post('/create', upload.single("image"), posts_controller.create_post);

@@ -16,10 +16,11 @@ exports.create_post = (req, res) => {
   const dish_name = req.body.dish_name;
   const author_id = req.body.author_id;
   const caption = req.body.caption;
-  const picture = req.file.path;
+  //const picture = req.file.path;
+  const picture = req.file.filename;
   const rating = req.body.rating;
   const date = req.body.date;
-  
+ 
   const query =
     `INSERT INTO posts
      (dish_name, author_id, caption, picture, rating, date, restaurant_id)
@@ -32,8 +33,11 @@ exports.create_post = (req, res) => {
       res.status(500).json( {"Internal Service Error": err} );
       throw err;
     }
-    const message = "Post created; post_id = " + result[0].insertId;
-    res.status(201).json( {"Created": message} );
+    res.status(201).json({
+      Created: "Post created", 
+      post_id: result[0].insertId,
+      picture: req.file.filename
+    });
   })
 }
 

@@ -26,6 +26,8 @@ mysql.connect((err) => {
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+app.use(express.static('photos'));
+
 app.listen(port, () => {
   console.log("Node server running on port " + port);
 })
