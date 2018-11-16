@@ -8,36 +8,102 @@
 </head>
 
 <body>
-    <h1>Foodie Create a Post</h1>
-   <div class="form-container">
 
-   <form action="/api/posts/create" method="post" enctype="multipart/form-data">
-      <label for="restaurant_id"><b>Restaurant ID</b></label>
-      <input type="text" placeholder="Enter Restaurant ID" name="restaurant_id" required>
+   
+    <h1 id="text">Foodie Create a Post</h1>
+
+   <!-- form for creating post -->
+   <div class="form-container">
+   <form id="data" method="post" enctype="multipart/form-data">
+      <label  for="restaurant_id"><b>Restaurant ID</b></label>
+      <input id="restaurant_id" type="text" placeholder="Enter Restaurant ID" name="restaurant_id" required>
       <br>
       <label for="dish_name"><b>Dish Name</b></label>
-      <input type="text" placeholder="Enter Dish Name" name="dish_name" required>
+      <input id="dish_name" type="text" placeholder="Enter Dish Name" name="dish_name" required>
       <br>
       <label for="author_id"><b>Author ID</b></label>
-      <input type="text" placeholder="Enter Author ID" name="author_id" required>
+      <input id="author_id" type="text" placeholder="Enter Author ID" name="author_id" required>
       <br>
       <label for="caption"><b>Caption</b></label>
-      <input type="text" placeholder="Enter Caption" name="caption" required>
+      <input id="caption" type="text" placeholder="Enter Caption" name="caption" required>
       <br>
       <label for="rating"><b>Rating</b></label>
-      <input type="text" placeholder="Enter Rating" name="rating" required>
+      <input id="rating" type="text" placeholder="Enter Rating" name="rating" required>
       <br>
       <label for="date"><b>Date</b></label>
-      <input type="date" placeholder="Enter Date" name="date" required>
+      <input id="date" type="date" placeholder="Enter Date" name="date" required>
       <br>
       <input type="file" name="image">
-      <input type="submit" value="Create Post!"> 
+      <input id="file" type="submit" value="Create Post!"> 
+      <button id="submitBtn"> Create Post! </button>
       <br>
-
     </form>
   </div>
-  
+
+  <!-- show created post -->
+  <div id="get_response">
+    <p id="id"> Restaurant ID: </p>
+    <p id="dish"> Dish name: </p>
+    <p id="author"> Author ID: </p>
+    <p id="post_caption"> Post caption: </p>
+    <p id="post_rating"> Post rating: </p>
+    <p id="post_date"> Post date: </p>
+    <p id="pic"> Dish image: </p>
+    <img id="image" src="">
+  </div>
   <br>
 
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+     //automaticall fill in date
+     document.querySelector("#date").valueAsDate = new Date();
+    $(document).ready( () => {
+      $('#get_response').hide();
+      $("form#data").submit(function(e) {
+        e.preventDefault();    
+        var formData = new FormData(this);
+
+        $.ajax({
+          url: '/api/posts/create',
+          type: 'POST',
+          data: formData,
+          success: (data) => {
+            $('#text').text("Post created!");
+            $('#data').hide();
+            const picture = data.picture;
+            const post_id = data.post_id;
+            
+            $.ajax({
+              url: '/api/posts/'+post_id,
+              type: 'GET',
+              datetype: 'json',
+              success: (data) => {
+                $('#get_response').show();
+                $('#id').append(data.post_id);
+                $('#dish').append(data.dish_name);
+                $('#author').append(data.author_id);
+                $('#post_caption').append(data.caption);
+                $('#post_rating').append(data.rating);
+                $('#post_date').append(data.date);
+                $('#image').attr('src', '/api/photos/' + data.picture);
+              }
+            });
+
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+          cache: false,
+          contentType: false,
+          processData: false
+        });
+      });    
+    })
+    
+  
+  </script>
+
+  
 </body>
 <html>

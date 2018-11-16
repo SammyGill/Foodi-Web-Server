@@ -16,7 +16,6 @@ exports.create_post = (req, res) => {
   const dish_name = req.body.dish_name;
   const author_id = req.body.author_id;
   const caption = req.body.caption;
-  //const picture = req.file.path;
   const picture = req.file.filename;
   const rating = req.body.rating;
   const date = req.body.date;
