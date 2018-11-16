@@ -63,5 +63,11 @@ router.post('/:post_id/like/:like_id', posts_controller.like_post);
 // POST request to dislike a post
 router.post('/:post_id/dislike/:dislike_id', posts_controller.dislike_post);
 
+router.post("/getPostInfo", (req, res) => {
+  console.log("got request for restaurant")
+  console.log(req.body.data);
+  res.send(false);
+})
+
 
 module.exports = router;
