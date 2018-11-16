@@ -53,7 +53,7 @@ exports.get_all_restaurants = (req, res) => {
     res.status(500).json( {"Internal Service Error": err} );
   }
   else {
-    res.status(200).json( result );
+    res.status(200).json( results );
   }
  });
 

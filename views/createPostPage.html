@@ -10,7 +10,8 @@
 <body>
     <h1>Foodie Create a Post</h1>
    <div class="form-container">
-    <form action="/api/posts/create" method="post">
+
+   <form action="/api/posts/create" method="post" enctype="multipart/form-data">
       <label for="restaurant_id"><b>Restaurant ID</b></label>
       <input type="text" placeholder="Enter Restaurant ID" name="restaurant_id" required>
       <br>
@@ -27,15 +28,16 @@
       <input type="text" placeholder="Enter Rating" name="rating" required>
       <br>
       <label for="date"><b>Date</b></label>
-      <input type="text" placeholder="Enter Date" name="date" required>
+      <input type="date" placeholder="Enter Date" name="date" required>
       <br>
-      <label for="profilePic"><b>Dish Picture</b></label>
-      <input type="file" name="picture">
+      <input type="file" name="image">
+      <input type="submit" value="Create Post!"> 
       <br>
 
-      <input type="submit" value="Create Post!">
     </form>
   </div>
+  
+  <br>
 
 </body>
 <html>

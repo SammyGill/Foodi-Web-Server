@@ -43,10 +43,11 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter
-})
+});
+
 
 // POST request for creating a post
-router.post('/create', upload.single("test"), posts_controller.create_post);
+router.post('/create', upload.single("image"), posts_controller.create_post);
 
 // GET request for getting all info about a post
 router.get('/:post_id', posts_controller.get_info);

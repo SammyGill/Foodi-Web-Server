@@ -4,7 +4,8 @@ const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  multipleStatements: true
 });
 const checkPostExistsQuery = "SELECT * FROM posts WHERE post_id = ?";
 
@@ -22,7 +23,8 @@ exports.create_post = (req, res) => {
   const query =
     `INSERT INTO posts
      (dish_name, author_id, caption, picture, rating, date, restaurant_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`;
+     VALUES (?, ?, ?, ?, ?, ?, ?); 
+     SELECT MAX(post_id) FROM posts;`;
 
   mysql.query(query, [dish_name, author_id, caption, picture, rating, date, restaurant_id],
   (err, result) => {
@@ -30,7 +32,8 @@ exports.create_post = (req, res) => {
       res.status(500).json( {"Internal Service Error": err} );
       throw err;
     }
-    res.status(201).json( {"Created": "Post created"} );
+    const message = "Post created; post_id = " + result[0].insertId;
+    res.status(201).json( {"Created": message} );
   })
 }
 
