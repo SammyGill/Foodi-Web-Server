@@ -58,10 +58,10 @@ router.get('/:post_id/comments', posts_controller.get_comments);
 router.delete('/:post_id/delete', posts_controller.delete_post);
 
 // POST request to like a post
-router.post('/:post_id/like/:like_id', posts_controller.like_post);
+router.post('/:post_id/like', posts_controller.like_post);
 
 // POST request to dislike a post
-router.post('/:post_id/dislike/:dislike_id', posts_controller.dislike_post);
+router.post('/:post_id/dislike', posts_controller.dislike_post);
 
 router.post("/getPostInfo", (req, res) => {
   console.log("got request for restaurant")

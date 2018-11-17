@@ -102,7 +102,12 @@ app.get('/posts/create', (req, res) => {
 app.get('/restaurants/create', (req, res) => {
   res.sendFile(viewsDir + '/createRestaurantPage.html');
 });
-/* new additions here */
+
+app.get('/restaurants/view-single', (req, res) => {
+  res.sendFile(viewsDir + '/viewRestaurant.html');
+})
+
+/* database calls */
 const accountsRoute = require('./routes/accounts');
 const postsRoute    = require('./routes/posts');
 const profilesRoute = require('./routes/profiles');

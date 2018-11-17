@@ -10,7 +10,7 @@ const checkUserExistsQuery = "SELECT * FROM users WHERE username = ?";
 
 /** Function for signing up 
  */
-exports.signup = (req, res) => {
+exports.signup = function(req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const fullName = req.body.name;

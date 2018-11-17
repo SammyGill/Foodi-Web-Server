@@ -8,7 +8,11 @@ const mysql = require('mysql').createConnection({
   multipleStatements: true
 });
 const checkPostExistsQuery = "SELECT * FROM posts WHERE post_id = ?";
-
+const findLikeDislike = "SELECT * FROM likes WHERE post_id = ? AND user_id = ? AND value = ?";
+const deleteEntry = "DELETE FROM likes WHERE post_id = ? AND user_id = ? AND value = ?";
+const insertEntry = `INSERT INTO likes (post_id, user_id, value) VALUES (?, ?, ?)`;
+const updateLikeCount = "UPDATE posts SET likes=? WHERE post_id=?";
+const updateDislikeCount = "UPDATE posts SET dislikes=? WHERE post_id=?";
 /** Function for creating a post
  */
 exports.create_post = (req, res) => {
@@ -71,8 +75,50 @@ exports.get_comments = (req, res) => {
  */
 exports.like_post = (req, res) => {
   const post_id = req.params.post_id;
-  const like_id = req.params.like_id;
-  res.end("like post " + like_post);
+  const user_id = req.body.user_id;
+  mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
+    if (err) {
+      res.status(500).json({"Internal Service Error": err});
+      throw err;
+    }
+    else {
+      let count = result[0].likes;
+      mysql.query(findLikeDislike, [post_id, user_id, 1], (err, result) => {
+        if (result.length == 1){  // user has liked this post before, now undo like
+          mysql.query(deleteEntry, [post_id, user_id, 1], (err, result) => {
+            if (err) {
+              res.status(500).json({"Internal Service Error": err});
+              throw err;
+            }
+            else {
+              count -= 1;
+              mysql.query(updateLikeCount, [count, post_id], (err) => {
+                (err)?
+                  res.status(500).json({"Internal Service Error": err}) :
+                  res.status(200).json({"Success": "Undo like successful; count for likes changed"});
+              });
+            }
+          });
+        }
+        else {  // user liking the post for the 1st time
+          mysql.query(insertEntry, [post_id, user_id, 1], (err, result) => {
+            if (err) {
+              res.status(500).json({"Internal Service Error": err});
+              throw err;
+            }
+            else {
+              count += 1;
+              mysql.query(updateLikeCount, [count, post_id], (err) => {
+                (err)?
+                  res.status(500).json({"Internal Service Error": err}) :
+                  res.status(200).json({"Success": "Create a new like entry; count for likes changed"});
+              });
+            }
+          });
+        }
+      });
+    }
+  });
 }
 
 
@@ -80,9 +126,52 @@ exports.like_post = (req, res) => {
  */
 exports.dislike_post = (req, res) => {
   const post_id = req.params.post_id;
-  const dislike_id = req.params.dislike_id;
-  res.end("dislike post " + dislike_id);
+  const user_id = req.body.user_id;
+  mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
+    if (err) {
+      res.status(500).json({"Internal Service Error": err});
+      throw err;
+    }
+    else {
+      let count = result[0].dislikes;
+      mysql.query(findLikeDislike, [post_id, user_id, -1], (err, result) => {
+        if (result.length == 1){  // user has liked this post before, now undo like
+          mysql.query(deleteEntry, [post_id, user_id, -1], (err, result) => {
+            if (err) {
+              res.status(500).json({"Internal Service Error": err});
+              throw err;
+            }
+            else {
+              count -= 1;
+              mysql.query(updateDislikeCount, [count, post_id], (err) => {
+                (err)?
+                  res.status(500).json({"Internal Service Error": err}) :
+                  res.status(200).json({"Success": "Undo dislike successful; count for dislikes changed"});
+              });
+            }
+          });
+        }
+        else {  // user liking the post for the 1st time
+          mysql.query(insertEntry, [post_id, user_id, -1], (err, result) => {
+            if (err) {
+              res.status(500).json({"Internal Service Error": err});
+              throw err;
+            }
+            else {
+              count += 1;
+              mysql.query(updateDislikeCount, [count, post_id], (err) => {
+                (err)?
+                  res.status(500).json({"Internal Service Error": err}) :
+                  res.status(200).json({"Success": "Created a new dislike entry; count for dislikes changed"});
+              });
+            }
+          });
+        }
+      });
+    }
+  });
 }
+
 
 /** Function to delete a post
  */
