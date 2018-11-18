@@ -5,7 +5,7 @@ const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({path: '../env_variables.env'});
-const viewsDir = "/home/ubuntu/CSE-110-Server/views"
+const viewsDir =  dir + "/views";
 
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
@@ -35,6 +35,7 @@ app.listen(port, () => {
 /** FOR TESTING W/ HTML; DELETE LATER; to frontend shit **/
 const request = require('request');
 app.get('/', (req, res) => {
+  console.log("got request");
   res.sendFile(dir + "/views/loginPage.html")
 });
 

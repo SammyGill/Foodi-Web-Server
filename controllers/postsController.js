@@ -101,6 +101,8 @@ exports.like_post = (req, res) => {
           });
         }
         else {  // user liking the post for the 1st time
+/*          const checkDislike = "SELECT * FROM likes WHERE post_id = ? AND user_id = ? AND value"
+const findLikeDislike = "SELECT * FROM likes WHERE post_id = ? AND user_id = ? AND value = ?";*/
           mysql.query(insertEntry, [post_id, user_id, 1], (err, result) => {
             if (err) {
               res.status(500).json({"Internal Service Error": err});
