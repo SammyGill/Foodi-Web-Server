@@ -73,11 +73,47 @@ exports.get_info = (req, res) => {
       throw err;
     }
     else if (result.length == 1) { // found restaurant
-      res.status(200).json( result[0] );
+      body = result[0];
+      
+      const getPostsQuery = 
+        `SELECT p.post_id, p.dish_name, p.author_id, p.caption, p.picture, 
+                p.rating, p.date, p.likes, p.dislikes
+         FROM posts p, restaurants r 
+         WHERE p.restaurant_id=r.restaurant_id`;
+      
+      mysql.query(getPostsQuery, [restaurant_id], (err, results) => {
+        let groupBy = function(xs, key) {
+          return xs.reduce(function(rv, x) {
+            (rv[x[key]] = rv[x[key]] || []).push(x);
+            return rv;
+          }, {});
+        };
+        let groupedByDishName = groupBy(results, 'dish_name')
+        
+        body.posts = groupedByDishName;
+        body.dish_names = Object.keys(groupedByDishName);
+
+        res.status(200).json( body );
+      });
+      
     }
     else {
       res.status(404).json( {"Not Found": "Restaurant with this ID does not exist"} );
     }    
   });
  
+}
+
+/** Function for getting a list of all dishes in a restaurant **/
+exports.get_dish_list = (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+  
+  const getPostsQuery = 
+    `SELECT DISTINCT posts.dish_name 
+     FROM posts, restaurants 
+     WHERE posts.restaurant_id = restaurants.restaurant_id`;
+  
+  mysql.query(getPostsQuery, [restaurant_id], (err, results) => {
+    res.status(200).json( {dish_names: results.map(e => e.dish_name)} );
+  });
 }

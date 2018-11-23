@@ -12,4 +12,7 @@ router.get('/', restaurants_controller.get_all_restaurants);
 // GET request for getting all info related to the restaurant
 router.get('/:restaurant_id', restaurants_controller.get_info);
 
+// GET request for getting a list of all dishes in a restaurant
+router.get('/:restaurant_id/dish-list', restaurants_controller.get_dish_list);
+
 module.exports = router;

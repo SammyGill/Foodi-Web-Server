@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset='UTF-8'/>
-  <title>Create a Restaurant</title>
+  <title>View restaurant</title>
   <link rel='stylesheet' href=''/>
 
   <style> 
@@ -80,6 +80,8 @@
 
    <h4 id="not_found"> </h4>
 
+   <div id="posts_div"> </div>
+
 
   <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -104,6 +106,26 @@
             $('#state').text("State: " + data.administrative_area_level_1);
             $('#zip').text("Zip code: " + data.postal_code);
             $('#operation_hours').text("Operation hours: " + data.hours);
+
+
+            $('#posts_div').html('');
+            Object.keys(data.posts).forEach( dish => {
+              let toAdd = "<h2>" + dish + "</h2>";
+              toAdd += "<table>";
+              data.posts[dish].forEach( post => {
+                toAdd += "<tr>";
+                toAdd += "<img src='/api/photos/" + post.picture + "' width=150 height=150>";
+                toAdd += "<br>Post id: " + post.post_id;
+                toAdd += ", rating: " + post.rating;
+                toAdd += ", likes: " + post.likes + ", dislikes: " + post.dislikes;
+                toAdd += "<br><br>"
+                toAdd += "</tr>";
+              })
+              toAdd += "</table>";
+              toAdd += "<hr>";
+              $("#posts_div").append(toAdd);
+               
+            });
           },
           error: (err) => {
             $('#get_response').hide();

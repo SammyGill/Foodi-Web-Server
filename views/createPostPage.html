@@ -7,6 +7,9 @@
   <link rel='stylesheet' href=''/>
 
   <style> 
+      .ui-autocomplete {
+        background-color: #fff;
+      }
       #map {
         height: 400px;
         width: 400px;
@@ -91,6 +94,8 @@
     </form>
   </div>
 
+   <input id="seed_one" type="text" name="seed_one"/>
+
   <!-- show created post -->
   <div id="get_response">
     <p id="postid"> Post ID: </p>
@@ -105,13 +110,27 @@
   </div>
   <br>
 
-  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
   <script>
-     //automaticall fill in date
      document.querySelector("#date").valueAsDate = new Date();
     $(document).ready( () => {
+
       $('#get_response').hide();
+    
+      $( "#dish_name" ).autocomplete({
+        source: (request, response) => {
+          $.ajax({
+            url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
+            type: 'GET',
+            dataType: 'json',
+            success: (data) => {
+              response(data.dish_names);
+            }
+          })
+        }
+      });
+
       $("form#data").submit(function(e) {
         e.preventDefault();    
         var formData = new FormData(this);
@@ -159,9 +178,6 @@
     })
     
   
-  </script>
-
-<script>
       // This sample uses the Place Autocomplete widget to allow the user to search
       // for and select a place. The sample then displays an info window containing
       // the place ID and other information about the place that the user has
