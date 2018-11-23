@@ -5,78 +5,6 @@
   <meta charset='UTF-8'/>
   <title>View Posts of a Profile</title>
   <link rel='stylesheet' href=''/>
-
-  <style> 
-      
-      .row {
-        display: flex;
-        flex-wrap: wrap;
-        padding 0 4px;
-      }
-
-      .column {
-        flex: 25%;
-        max-width: 25%;
-        padding 0 4px;
-      }
-
-      .column img {
-        margin-top: 8px;
-        vertical-align: middle;
-      }
-
-      @media screen and (max-width: 800px) {
-        .column {
-          flex: 50%;
-          max-width: 50%;
-        }
-      }
-
-      @media screen and (max-width: 600px) {
-        .column{
-          flex: 100%;
-          max-width: 100%;
-        }
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      .controls {
-        background-color: #fff;
-        border-radius: 2px;
-        border: 1px solid transparent;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        box-sizing: border-box;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        height: 29px;
-        margin-left: 17px;
-        margin-top: 10px;
-        outline: none;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-      }
-
-      .controls:focus {
-        border-color: #4d90fe;
-      }
-      .title {
-        font-weight: bold;
-      }
-      #infowindow-content {
-        display: none;
-      }
-      #map #infowindow-content {
-        display: inline;
-      }
-
-    </style>
-
 		</head>
 <body>
     <h1 id="text">View Posts</h1>
@@ -85,6 +13,13 @@
     <button id="btn"> Search User's Posts</button>
     <br>
     <br>
+    <div id="delete_post_div" style="display:none">
+      <label> Enter access token </label>
+      <input id="access_token">
+      <label> Enter ID of post to delete </label>
+      <input id="post_id"> 
+      <button id="deleteBtn"> Delete post </button>
+    </div>
     <br>
     <br>
     
@@ -101,7 +36,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script>
     $(document).ready( () => {
-   console.log("here"); 
     /*  $('#get_response').hide();
       $('#not_found').hide();*/
       $("#btn").on('click', function () {
@@ -112,6 +46,7 @@
           type: 'GET',
           datetype: 'json',
           success: (data) => {
+            $('#delete_post_div').show();
             /*$('#get_response').show();
             $('#not_found').hide();*/
             $("#tableContainer").html("");
@@ -126,10 +61,11 @@
                   username = data.username;
                   var url = "/api/photos/" + this.picture;
   //                var toAdd = '<div class="column"> <img src="' + url + '" style="width:100%">' + '</div>';
-                  var toAdd = '<img src="' + url + '" width="300" height="300">'+'<br>';
+                  var toAdd = '<img src="' + url + '" width="150" height="150">'+'<br>';
+                  toAdd += "<p> Post id: " + this.post_id + "</p>";
                   toAdd += '<p>' + "Dish's name:  "+ this.dish_name + "       Likes: " + this.likes + 
                        "      Dislikes: " + this.dislikes + '</p>';
-                  toAdd += '<p><strong>' + username + '    ' + '</strong>'+ this.caption + '</p>';
+                  toAdd += '<p><strong>Username: ' + username + '    ' + '</strong></p><p>Caption: '+ this.caption + '</p>';
                   toAdd += '<hr>';
                   $("#tableContainer").append(toAdd);
                 }
@@ -144,7 +80,27 @@
             
           },
         });
-      });    
+      });  
+
+
+
+      $('#deleteBtn').click( () => {
+        const access_token = $('#access_token').val();
+
+        $.ajax({
+          url: '/api/posts/' + $('#post_id').val() + '/delete',
+          type: 'DELETE',
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            $('#btn').click(); // click search button
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+        });
+      })
     
     }); 
   </script>

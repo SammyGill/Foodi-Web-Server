@@ -60,17 +60,11 @@ exports.signin = (req, res) => {
           res.status(500).json( {"Internal Service Error": err} );
           throw err;
         }
-        res.status(200).json({
-            OK: "Login success",
-            userData: req.userData
-        });
+        res.status(200).json({ OK: "Login success", userData: req.userData });
       });
     }
     else { // user exists; login successful
-      res.status(200).json( {
-        OK: "Login success",
-        userData: req.userData
-      })
+      res.status(200).json( { OK: "Login success", userData: req.userData });
     }
   });
 }

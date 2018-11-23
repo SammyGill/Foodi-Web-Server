@@ -13,7 +13,7 @@ const deleteEntry = "DELETE FROM likes WHERE post_id = ? AND user_id = ? AND val
 const insertEntry = `INSERT INTO likes (post_id, user_id, value) VALUES (?, ?, ?)`;
 const updateLikeCount = "UPDATE posts SET likes=? WHERE post_id=?";
 const updateDislikeCount = "UPDATE posts SET dislikes=? WHERE post_id=?";
-const deletePost = "DELETE FROM posts WHERE post_id = ?";
+const deletePost = "DELETE FROM posts WHERE post_id = ? AND author_id=?";
 const newComment = `INSERT INTO comments (comment_text, date, user_id, post_id) 
       VALUES (?, ?, ?, ?); SELECT MAX(comment_id) FROM comments);`;
 /** Function for creating a post
@@ -93,7 +93,7 @@ exports.like_post = (req, res) => {
       }
 
       if (result.length == 1)  // user has disliked this post
-        res.status(200).json({"Failure": "Cannot like because dislike exists"});
+        res.status(409).json({"Conflict": "Cannot like because dislike exists"});
       else {
         mysql.query(findLikeDislike, [post_id, user_id, 1], (err, result) => {
           if (err){
@@ -138,7 +138,7 @@ exports.dislike_post = (req, res) => {
       }
 
       if (result.length == 1)  // user has liked this post
-        res.status(200).json({"Failure": "Cannot dislike because like exists"});
+        res.status(409).json({"Failure": "Cannot dislike because like exists"});
       else {
         mysql.query(findLikeDislike, [post_id, user_id, -1], (err, result) => {
           if (err){
@@ -182,19 +182,20 @@ function like_dislike (query, post_id, user_id, value, count, message, res) {
 */ 
 exports.delete_post = (req, res) => {
   const post_id = req.params.post_id;
+  const author_id = req.userData.id;
   mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
     if (err) {
       res.status(500).json({"Internal Service Error": err});
       throw err;
     }
     else {
-      mysql.query(deletePost, [post__id], (err, result) => {
+      mysql.query(deletePost, [post_id, author_id], (err, result) => {
         if (err) {
           res.status(500).json( {"Internal Service Error": err} );
          throw err;
          }
         else{
-        res.status(200).end("Post deleted");
+          res.status(200).end("Post deleted");
         }
       });
     }
