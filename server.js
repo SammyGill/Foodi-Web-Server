@@ -35,7 +35,6 @@ app.listen(port, () => {
 /** FOR TESTING W/ HTML; DELETE LATER; to frontend shit **/
 const request = require('request');
 app.get('/', (req, res) => {
-  console.log("got request");
   res.sendFile(dir + "/views/loginPage.html")
 });
 
@@ -106,6 +105,10 @@ app.get('/restaurants/create', (req, res) => {
 
 app.get('/restaurants/view-single', (req, res) => {
   res.sendFile(viewsDir + '/viewRestaurant.html');
+})
+
+app.get('/profiles/view-posts', (req, res) => {
+  res.sendFile(viewsDir + '/viewPosts.html');
 })
 
 /* database calls */

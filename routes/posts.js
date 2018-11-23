@@ -6,6 +6,8 @@ const router = express.Router();
 const posts_controller = require('../controllers/postsController');
 const multer = require("multer");
 
+const auth = require('../middleware/auth');
+
 
 function isImage(fileName) {
   const extensions = [".jpg", ".jpeg", ".png"];
@@ -46,7 +48,7 @@ const upload = multer({
 });
 
 // POST request for creating a post
-router.post('/create', upload.single("image"), posts_controller.create_post);
+router.post('/create', auth, upload.single("image"), posts_controller.create_post);
 
 // GET request for getting all info about a post
 router.get('/:post_id', posts_controller.get_info);
@@ -55,19 +57,13 @@ router.get('/:post_id', posts_controller.get_info);
 router.get('/:post_id/comments', posts_controller.get_comments);
 
 // DELETE request for deleting a post
-router.delete('/:post_id/delete', posts_controller.delete_post);
+router.delete('/:post_id/delete', auth, posts_controller.delete_post);
 
 // POST request to like a post
-router.post('/:post_id/like', posts_controller.like_post);
+router.post('/:post_id/like', auth, posts_controller.like_post);
 
 // POST request to dislike a post
-router.post('/:post_id/dislike', posts_controller.dislike_post);
-
-router.post("/getPostInfo", (req, res) => {
-  console.log("got request for restaurant")
-  console.log(req.body.data);
-  res.send(false);
-})
+router.post('/:post_id/dislike', auth, posts_controller.dislike_post);
 
 
 module.exports = router;

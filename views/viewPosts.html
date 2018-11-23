@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang='eg'>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset='UTF-8'/>
+  <title>View Posts of a Profile</title>
+  <link rel='stylesheet' href=''/>
+
+  <style> 
+      
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        padding 0 4px;
+      }
+
+      .column {
+        flex: 25%;
+        max-width: 25%;
+        padding 0 4px;
+      }
+
+      .column img {
+        margin-top: 8px;
+        vertical-align: middle;
+      }
+
+      @media screen and (max-width: 800px) {
+        .column {
+          flex: 50%;
+          max-width: 50%;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        .column{
+          flex: 100%;
+          max-width: 100%;
+        }
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .controls {
+        background-color: #fff;
+        border-radius: 2px;
+        border: 1px solid transparent;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        height: 29px;
+        margin-left: 17px;
+        margin-top: 10px;
+        outline: none;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      .controls:focus {
+        border-color: #4d90fe;
+      }
+      .title {
+        font-weight: bold;
+      }
+      #infowindow-content {
+        display: none;
+      }
+      #map #infowindow-content {
+        display: inline;
+      }
+
+    </style>
+
+		</head>
+<body>
+    <h1 id="text">View Posts</h1>
+    <label> Enter User ID </label>
+    <input id="user_id" type="text">
+    <button id="btn"> Search User's Posts</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+  <!-- show created post -->
+  <div id="get_response">
+   <div id="tableContainer">
+   </div>
+  </div>
+
+   <h4 id="not_found"> </h4>
+
+
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+    $(document).ready( () => {
+   console.log("here"); 
+    /*  $('#get_response').hide();
+      $('#not_found').hide();*/
+      $("#btn").on('click', function () {
+      console.log("clicked??");
+        const user_id = $('#user_id').val();
+        $.ajax({
+          url: '/api/profiles/'+ user_id +'/posts',
+          type: 'GET',
+          datetype: 'json',
+          success: (data) => {
+            /*$('#get_response').show();
+            $('#not_found').hide();*/
+            $("#tableContainer").html("");
+//            $("#tableContainer").append('<div class="row">');
+            $.each(data, function(){
+              var username = "";
+              $.ajax({
+                url: '/api/profiles/' + user_id,
+                type: 'GET',
+                datatype: 'json',
+                success: (data) => {
+                  username = data.username;
+                  var url = "/api/photos/" + this.picture;
+  //                var toAdd = '<div class="column"> <img src="' + url + '" style="width:100%">' + '</div>';
+                  var toAdd = '<img src="' + url + '" width="300" height="300">'+'<br>';
+                  toAdd += '<p>' + "Dish's name:  "+ this.dish_name + "       Likes: " + this.likes + 
+                       "      Dislikes: " + this.dislikes + '</p>';
+                  toAdd += '<p><strong>' + username + '    ' + '</strong>'+ this.caption + '</p>';
+                  toAdd += '<hr>';
+                  $("#tableContainer").append(toAdd);
+                }
+              });
+            });
+            
+          },
+          error: (err) => {
+            $('#get_response').hide();
+            $('#not_found').show();
+            $('#not_found').text(JSON.stringify(err));
+            
+          },
+        });
+      });    
+    
+    }); 
+  </script>
+
+  
+</body>
+<html>

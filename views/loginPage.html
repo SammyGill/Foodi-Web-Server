@@ -20,25 +20,50 @@
   <div id="login-title">
     <h1>Foodie Login</h1>
   </div>
-  <div class="login-container">
-    <form action="/signin" method="post">
-      <label for="username"><b>Username</b></label>
-      <input name="username" id="username" type="text" placeholder="Enter Username" required>
-      <br>
-      <label for="passwrod"><b>Password</b></label>
-      <input name="password" id="password" type="password" placeholder="Enter Password" required>
-      <br>
-      <input type="submit" value="Login">
-    </form>
-  </div>
+    <label> Enter access token </label>
+    <input id="access_token" required>
+    <button id="login-btn"> Log in </button>
+    
+    <p id="name"> </p>
+    <p id="user_id"> </p>
+    <img id="pic" src=""> 
 
-  <div class="bottom-container">
-    <div class="row">
-      <div class="col">
-        <a href="signup" class="btn">Create Account</a>
-      </div>
-      <div class="col">
-        <a href="/reset-password" class="btn">Forgot Password</a>
-      </div>
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+     $(document).ready( () => {
+      $('#login-btn').click( () => {
+
+        const access_token = $('#access_token').val();
+        if (access_token == "") 
+          alert("fill in field");
+        else {
+          
+          const body = { access_token: access_token };
+          $.ajax({
+            url: '/api/accounts/signin',
+            type: 'POST',
+            datetype: 'json',
+            beforeSend: (xhr) => {   //Include the bearer token in header
+              xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+            },
+            success: (data) => {
+              
+              alert("success");
+              $('#name').text(data.userData.first_name + data.userData.last_name);
+              $('#user_id').text(data.userData.id);
+              $('#pic').attr('src', data.userData.picture.data.url);
+            },
+            error: (err) => {
+              alert(JSON.stringify(err));
+            }
+          });  
+        
+        }
+
+      });
+
+    });
+  </script>
 </body>
 </html>

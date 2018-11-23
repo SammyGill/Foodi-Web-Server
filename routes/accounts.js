@@ -3,11 +3,17 @@ const router = express.Router();
 const viewsDir = "/home/ubuntu/CSE-110-Server/views"
 const accounts_controller = require('../controllers/accountsController');
 
+const auth = require('../middleware/auth');
+
+router.get('/test-auth', auth, (req, res) => {
+  res.status(200).json(req.userData);
+});
+
 // POST request for signing up
 router.post('/signup', accounts_controller.signup);
 
 // POST request for signing in
-router.post('/signin', accounts_controller.signin);
+router.post('/signin', auth, accounts_controller.signin);
 
 // POSt request for signing out
 router.post('/signout', accounts_controller.signout);

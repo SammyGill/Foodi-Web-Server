@@ -5,7 +5,7 @@ const mysql = require('mysql').createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME
 });
-const checkUserExistsQuery = "SELECT * FROM users WHERE username = ?";
+const checkUserExistsQuery = "SELECT * FROM users WHERE user_id = ?";
 
 
 /** Function for signing up 
@@ -40,25 +40,39 @@ exports.signup = function(req, res) {
 /** Function for signing in 
  */
 exports.signin = (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  mysql.query(checkUserExistsQuery, [username], (err, result) => {
+  const user_id = req.userData.id;
+  
+  mysql.query(checkUserExistsQuery, [user_id], (err, result) =>{
     if (err) {
-      res.status(500).json( {error: err} );
+      res.status(500).json({error: err} );
       throw err;
     }
 
-    if (result.length != 0) { // user exists
-      console.log("user exists");
-      (result[0].password == password)? 
-        res.status(200).json( {"Success": "Login successful" } ) :
-        res.status(401).json( {"Unauthorized": "Incorrect password"} );
+    if ( result.length == 0 ) { // user doesn't exist; create user
+      const fn = req.userData.first_name;
+      const ln = req.userData.last_name;
+      const pic = req.userData.picture.data.url;
+      let insertQuery = 
+        `INSERT INTO users (user_id, first_name, last_name, profile_picture) 
+         VALUES (?, ?, ?, ?)`;
+      mysql.query(insertQuery, [user_id, fn, ln, pic], (err, result) => {
+        if (err) {
+          res.status(500).json( {"Internal Service Error": err} );
+          throw err;
+        }
+        res.status(200).json({
+            OK: "Login success",
+            userData: req.userData
+        });
+      });
     }
-    else { // user doesn't exists
-      console.log("user does not exist")
-      res.status(404).json( {"Not Found": '\"'+username+'\" does not exist'} );
+    else { // user exists; login successful
+      res.status(200).json( {
+        OK: "Login success",
+        userData: req.userData
+      })
     }
-  })
+  });
 }
 
 
