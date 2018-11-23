@@ -12,12 +12,14 @@ module.exports = (req, res, next) => {
     url: url + access_token
   }
   request(options, (err, response, body) => {
-    if (err) {
-      console.log(err);
-      res.status(err.error.code).json(err);
+    
+    if (response.statusCode != 200) {
+      res.status(response.statusCode).json(body);
     }
-    req.userData = body;
-    next();
+    else {
+      req.userData = body;
+      next();
+    }
   });
 }
 
