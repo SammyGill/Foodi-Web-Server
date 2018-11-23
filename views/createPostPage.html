@@ -93,6 +93,7 @@
 
   <!-- show created post -->
   <div id="get_response">
+    <p id="postid"> Post ID: </p>
     <p id="id"> Restaurant ID: </p>
     <p id="dish"> Dish name: </p>
     <p id="author"> Author ID: </p>
@@ -114,11 +115,15 @@
       $("form#data").submit(function(e) {
         e.preventDefault();    
         var formData = new FormData(this);
-
+      
+        const access_token = $('#access_token').val();
         $.ajax({
           url: '/api/posts/create',
           type: 'POST',
           data: formData,
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
           success: (data) => {
             $('#text').text("Post created!");
             $('#data').hide();
@@ -131,7 +136,8 @@
               datetype: 'json',
               success: (data) => {
                 $('#get_response').show();
-                $('#id').append(data.post_id);
+                $('#postid').append(data.post_id);
+                $('#id').append(data.restaurant_id);
                 $('#dish').append(data.dish_name);
                 $('#author').append(data.author_id);
                 $('#post_caption').append(data.caption);
