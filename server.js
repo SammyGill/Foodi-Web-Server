@@ -109,7 +109,14 @@ app.get('/restaurants/view-single', (req, res) => {
 
 app.get('/profiles/view-posts', (req, res) => {
   res.sendFile(viewsDir + '/viewPosts.html');
-})
+});
+
+app.get('/posts/view', (req, res) => {
+  res.sendFile(viewsDir + '/viewSinglePost.html');
+});
+
+
+
 
 /* database calls */
 const accountsRoute = require('./routes/accounts');
