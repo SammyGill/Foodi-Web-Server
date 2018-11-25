@@ -6,7 +6,7 @@ const mysql = require('mysql').createConnection({
   database: process.env.DB_NAME
 });
 const checkUserExistsQuery = "SELECT * FROM users WHERE user_id = ?";
-
+const checkUsersExistsQuery = "SELECT * FROM users WHERE user_id = ? OR user_id=?";
 
 /** Function for gettting all info related to the usert
  */
@@ -82,28 +82,72 @@ exports.get_following = (req, res) => {
   res.end('Not implemented');
 }
 
+function checkFollowingTable (follower_id, followee_id, cb) {
+  const query = `SELECT * FROM following WHERE follower_id=? AND followee_id=?`;
+  mysql.query(query, [follower_id, followee_id], (err, result) => {
+    (err)? cb(err, -1) : cb(err, result);
+  })
+}
 
 /** Function to follow a user
  */
 exports.follow = (req, res) => {
-  const user_id = req.params.user_id;
-  const follow_id = req.params.follow_id;
+  const user_id = req.userData.id;
+  const followee_id = req.params.followee_id;
 
-  let followQuery = "INSERT INTO following VALUES (?, ?))";
+  mysql.query(checkUsersExistsQuery, [user_id, followee_id], (err, result) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
 
-  res.end("follow user: " + follow_id);
+    if (result.length == 0) { // user(s) doesn't exist
+      res.status(404).json( {message: "User(s) doesn't exist"} );
+    }
+    else { // user exists
+      const checkFollowExists = `SELECT * FROM following WHERE follower_id=? AND followee_id=?`;
+      mysql.query(checkFollowExists, [user_id, followee_id], (err, result) => {
+        if (err) {
+          res.status(500).json(err);
+          throw err;
+        }
+
+        if (result.length != 0) { // already followed
+          res.status(409).json( {message: "Already followed this user"} );
+        }
+        else { // haven't followed this user before'
+          const followQuery = "INSERT INTO following (follower_id, followee_id) VALUES (?, ?)";
+          mysql.query(followQuery, [user_id, followee_id], (err, result) => {
+            (err)? res.status(500).json(err) : res.status(200).json( {message: "Followed"} );
+          });
+        }
+      });
+    }
+  });
 }
-
 
 /** Function to unfollow a user
  */
 exports.unfollow = (req, res) => {
-  const user_id = req.params.user_id;
-  const unfollow_id = req.params.unfollow_id;
+  const user_id = req.userData.id;
+  const unfollowee_id = req.params.unfollowee_id;
 
-  let unfollowQuery = `DELETE FROM following WHERE user_id = ? AND user_following_id = ?`;
-  res.end("unfollow user: " + unfollow_id);
+  mysql.query(checkUsersExistsQuery, [user_id, unfollowee_id], (err, result) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
 
+    if (result.length == 0) { // user(s) doesn't exist
+      res.status(404).json( {message: "User(s) doesn't exist"} );
+    }
+    else { // user exists
+      const followQuery = "DELETE FROM following WHERE follower_id=? AND followee_id=?";
+      mysql.query(followQuery, [user_id, unfollowee_id], (err, result) => {
+        (err)? res.status(500).json(err) : res.status(200).json( {message: "Unfollowed"} );
+      });
+    }
+  });
 }
 
 

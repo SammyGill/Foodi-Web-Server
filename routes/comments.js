@@ -11,4 +11,8 @@ router.get('/:comment_id', comments_controller.get_info);
 
 // DELETE request for deleting the comment
 router.delete('/:comment_id/delete', auth,  comments_controller.delete_comment);
+
+// GET request for getting all the comments related to a post
+router.get('/all/:post_id', comments_controller.get_comments);
+
 module.exports = router;

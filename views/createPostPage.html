@@ -134,7 +134,7 @@
       $("form#data").submit(function(e) {
         e.preventDefault();    
         var formData = new FormData(this);
-      
+console.log(formData);      
         const access_token = $('#access_token').val();
         $.ajax({
           url: '/api/posts/create',

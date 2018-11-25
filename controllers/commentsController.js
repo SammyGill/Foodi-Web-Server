@@ -63,3 +63,19 @@ exports.delete_comment = (req, res) => {
   });
   
 }
+
+/** Function to get all comments for a post
+ */
+exports.get_comments = (req, res) => {
+  const post_id = req.params.post_id;
+  const query = "SELECT * FROM comments where post_id=?";
+  mysql.query(query, [post_id], (err, result) => {
+    if(err) {
+      res.status(500).json(err).json(err);
+      throw err;
+    }
+    else { 
+      res.status(200).json(result);
+    }
+  });
+}

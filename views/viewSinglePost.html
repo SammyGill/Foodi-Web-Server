@@ -17,10 +17,22 @@
       <label> Enter access token </label>
       <input id="access_token">
       <br>
+      <br>
       <button id="like"> Like </button>
       <button id="dislike"> Dislike </button>
       <br>
+      <br>
       <button id="delete"> Delete post </button>
+      <br>
+      <br>
+      <input id="comment_text">
+      <button id="comment">Add comment! </button>
+      <br>
+      <br>
+      <button id="load_comment">Click here to load comments!</button>
+    </form>
+    </div>
+    
     </div>
     <br>
     <br>
@@ -37,8 +49,11 @@
       <p id="post_caption"> Post caption: </p>
       <p id="post_rating"> Post rating: </p>
       <p id="post_date"> Post date: </p>
+      <p id="comments"> Comments (None displayed by default): </p>
+      
     </div>
-    
+   
+
   <!-- show created post -->
   <div id="get_response">
    <div id="tableContainer">
@@ -60,7 +75,7 @@
         $.ajax({
           url: '/api/posts/'+post_id,
           type: 'GET',
-          datetype: 'json',
+          datatype: 'json',
           success: (data) => {
             $('#post_info').show();
             $('#get_response').show();
@@ -143,6 +158,54 @@
           },
         });
       })
+
+      $('#comment').click( () => {
+        const access_token = $('#access_token').val();
+        $.ajax({
+          url: '/api/comments/create',
+          type: 'POST',
+          data: {
+            comment_text: $('#comment_text').val(),
+            post_id: $('#post_id').val()
+          },
+          datatype: 'json',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", 'Bearer ' + access_token);
+          },
+          success: (data) => {
+            alert("added comment");
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          }
+        });  
+      })
+
+
+      $('#load_comment').click( () => {
+        $.ajax({
+          url: '/api/comments/all/' + $('#post_id').val(),
+          type: 'GET',
+          datatype: 'json',
+          success: (data) => {
+            $('#comments').append('<br>');
+            $.each(data, function() {
+              $.ajax({
+                url: '/api/profiles/' + this.user_id,
+                type: 'GET',
+                datatype: 'json',
+                success: (data) => {
+                  $('#comments').append('<p style="margin-left: 40px">'+data.first_name + " " + data.last_name + ":    " + this.comment_text + '</p>');
+                }
+              });
+            });
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          }
+        });
+      })
+      
     
     }); 
   </script>
