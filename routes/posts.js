@@ -65,5 +65,7 @@ router.post('/:post_id/like', auth, posts_controller.like_post);
 // POST request to dislike a post
 router.post('/:post_id/dislike', auth, posts_controller.dislike_post);
 
+// POST request to add comment to a post
+router.post('/:post_id/add_comment', auth, posts_controller.add_comment);
 
 module.exports = router;
