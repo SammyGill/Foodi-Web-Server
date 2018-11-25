@@ -13,6 +13,7 @@
     <button id="btn"> Find post </button>
     <br>
     <br>
+    <br>
     <div id="like_dislike_delete" style="display:none">
       <label> Enter access token </label>
       <input id="access_token">
@@ -27,13 +28,8 @@
       <br>
       <input id="comment_text">
       <button id="comment">Add comment! </button>
-      <br>
-      <br>
-      <button id="load_comment">Click here to load comments!</button>
-    </form>
     </div>
     
-    </div>
     <br>
     <br>
 
@@ -49,8 +45,7 @@
       <p id="post_caption"> Post caption: </p>
       <p id="post_rating"> Post rating: </p>
       <p id="post_date"> Post date: </p>
-      <p id="comments"> Comments (None displayed by default): </p>
-      <p id="count_for_comments" style="display:none"></p>      
+      <p id="comments_container"> Comments: </p>
     </div>
    
 
@@ -69,6 +64,8 @@
     $(document).ready( () => {
     /*  $('#get_response').hide();
       $('#not_found').hide();*/
+      var index = 0;
+
       $("#btn").on('click', function () {
         const post_id = $('#post_id').val();
 
@@ -93,7 +90,8 @@
             $('#image').attr('src', '/api/photos/' + data.picture);
             $('#likes').text("Likes: " + data.likes);
             $('#dislikes').text("Dislikes: " + data.dislikes);
-
+            index = 0;
+            $('#comments_container').html('<p id="comments"> Comments: <button id="load_initial">Click here to load comments!</button></p>');
           },
           error: (err) => {
             $('#post_info').hide();
@@ -182,35 +180,55 @@
           }
         });  
       })
-var index = 0;
-
-      $('#load_comment').click( () => {
+      
+      function toloadComments() {
         $.ajax({
-          url: '/api/comments/all/' + $('#post_id').val() ,
+          url: '/api/comments/all/' + $('#post_id').val() + '?idx='+index ,
           type: 'GET',
-          data: {
-            idx: index
-          },
           datatype: 'json',
           success: (data) => {
-            $('#comments').append('<br>');
-            $.each(data, function() {
-              $.ajax({
-                url: '/api/profiles/' + this.user_id,
-                type: 'GET',
-                datatype: 'json',
-                success: (data) => {
-                  $('#comments').append('<p style="margin-left: 40px">'+data.first_name + " " + data.last_name + ":    " + this.comment_text + '</p>');
-                }
+            if (data.length != 0){ // there's more comments to load
+              $('#load_initial').hide();
+              index = data[data.length-1].comment_id;
+              $.each(data, function() {
+                $.ajax({
+                  url: '/api/profiles/' + this.user_id,
+                  type: 'GET',
+                  datatype: 'json',
+                  success: (data) => {
+                    $('#comments').append('<p style="margin-left: 40px">'+data.first_name + " " + data.last_name + ":    " + this.comment_text + '</p>');
+                    if (this.comment_id == index){
+                      $('#comments').append('<button id="load_more" style="margin-left: 120px">Load more comments</button>');
+                    }
+                  }
+                });
               });
-            });
+            }
+            else { // there's no comments to load
+              if (index == 0) // no comments under the post yet
+                alert("There is no comment for this post yet!");
+              else { // no more new comments under the post
+                $('#comments').append('<button id="load_more" style="margin-left: 120px">Load more comments</button>');
+                alert("There is no more new comment for this post!");
+              }
+            }
           },
           error: (err) => {
             alert(JSON.stringify(err));
           }
         });
-      })
+      }
       
+      // called first time loading comments
+      $(document).on("click", "#load_initial", function() {
+        toloadComments();
+      })
+
+      // load more comments
+      $(document).on("click", "#load_more", function() {
+        $(this).closest("#load_more").remove();
+        toloadComments();     
+      })
     
     }); 
   </script>

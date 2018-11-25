@@ -68,9 +68,8 @@ exports.delete_comment = (req, res) => {
  */
 exports.get_comments = (req, res) => {
   const post_id = req.params.post_id;
-  const idx = req.body.idx;
-//  const query = "SELECT * FROM comments where post_id=?";
-  const query = "SELECT * FROM comments WHERE post_id = ? ORDER BY date DESC LIMIT ?, 5";
+  const idx = parseInt(req.query.idx);
+  const query = "SELECT * FROM comments WHERE post_id = ? AND comment_id > ? ORDER BY date ASC LIMIT 5";
   mysql.query(query, [post_id, idx], (err, result) => {
     if(err) {
       res.status(500).json(err).json(err);

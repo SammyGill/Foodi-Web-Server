@@ -4,6 +4,7 @@ const viewsDir = "/home/ubuntu/CSE-110-Server/views"
 const router = express.Router();
 
 const posts_controller = require('../controllers/postsController');
+const conmments_controller = require('../controllers/commentsController');
 const multer = require("multer");
 
 const auth = require('../middleware/auth');
@@ -47,6 +48,20 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
+router.post('/test-image', upload.single("image"), (req, res) => {
+  if (req.file) {
+    console.log("image uploaded");
+    console.log(req.file);
+    res.status(200).json({
+      message: "image sent",
+      file: req.file
+    });
+  }
+  else {
+    console.log("error uploading image")
+    res.status(500).json( {message: "error uploading image"} );
+  }
+})
 // POST request for creating a post
 router.post('/create', auth, upload.single("image"), posts_controller.create_post);
 
@@ -65,7 +80,5 @@ router.post('/:post_id/like', auth, posts_controller.like_post);
 // POST request to dislike a post
 router.post('/:post_id/dislike', auth, posts_controller.dislike_post);
 
-// POST request to add comment to a post
-router.post('/:post_id/add_comment', auth, posts_controller.add_comment);
 
 module.exports = router;
