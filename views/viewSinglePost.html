@@ -50,7 +50,7 @@
       <p id="post_rating"> Post rating: </p>
       <p id="post_date"> Post date: </p>
       <p id="comments"> Comments (None displayed by default): </p>
-      
+      <p id="count_for_comments" style="display:none"></p>      
     </div>
    
 
@@ -93,6 +93,7 @@
             $('#image').attr('src', '/api/photos/' + data.picture);
             $('#likes').text("Likes: " + data.likes);
             $('#dislikes').text("Dislikes: " + data.dislikes);
+
           },
           error: (err) => {
             $('#post_info').hide();
@@ -102,6 +103,7 @@
 
           }
         });
+        
       });  
 
       $('#like').click( () => {
@@ -180,12 +182,15 @@
           }
         });  
       })
-
+var index = 0;
 
       $('#load_comment').click( () => {
         $.ajax({
-          url: '/api/comments/all/' + $('#post_id').val(),
+          url: '/api/comments/all/' + $('#post_id').val() ,
           type: 'GET',
+          data: {
+            idx: index
+          },
           datatype: 'json',
           success: (data) => {
             $('#comments').append('<br>');
