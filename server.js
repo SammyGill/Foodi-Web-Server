@@ -115,7 +115,9 @@ app.get('/posts/view', (req, res) => {
   res.sendFile(viewsDir + '/viewSinglePost.html');
 });
 
-
+app.get('/feed', (req, res) => {
+  res.sendFile(viewsDir + '/homePage.html');
+});
 
 
 /* database calls */
@@ -124,12 +126,10 @@ const postsRoute    = require('./routes/posts');
 const profilesRoute = require('./routes/profiles');
 const restaurantsRoute = require('./routes/restaurants');
 const commentsRoute = require('./routes/comments');
-//const homepageRoute = require('./routes/homepage');
 
 app.use('/api/accounts', accountsRoute);
 app.use('/api/posts', postsRoute);
 app.use('/api/profiles', profilesRoute);
 app.use('/api/restaurants', restaurantsRoute);
 app.use('/api/comments', commentsRoute);
-//app.use('/api/homepage', homepageRoute);
 

@@ -230,3 +230,26 @@ exports.add_comment = (req, res) => {
     }
  })
 }
+
+/** Function to get posts for feed **/
+exports.get_feed = (req, res) => {
+  const user_id = req.userData.id;
+  const query = 
+    `SELECT DISTINCT * FROM posts 
+     INNER JOIN users ON users.user_id=posts.author_id 
+     INNER JOIN following ON posts.author_id=following.followee_id 
+     WHERE following.follower_id = ? 
+     ORDER BY post_id DESC`;
+  mysql.query(query, [user_id], (err, result) => {
+    if(err){
+      res.status(500).json({"Internal Service Error": err});
+      throw err;
+    }
+    else {
+     // console.log(result);
+      res.status(200).json(result);
+    }
+  });
+
+}
+

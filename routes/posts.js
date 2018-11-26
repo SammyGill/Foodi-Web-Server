@@ -65,6 +65,9 @@ router.post('/test-image', upload.single("image"), (req, res) => {
 // POST request for creating a post
 router.post('/create', auth, upload.single("image"), posts_controller.create_post);
 
+// GET request to get all posts for feed
+router.get('/feed', auth, posts_controller.get_feed);
+
 // GET request for getting all info about a post
 router.get('/:post_id', posts_controller.get_info);
 
@@ -79,6 +82,5 @@ router.post('/:post_id/like', auth, posts_controller.like_post);
 
 // POST request to dislike a post
 router.post('/:post_id/dislike', auth, posts_controller.dislike_post);
-
 
 module.exports = router;

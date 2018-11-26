@@ -15,12 +15,52 @@
 </head>
 
 <body>
-  <!-- <img id="site-logo" src='/views/images/logo.png' width=77 alt='Logo for Common Ground'/> -->
-  <div id="login-title">
-    <h1>Foodie Homepage</h1>
-  </div>
-  <a href="/posts/create">
-    <button>Create a post</button>
-  </a>
+  <h1>Foodie Homepage</h1>
+  <br>
+  <br>
+  <label> Enter access token </label>
+  <input id="access_token">
+  <button id="btn"> Click to see feed </button>
+  <br>
+  <br>
+   
+  <div id="content"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+    $(document).ready( () => {
+      
+      $("#btn").on('click', function () {
+        $('#content').html("");
+        const access_token = $('#access_token').val();
+        $.ajax({
+          url: 'api/posts/feed',
+          type: 'GET',
+          datatype: 'json',
+          beforeSend: function (xhr){
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            $('#content').html("");
+            $.each(data, function() {
+                var url = "/api/photos/" + this.picture;
+                var profile_pic = this.profile_picture;
+                var toAdd = '<img src="' + url + '" width="150" height="150"><br>';
+                toAdd += '<p><img src="' + profile_pic + '" width="50" height="50">';
+                toAdd += '<strong>' + this.first_name + " " +this.last_name +'</strong>' + ": " + this.caption + '</p>';
+                toAdd += '<p>' + this.date+'</p>';
+                toAdd += '<hr>';
+                $('#content').append(toAdd);
+              });
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          }
+        });
+      });
+
+    });
+  </script>
+
 </body>
 </html>
