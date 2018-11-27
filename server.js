@@ -6,6 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({path: '../env_variables.env'});
 const viewsDir =  dir + "/views";
+const morgan = require('morgan');
 
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
@@ -25,6 +26,8 @@ mysql.connect((err) => {
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(morgan('dev'));
+app.disable('etag');
 
 app.use("/api/photos", express.static("photos"));
 
@@ -119,6 +122,9 @@ app.get('/feed', (req, res) => {
   res.sendFile(viewsDir + '/homePage.html');
 });
 
+app.get('/search-user', (req, res) => {
+  res.sendFile(viewsDir + '/searchUser.html');
+})
 
 /* database calls */
 const accountsRoute = require('./routes/accounts');
