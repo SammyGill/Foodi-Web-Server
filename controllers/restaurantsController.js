@@ -72,36 +72,73 @@ exports.get_info = (req, res) => {
       res.status(500).json( {"Internal Service Error": err} );
       throw err;
     }
-    else if (result.length == 1) { // found restaurant
+    else if (result.length != 1) {
+      res.status(404).json( {"Not Found": "Restaurant with this ID does not exist"} );
+    }
+    else { // found restaurant
       body = result[0];
       
       const getPostsQuery = 
         `SELECT p.post_id, p.dish_name, p.author_id, p.caption, p.picture, 
-                p.rating, p.date, p.likes, p.dislikes
+                p.rating, p.date, p.likes, p.dislikes, p.likes - p.dislikes AS difference
          FROM posts p, restaurants r 
-         WHERE p.restaurant_id=r.restaurant_id`;
-      
-      mysql.query(getPostsQuery, [restaurant_id], (err, results) => {
-        let groupBy = function(xs, key) {
-          return xs.reduce(function(rv, x) {
-            (rv[x[key]] = rv[x[key]] || []).push(x);
-            return rv;
-          }, {});
-        };
-        let groupedByDishName = groupBy(results, 'dish_name')
-        
-        body.posts = groupedByDishName;
-        body.dish_names = Object.keys(groupedByDishName);
+         WHERE p.restaurant_id=r.restaurant_id
+         ORDER BY difference DESC`;
 
-        res.status(200).json( body );
+      mysql.query(getPostsQuery, [restaurant_id], (err, results) => { 
+        // group posts by dish name, then sort dishes by ovearll rating
+        sortByRating(results, (sorted) => {
+          const dish_names = Object.keys(sorted); // dish names sorted by total rating
+          body.posts = sorted;
+          body.dish_names = dish_names;
+          body.most_popular = sorted[ dish_names[0] ][0]; // most popular post of most popular food
+        
+          res.status(200).json( body );
+        });
+
       });
       
     }
-    else {
-      res.status(404).json( {"Not Found": "Restaurant with this ID does not exist"} );
-    }    
   });
  
+}
+
+// Helper function to sort dishes in dscending order by total rating
+function sortByRating(results, cb) {
+  
+  // groups posts by dish name; not sorted, though
+  let groupBy = (xs, key) => {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+  let grouped = groupBy(results, 'dish_name')
+  
+  let rating = []; // array of total ratings for each dish
+  let pair = {};  // value pair of total rating and dish name
+  
+  // count total rating for each dish
+  Object.keys(grouped).forEach( dishname => {
+    let totalRating = 0;
+    grouped[dishname].forEach( post => {totalRating += post.rating;} );
+    pair[totalRating] = dishname; // store as {rating:dishname}
+    rating.push( totalRating ); // store total rating in array
+  });
+
+  // sort rating array in descending order
+  rating.sort( (a, b) => { 
+    return b - a; 
+  });
+ 
+  // create new json obj in sorted order
+  let sorted = {};
+  rating.forEach( e => {
+    const dishname = pair[e];
+    sorted[dishname] = grouped[dishname];
+  });
+
+  cb(sorted); // callback with the sorted object
 }
 
 /** Function for getting a list of all dishes in a restaurant **/
