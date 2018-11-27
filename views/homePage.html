@@ -34,7 +34,7 @@
         $('#content').html("");
         const access_token = $('#access_token').val();
         $.ajax({
-          url: 'api/posts/feed',
+          url: 'api/profiles/feed',
           type: 'GET',
           datatype: 'json',
           beforeSend: function (xhr){
@@ -47,7 +47,7 @@
                 var profile_pic = this.profile_picture;
                 var toAdd = '<img src="' + url + '" width="150" height="150"><br>';
                 toAdd += '<p><img src="' + profile_pic + '" width="50" height="50">';
-                toAdd += '<strong>' + this.first_name + " " +this.last_name +'</strong>' + ": " + this.caption + '</p>';
+                toAdd += '<strong>' + this.username + '</strong>' + ": " + this.caption + '</p>';
                 toAdd += '<p>' + this.date+'</p>';
                 toAdd += '<hr>';
                 $('#content').append(toAdd);

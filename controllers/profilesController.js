@@ -199,7 +199,6 @@ exports.follow = (req, res) => {
  *  is returned. If user A already does not follow user B, an error is returned
  *  as well.
  */
-e
 exports.unfollow = (req, res) => {
   const user_id = req.userData.id;
   const unfollowee_id = req.params.unfollowee_id;

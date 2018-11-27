@@ -10,7 +10,6 @@ const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({path: '../env_variables.env'});
-const viewsDir =  dir + "/views";
 const morgan = require('morgan');
 
 const port = process.env.PORT || 3000;
@@ -46,7 +45,6 @@ mysql.connect((err) => {
 // Middleware used to parse requests and serve photos
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-<<<<<<< HEAD
 app.use(morgan('dev'));
 app.disable('etag');
 
