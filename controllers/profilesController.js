@@ -7,17 +7,39 @@ const mysql = require('mysql').createConnection({
 });
 const checkUserExistsQuery = "SELECT * FROM users WHERE user_id = ?";
 const checkUsersExistQuery = "SELECT * FROM users WHERE user_id = ? OR user_id=?";
+const checkIdOrUsername = "SELECT * FROM users WHERE user_id = ? OR username=?";
+const checkUsername = "SELECT * FROM users WHERE username=?";
 
+
+exports.username_list = (req, res) => {
+  mysql.query("SELECT username AS label, user_id AS value FROM users", (err, result) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
+    res.status(200).json(result);
+  })
+};
+
+exports.name_list = (req, res) => {
+  mysql.query("SELECT first_name, last_name FROM users", (err, result) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
+    res.status(200).json(result)
+  })
+}
 /** Function for gettting all info related to the usert
  */
 exports.get_info = (req, res) => {
-  const user_id = req.params.user_id;
-  mysql.query(checkUserExistsQuery, [user_id], (err, result) => {
+  const id = req.params.id_or_username;
+  mysql.query(checkIdOrUsername, [id, id], (err, result) => {
     if (err) {
       res.status(500).json( {"Internal Service Error": err} );
       throw err;
     }
-    else if (result.length == 1) { // found restaurant
+    else if (result.length == 1) { // found user
       res.status(200).json( result[0] );
     }
     else {
@@ -50,6 +72,33 @@ exports.get_posts = (req, res) => {
 exports.edit = (req, res) => {
   const user_id = req.params.user_id;
   res.end("edit profile");
+}
+
+/**
+ * allow user to change username if
+ * username is not taken
+ */
+exports.set_username = (req, res) => {
+  mysql.query(checkUsername, [req.body.username], (err, result) => {
+    if (err) {
+      res.status(500).json(err);
+    }
+    if (result.length == 0) {
+      let setUsername = "UPDATE users SET username='" + req.body.username + "' WHERE user_id=?"
+      mysql.query(setUsername, [req.userData.id], (err, result) => {
+        if (err) {
+          res.status(500).json(err);
+          throw err;
+        }
+      console.log("valid username");
+      res.status(200).json( {message: "Username set"} );
+      });
+    }
+    else {
+      console.log("invalid username");
+      res.status(409).json( {message: "This username is already taken"} );
+    }
+  })
 }
 
 /** Function for getting all of the user's activities
