@@ -183,7 +183,7 @@
       
       function toloadComments() {
         $.ajax({
-          url: '/api/comments/all/' + $('#post_id').val() + '?idx='+index ,
+          url: '/api/comments/all/' + $('#post_id').val() + '?idx='+index+'&limit=5' ,
           type: 'GET',
           datatype: 'json',
           success: (data) => {
