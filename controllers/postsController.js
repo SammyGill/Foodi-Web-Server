@@ -246,7 +246,7 @@ exports.get_feed = (req, res) => {
       throw err;
     }
     else {
-     // console.log(result);
+      //console.log(result.map(e=>e.post_id));
       res.status(200).json(result);
     }
   });
