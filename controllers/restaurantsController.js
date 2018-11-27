@@ -86,13 +86,14 @@ exports.get_info = (req, res) => {
          ORDER BY difference DESC`;
 
       mysql.query(getPostsQuery, [restaurant_id], (err, results) => { 
-        // group posts by dish name, then sort dishes by ovearll rating
-        sortByRating(results, (sorted) => {
+        // group posts by dish name, then sort dishes by median rating
+        sortByRating(results, (sorted, dishInfo) => {
           const dish_names = Object.keys(sorted); // dish names sorted by total rating
+          body.dish_info = dishInfo;
           body.posts = sorted;
           body.dish_names = dish_names;
           body.most_popular = sorted[ dish_names[0] ][0]; // most popular post of most popular food
-        
+
           res.status(200).json( body );
         });
 
@@ -115,30 +116,54 @@ function sortByRating(results, cb) {
   };
   let grouped = groupBy(results, 'dish_name')
   
-  let rating = []; // array of total ratings for each dish
-  let pair = {};  // value pair of total rating and dish name
-  
+  // function to find median
+  const median = function(array) {
+    array.sort(function(a, b) {
+      return a - b;
+    });
+    var mid = array.length / 2;
+    return mid % 1 ? array[mid - 0.5] : (array[mid - 1] + array[mid]) / 2;
+  }
+
+  let dishes = [];
+
   // count total rating for each dish
   Object.keys(grouped).forEach( dishname => {
-    let totalRating = 0;
-    grouped[dishname].forEach( post => {totalRating += post.rating;} );
-    pair[totalRating] = dishname; // store as {rating:dishname}
-    rating.push( totalRating ); // store total rating in array
+    let totalRating = 0
+    let ratings = []; // array of all rating; used to determine median
+    grouped[dishname].forEach( post => {
+      totalRating += post.rating;
+      ratings.push( post.rating ); // push rating to array
+    });
+    
+    dishes.push({
+      name: dishname, 
+      median_rating: median(ratings), 
+      average_rating: +(totalRating / ratings.length).toFixed(2), 
+      num_posts: ratings.length
+    });
+
   });
 
-  // sort rating array in descending order
-  rating.sort( (a, b) => { 
-    return b - a; 
-  });
- 
+  // sort dishes by median rating; if same median rating, sort by dish with most posts
+  for (let i = 0; i < dishes.length; i ++) {
+    for (let j = 0; j < dishes.length; j++) {
+      if (dishes[i].median_rating > dishes[j].median_rating ||
+          dishes[i].num_posts > dishes[j].num_posts) {
+        let temp = dishes[i];
+        dishes[i] = dishes[j];
+        dishes[j] = temp;
+      }
+    }
+  }
+
   // create new json obj in sorted order
   let sorted = {};
-  rating.forEach( e => {
-    const dishname = pair[e];
-    sorted[dishname] = grouped[dishname];
-  });
-
-  cb(sorted); // callback with the sorted object
+  dishes.forEach( dish => {
+    sorted[ dish.name ] = grouped[ dish.name ];
+  })
+  
+  cb(sorted, dishes); // callback
 }
 
 /** Function for getting a list of all dishes in a restaurant **/
