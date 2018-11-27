@@ -1,3 +1,9 @@
+/**
+ *  The profiles controller is responsible for managing all requests 
+ *  associated with the profile of a user. This includes pulling a user's
+ *  posts, updating their followers, etc.
+ */
+
 require('dotenv').config({path: '../../env_variables.env'});
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
@@ -49,7 +55,8 @@ exports.get_info = (req, res) => {
 
 }
 
-/** Function to get all of the user's posts
+/** 
+ *  get_posts returns all of the posts for a user. 
  */
 exports.get_posts = (req, res) => {
   const user_id = req.params.user_id;
@@ -109,7 +116,8 @@ exports.get_activities = (req, res) => {
 }
 
 
-/** Function for getting a list of people the user follows
+/** 
+ *  get_following returns all of the other users that this user follow
  */
 exports.get_following = (req, res) => {
   const user_id = req.params.user_id;
@@ -124,7 +132,8 @@ exports.get_following = (req, res) => {
   
 }
 
-/** Function to get all of the user's followers'
+/** 
+ *  get_following returns a list of users that follow this user
  */
 exports.get_followers = (req, res) => {
   const user_id = req.params.user_id;
@@ -140,7 +149,12 @@ exports.get_followers = (req, res) => {
 }
 
 
-/** Function to follow a user
+/** 
+ *  follow takes a user A, who wants to follow a user B, and updates the 
+ *  followering and followers lists for these users appropriately so that
+ *  user A now followers user B. If the user B does not exist, an error 
+ *  is returned. If user A already follows user B, an error is returned as 
+ *  well.
  */
 exports.follow = (req, res) => {
   const user_id = req.userData.id;
@@ -178,8 +192,14 @@ exports.follow = (req, res) => {
 }
 
 
-/** Function to unfollow a user
+/** 
+ *  follow takes a user A, who wants to unfollow a user B, and updates the 
+ *  followering and followers lists for these users appropriately so that
+ *  user A no longer followers user B. If the user B does not exist, an error 
+ *  is returned. If user A already does not follow user B, an error is returned
+ *  as well.
  */
+e
 exports.unfollow = (req, res) => {
   const user_id = req.userData.id;
   const unfollowee_id = req.params.unfollowee_id;
