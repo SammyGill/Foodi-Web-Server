@@ -1,38 +1,63 @@
+/**
+ *  Main Node.js file that runs our back end server.
+ */
+
 "use strict";
+
+// Required modules
 const http = require('http');
-const port = process.env.PORT || 3000;
 const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config({path: '../env_variables.env'});
-const viewsDir =  dir + "/views";
-
+const port = process.env.PORT || 3000;
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME
 });
+
+
 const app = express();
+/* Application routes management */
+const accountsRoute = require('./routes/accounts');
+const postsRoute    = require('./routes/posts');
+const profilesRoute = require('./routes/profiles');
+const restaurantsRoute = require('./routes/restaurants');
+const commentsRoute = require('./routes/comments');
 
-const checkUserExistsQuery = "SELECT * FROM users WHERE username = ?";
+app.use('/api/accounts', accountsRoute);
+app.use('/api/posts', postsRoute);
+app.use('/api/profiles', profilesRoute);
+app.use('/api/restaurants', restaurantsRoute);
+app.use('/api/comments', commentsRoute);
 
 
+// Connect to AWS MySQL DB
 mysql.connect((err) => {
   if(err) throw err;
   console.log("Connected to db");
 })
 
+// Middleware used to parse requests and serve photos
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-
 app.use("/api/photos", express.static("photos"));
 
+// Server runs on port 3000 but IP tables have been set to
+// forward data going to port 80 to port 3000
 app.listen(port, () => {
   console.log("Node server running on port " + port);
 })
 
+
+
 /** FOR TESTING W/ HTML; DELETE LATER; to frontend shit **/
+
+
+// HTML pages for testing, remove when done
+const viewsDir =  dir + "/views";
 const request = require('request');
 app.get('/', (req, res) => {
   res.sendFile(dir + "/views/loginPage.html")
@@ -120,16 +145,4 @@ app.get('/feed', (req, res) => {
 });
 
 
-/* database calls */
-const accountsRoute = require('./routes/accounts');
-const postsRoute    = require('./routes/posts');
-const profilesRoute = require('./routes/profiles');
-const restaurantsRoute = require('./routes/restaurants');
-const commentsRoute = require('./routes/comments');
-
-app.use('/api/accounts', accountsRoute);
-app.use('/api/posts', postsRoute);
-app.use('/api/profiles', profilesRoute);
-app.use('/api/restaurants', restaurantsRoute);
-app.use('/api/comments', commentsRoute);
 
