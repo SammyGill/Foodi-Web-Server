@@ -109,10 +109,12 @@
 
 
             $('#posts_div').html('');
-            Object.keys(data.posts).forEach( dish => {
-              let toAdd = "<h2>" + dish + "</h2>";
+            
+            data.dishes.forEach( dish => {
+              
+              let toAdd = "<h2>" + dish.name + "</h2>";
               toAdd += "<table>";
-              data.posts[dish].forEach( post => {
+              dish.posts.forEach( post => {
                 toAdd += "<tr>";
                 toAdd += "<img src='/api/photos/" + post.picture + "' width=150 height=150>";
                 toAdd += "<br>Post id: " + post.post_id;
