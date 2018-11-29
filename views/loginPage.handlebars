@@ -15,6 +15,9 @@
 </head>
 
 <body>
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+			</fb:login-button>
   
   <!-- <img id="site-logo" src='/views/images/logo.png' width=77 alt='Logo for Common Ground'/> -->
   <div id="login-title">
@@ -65,5 +68,7 @@
 
     });
   </script>
+  {{> facebook}}
+	<script src="/js/facebook.js"></script>
 </body>
 </html>
