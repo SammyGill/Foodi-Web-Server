@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang='eg'>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset='UTF-8'/>
+  <title>View Posts of a Profile</title>
+  <link rel='stylesheet' href=''/>
+		</head>
+<body>
+    <h1 id="text">View Post</h1>
+    <label> Enter post ID </label>
+    <input id="post_id" type="text">
+    <button id="btn"> Find post </button>
+    <br>
+    <br>
+    <br>
+    <div id="like_dislike_delete" style="display:none">
+      <label> Enter access token </label>
+      <input id="access_token">
+      <br>
+      <br>
+      <button id="like"> Like </button>
+      <button id="dislike"> Dislike </button>
+      <br>
+      <br>
+      <button id="delete"> Delete post </button>
+      <br>
+      <br>
+      <input id="comment_text">
+      <button id="comment">Add comment! </button>
+    </div>
+    
+    <br>
+    <br>
+
+    <div id="post_info" style="display:none">
+      <p id="pic"> Dish image: </p>
+      <img id="image" width="150" height="150" src="">
+      <p id="likes"> </p>
+      <p id="dislikes"> </p>
+      <p id="postid"> Post ID: </p>
+      <p id="restaurant_id"> Restaurant ID: </p>
+      <p id="dish"> Dish name: </p>
+      <p id="author"> Author ID: </p>
+      <p id="post_caption"> Post caption: </p>
+      <p id="post_rating"> Post rating: </p>
+      <p id="post_date"> Post date: </p>
+      <p id="comments_container"> Comments: </p>
+    </div>
+   
+
+  <!-- show created post -->
+  <div id="get_response">
+   <div id="tableContainer">
+   </div>
+  </div>
+
+   <h4 id="not_found" style="display:none"> Post with this ID does not exist </h4>
+
+
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+    $(document).ready( () => {
+    /*  $('#get_response').hide();
+      $('#not_found').hide();*/
+      var index = 0;
+
+      $("#btn").on('click', function () {
+        const post_id = $('#post_id').val();
+
+        $.ajax({
+          url: '/api/posts/'+post_id,
+          type: 'GET',
+          datatype: 'json',
+          success: (data) => {
+            $('#post_info').show();
+            $('#get_response').show();
+            $('#like_dislike_delete').show();
+            $('#not_found').hide();
+
+            
+            $('#postid').text("Post ID: " + data.post_id);
+            $('#restaurant_id').text("Restaurant ID: " + data.restaurant_id);
+            $('#dish').text("Dish name: " + data.dish_name);
+            $('#author').text("Author ID: " + data.author_id);
+            $('#post_caption').text("Caption: " + data.caption);
+            $('#post_rating').text("Rating: " + data.rating);
+            $('#post_date').text("Post date: " + data.date);
+            $('#image').attr('src', '/api/photos/' + data.picture);
+            $('#likes').text("Likes: " + data.likes);
+            $('#dislikes').text("Dislikes: " + data.dislikes);
+            index = 0;
+            $('#comments_container').html('<p id="comments"> Comments: <button id="load_initial">Click here to load comments!</button></p>');
+          },
+          error: (err) => {
+            $('#post_info').hide();
+            $('#get_response').hide();
+            $('#like_dislike_delete').hide();
+            $('#not_found').show();
+
+          }
+        });
+        
+      });  
+
+      $('#like').click( () => {
+        const access_token = $('#access_token').val();
+
+        $.ajax({
+          url: '/api/posts/' + $('#post_id').val() + '/like',
+          type: 'POST',
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            $('#btn').click(); // click search button
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+        });
+      });
+
+      $('#dislike').click( () => {
+        const access_token = $('#access_token').val();
+
+        $.ajax({
+          url: '/api/posts/' + $('#post_id').val() + '/dislike',
+          type: 'POST',
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            $('#btn').click(); // click search button
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+        });
+      })
+
+      $('#delete').click( () => {
+        const access_token = $('#access_token').val();
+
+        $.ajax({
+          url: '/api/posts/' + $('#post_id').val() + '/delete',
+          type: 'DELETE',
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            alert("post deleted");
+            $('#btn').click(); // click search button
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+        });
+      })
+
+      $('#comment').click( () => {
+        const access_token = $('#access_token').val();
+        $.ajax({
+          url: '/api/comments/create',
+          type: 'POST',
+          data: {
+            comment_text: $('#comment_text').val(),
+            post_id: $('#post_id').val()
+          },
+          datatype: 'json',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", 'Bearer ' + access_token);
+          },
+          success: (data) => {
+            alert("added comment");
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          }
+        });  
+      })
+      
+      function toloadComments() {
+        $.ajax({
+          url: '/api/comments/all/' + $('#post_id').val() + '?idx='+index+'&limit=5' ,
+          type: 'GET',
+          datatype: 'json',
+          success: (data) => {
+            if (data.length != 0){ // there's more comments to load
+              $('#load_initial').hide();
+              index = data[data.length-1].comment_id;
+              $.each(data, function() {
+                $.ajax({
+                  url: '/api/profiles/' + this.user_id,
+                  type: 'GET',
+                  datatype: 'json',
+                  success: (data) => {
+                    $('#comments').append('<p style="margin-left: 40px">'+data.first_name + " " + data.last_name + ":    " + this.comment_text + '</p>');
+                    if (this.comment_id == index){
+                      $('#comments').append('<button id="load_more" style="margin-left: 120px">Load more comments</button>');
+                    }
+                  }
+                });
+              });
+            }
+            else { // there's no comments to load
+              if (index == 0) // no comments under the post yet
+                alert("There is no comment for this post yet!");
+              else { // no more new comments under the post
+                $('#comments').append('<button id="load_more" style="margin-left: 120px">Load more comments</button>');
+                alert("There is no more new comment for this post!");
+              }
+            }
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          }
+        });
+      }
+      
+      // called first time loading comments
+      $(document).on("click", "#load_initial", function() {
+        toloadComments();
+      })
+
+      // load more comments
+      $(document).on("click", "#load_more", function() {
+        $(this).closest("#load_more").remove();
+        toloadComments();     
+      })
+    
+    }); 
+  </script>
+
+  
+</body>
+<html>

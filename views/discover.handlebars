@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='eg'>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset='UTF-8'/>
+  <title>Create a Post</title>
+  <link rel='stylesheet' href=''/>
+
+  <style> 
+      .ui-autocomplete {
+        background-color: #fff;
+      }
+    </style>
+
+		</head>
+<body>
+
+
+   <label> Enter username </label>
+   <input id="username">
+   <label> User ID </label>
+   <input id="uid" disabled="true">
+   
+   <br>
+   <br>
+   
+   <!--
+   <label for="access_token"><b>Access token</b></label>
+   <input id="access_token" type="text" placeholder="Enter access token" name="access_token" required>
+    -->
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script>
+    $(document).ready( () => {
+
+      let username_list = [];
+      $.ajax({
+        url: 'api/profiles/username-list',
+        type: 'GET',
+        dataType: 'json',
+        success: (data) => {
+          username_list = data;
+        }
+      });
+
+      $( "#username" ).autocomplete({
+        source: (request, response) => {
+          response(username_list)
+        },
+        focus: function(){ return false; }
+        })
+        .on( 'autocompleteresponse autocompleteselect', function( e, ui ){
+          var t = $(this),
+              details = $('#uid'),
+              label = ( e.type == 'autocompleteresponse' ? ui.content[0].label :  ui.item.label ),
+              value = ( e.type == 'autocompleteresponse' ? ui.content[0].value : ui.item.value );
+
+          if (e.type != 'autocompleteresponse')
+            t.val(ui.item.label);
+          if (e.type != 'autocompleteresponse')
+            details.val(ui.item.value);
+
+          return false;
+        });
+    });
+    </script>
+  
+</body>
+<html>
