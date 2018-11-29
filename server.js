@@ -9,7 +9,7 @@ const http = require('http');
 const dir = __dirname;
 const express = require('express');
 const bodyParser = require('body-parser');
-require('dotenv').config({path: '../env_variables.env'});
+require('dotenv').config({path: __dirname + '/env_variables.env'});
 const morgan = require('morgan');
 const path = require('path');
 const port = process.env.PORT || 3000;
