@@ -24,12 +24,13 @@ exports.view = (req, res) => {
     }
     // successful api call
     else {
-      body = body.user_info[0];
+      user_info = body.user_info[0];
       res.render('profile', {
-        user_id: body.user_id,
-        username: body.username,
-        name: body.first_name + ' ' + body.last_name,
-        picture: body.profile_picture
+        user_id: user_info.user_id,
+        username: user_info.username,
+        name: user_info.first_name + ' ' + user_info.last_name,
+        picture: user_info.profile_picture,
+        posts: body.posts
       });
     }
 
