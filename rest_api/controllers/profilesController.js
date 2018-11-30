@@ -46,7 +46,17 @@ exports.get_info = (req, res) => {
       throw err;
     }
     else if (result.length == 1) { // found user
-      res.status(200).json( {user_info: result} );
+      const user_info = result;
+      
+      // get all of the user's posts
+      let getPostsQuery = "Select * FROM posts where author_id = ?";
+      mysql.query(getPostsQuery, [user_info[0].user_id], (err, results) => {
+        if (err) {
+          res.status(500).json( {"Internal Service Error": err} );
+          throw err;
+        }
+        res.status(200).json({user_info: user_info, posts: results});
+      });
     }
     else {
       res.status(404).json( {"Not Found": "User with this ID does not exist"} );
@@ -227,7 +237,7 @@ exports.unfollow = (req, res) => {
           res.status(500).json(err);
           throw err;          
         }
-        
+
         const update = 'UPDATE users SET following_count=following_count-1 WHERE user_id=?';
         mysql.query(update, [user_id], (err, result) => {
           (err)? res.status(500).json(err) : res.status(200).json( {message: "Unfollowed"} );
