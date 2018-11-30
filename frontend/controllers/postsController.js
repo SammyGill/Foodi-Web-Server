@@ -60,24 +60,24 @@ exports.feed = (req, res) => {
   const host = 'http://' + req.headers.host;
   const path = "/api/profiles/feed"
   let posts = [];
-  request.get({url: host + path, json:true, headers: {"Authorization": 'Bearer '+req.cookies.accessToken}}, (err, response, body) => {
-      console.log(body);
-      for(let i = 0; i < body.length; i++) {
-        let obj = {
-          dish_name: body[i].dish_name,
-          author: body[i].first_name + " " + body[i].last_name,
-          date: body[i].date,
-          image: body[i].picture_url,
-          caption: body[i].caption
-        }
-        posts.push(obj);
-      }
-      
-      console.log("finished feed request");
-      console.log(posts);
-      res.render("homePage", {posts: posts} );
-  })
+  console.log(host+path);
+  console.log("http://localhost:3000/api/profiles/feed")
+  console.log(req.cookies.accessToken);
+  request.get({
+    url: host+path, 
+    'json' : true,
+    headers: {
+    'content-type' : 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer ' + req.cookies.accessToken
+    },
+  }, (err, response, body) => {
+    // server error or client error
+    if (err || response.statusCode >= 400) {
+      res.render('error', getErrorMessage(err, response));
+    }
 
-  
-  
+    else {
+      res.render("homePage", {posts: body} );
+    }
+  });
 }

@@ -5,7 +5,7 @@ const posts_controller = require('../controllers/postsController');
 
 router.get('/create', posts_controller.create);
 
-router.get("/home", posts_controller.feed);
+router.get("/feed", posts_controller.feed);
 
 router.get('/:post_id', posts_controller.view);
 
