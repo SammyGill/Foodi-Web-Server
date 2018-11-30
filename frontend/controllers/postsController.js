@@ -55,5 +55,29 @@ exports.view = (req, res) => {
 }
 
 exports.feed = (req, res) => {
-  res.render("homePage");
+  console.log(req.cookies.accessToken);
+  console.log(req.userData);
+  const host = 'http://' + req.headers.host;
+  const path = "/api/profiles/feed"
+  let posts = [];
+  request.get({url: host + path, json:true, headers: {"Authorization": 'Bearer '+req.cookies.accessToken}}, (err, response, body) => {
+      console.log(body);
+      for(let i = 0; i < body.length; i++) {
+        let obj = {
+          dish_name: body[i].dish_name,
+          author: body[i].first_name + " " + body[i].last_name,
+          date: body[i].date,
+          image: body[i].picture_url,
+          caption: body[i].caption
+        }
+        posts.push(obj);
+      }
+      
+      console.log("finished feed request");
+      console.log(posts);
+      res.render("homePage", {posts: posts} );
+  })
+
+  
+  
 }

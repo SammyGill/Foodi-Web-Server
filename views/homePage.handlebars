@@ -35,19 +35,17 @@
   <button id="btn"> Click to see feed </button>
   <br>
   <br>
-   
+  <div class="faceook" align="center">
+      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+      </fb:login-button>
+    </div>
+
   <div class ="col" align="center">
-  <div class="card" style="width: 50%;" align="center">
-    <div class="card-header">
-      Author and Date posted
-    </div>
-    <div class="card-body">
-      <img class="card-img-top" src="/images/login_bg.jpeg" alt="Card image cap">
-    </div>
-    <div class="card-footer text-muted">
-      Caption and comments and buttons
-    </div>
-  </div>
+      {{#each posts}}
+        {{> post post=this}}  
+      {{/each}}
+    
+  
   </div>
 
 
