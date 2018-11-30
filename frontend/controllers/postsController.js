@@ -53,3 +53,7 @@ exports.view = (req, res) => {
     }
   });
 }
+
+exports.feed = (req, res) => {
+  res.render("homePage");
+}

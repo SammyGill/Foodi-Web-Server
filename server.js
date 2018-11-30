@@ -54,7 +54,6 @@ app.use('/api/comments', commentsRoute);
 
 /* Routes for frontend using Handlebars*/
 app.get('/', (req, res) => { res.render('loginPage') } );
-app.get('/home', (req, res) => { res.render('homePage') } );
 app.get('/discover', (req, res) => { res.render('discover') } );
 app.use('/posts', require('./frontend/routes/posts'));
 app.use('/restaurants', require('./frontend/routes/restaurants'));
