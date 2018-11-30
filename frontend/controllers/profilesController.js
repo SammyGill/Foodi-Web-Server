@@ -1,28 +1,38 @@
 const request = require('request');
 
+/** function to determine the appropriate error messsage to render */
+function getErrorMessage(err, response) {
+  if (err) 
+    throw err;
+  return {
+    statusCode: response.responseCode,
+    message: (err)? err : response.statusMessage
+  };
+}
+
+
 /* View profile page */
 exports.view = (req, res) => {
-  const host = req.headers.host;
+  const host = 'http://' + req.headers.host;
   const path = '/api/profiles/' + req.params.username;
-  const url = 'http://' + host + path;
-  
-  request({
-    method: 'GET',
-    json: 'true',
-    url: url
-  },
-  (err, response, body) => {
-    if (err) {
-      res.status(response.statusCode).json(err);
-      throw err;
+  const url =  host + path;
+
+  request.get({url: url, json: true}, (err, response, body) => {
+    // server error or client error
+    if (err || response.statusCode >= 400) {
+      res.render('error', getErrorMessage(err, response));
     }
-    body = body.user_info[0];
-    res.render('profile', {
-      user_id: body.user_id,
-      username: body.username,
-      name: body.first_name + ' ' + body.last_name,
-      picture: body.profile_picture
-    });
+    // successful api call
+    else {
+      body = body.user_info[0];
+      res.render('profile', {
+        user_id: body.user_id,
+        username: body.username,
+        name: body.first_name + ' ' + body.last_name,
+        picture: body.profile_picture
+      });
+    }
+
   });
 }
 

@@ -40,8 +40,9 @@ function signin(accessToken) {
           $('#name').text(data.userData.first_name + data.userData.last_name);
           $('#user_id').text(data.userData.id);
           $('#pic').attr('src', data.userData.picture.data.url);
+          console.log(data.userData);
           if (xhr.status == 201) {
-            alert("please set username");
+            alert("Hi " + data.userData.first_name +"! Your current username is " + data.userData.username + ". You can change it below");
             $('#username_div').show();
           }
           else {

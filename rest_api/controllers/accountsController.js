@@ -84,10 +84,12 @@ exports.signin = (req, res) => {
           res.status(500).json(err);
           throw err;
         }
+        req.userData.username = username;
         res.status(201).json({ message: "Account created", userData: req.userData });
       });
     }
     else { // user exists; login successful
+      req.userData.username = result[0].username;
       res.status(200).json( { message: "Login success", userData: req.userData });
     }
   });
