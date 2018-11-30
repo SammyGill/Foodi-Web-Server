@@ -183,7 +183,15 @@ exports.follow = (req, res) => {
         else { // haven't followed this user before'
           const followQuery = "INSERT INTO following (follower_id, followee_id) VALUES (?, ?)";
           mysql.query(followQuery, [user_id, followee_id], (err, result) => {
-            (err)? res.status(500).json(err) : res.status(200).json( {message: "Followed"} );
+            if (err) {
+              res.status(500).json(err);
+              throw err;
+            }
+
+            const update = 'UPDATE users SET following_count=following_count+1 WHERE user_id=?';
+            mysql.query(update, [user_id], (err, result) => {
+              (err)? res.status(500).json(err) : res.status(200).json( {message: "Followed"} );
+            })
           });
         }
       });
@@ -215,7 +223,15 @@ exports.unfollow = (req, res) => {
     else { // user exists
       const followQuery = "DELETE FROM following WHERE follower_id=? AND followee_id=?";
       mysql.query(followQuery, [user_id, unfollowee_id], (err, result) => {
-        (err)? res.status(500).json(err) : res.status(200).json( {message: "Unfollowed"} );
+        if (err) {
+          res.status(500).json(err);
+          throw err;          
+        }
+        
+        const update = 'UPDATE users SET following_count=following_count-1 WHERE user_id=?';
+        mysql.query(update, [user_id], (err, result) => {
+          (err)? res.status(500).json(err) : res.status(200).json( {message: "Unfollowed"} );
+        })
       });
     }
   });
