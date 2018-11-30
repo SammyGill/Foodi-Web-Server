@@ -82,6 +82,10 @@ mysql.connect((err) => {
 app.listen(port, () => {
   console.log("Node server running on port " + port);
 })
+
+app.get("/hello", (req, res) => {
+  res.render("index");
+})
 /*
 const https = require('https');
 const fs = require('fs');
