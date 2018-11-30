@@ -33,7 +33,7 @@ exports.view = (req, res) => {
     else {
       let obj = body;
 
-      path = '/api/comments/all/' + req.params.post_id;
+      path = '/api/posts/' + req.params.post_id + '/comments';
       url = host + path;
 
       request.get({url: url, json: true}, (err, response, body) => {
