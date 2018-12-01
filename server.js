@@ -53,7 +53,11 @@ app.use('/api/restaurants', restaurantsRoute);
 app.use('/api/comments', commentsRoute);
 
 /* Routes for frontend using Handlebars*/
-app.get('/', (req, res) => { res.render('loginPage') } );
+
+// path / will go to either feed/home page if logged in or login page if not logged in
+app.get('/', (req, res, next) => { 
+  (!req.cookies.accessToken)? res.render('loginPage') : next();
+}, require('./frontend/controllers/postsController').feed );
 app.get('/discover', (req, res) => { res.render('discover') } );
 app.use('/posts', require('./frontend/routes/posts'));
 app.use('/restaurants', require('./frontend/routes/restaurants'));
@@ -63,14 +67,20 @@ app.use('/profiles', require('./frontend/routes/profiles'));
 app.post('/set-cookie', (req, res) => {
   const access_token = req.headers.authorization.split(" ")[1];
   console.log(access_token);
-  //res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
+  res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
   res.status(200).json({message: "Success"});
 });
 
-app.get('/testcookie', (req, res) => {
-  res.status(200).json({accessToken : req.cookies})
+// for testing cookie; delete later
+app.get('/test-cookie', (req, res) => {
+  res.status(200).json(req.cookies);
 })
-
+app.get('/delete-cookie', (req, res) => {
+  Object.keys(req.cookies).forEach( e => {
+    res.clearCookie(e);
+  })
+  res.status(200).end("Cookie deleted");
+})
 // Connect to AWS MySQL DB
 mysql.connect((err) => {
   if(err) throw err;

@@ -49,7 +49,7 @@ function signin(accessToken) {
           else {
             alert("Welcome back " + data.userData.first_name);
             // document.cookie = "username="+data.userData.username;
-            location.href = "/profiles/feed";
+            location.href = "/";
           }
         },
         error: (err) => {
@@ -80,7 +80,7 @@ $(document).ready( ()=> {
       success: (data) => {
         alert('username set');
         // document.cookie = "username="+username;
-        location.href = "/home";
+        location.href = "/";
       },
       error: (err) => {
         alert(JSON.stringify(err));

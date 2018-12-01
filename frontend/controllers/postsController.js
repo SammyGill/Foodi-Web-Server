@@ -58,7 +58,7 @@ exports.feed = (req, res) => {
   console.log(req.cookies.accessToken);
 
   const host = 'http://' + req.headers.host;
-  const path = "/api/profiles/feed"
+  const path = "/api/profiles/get/feed"
   
   request.get({
     url: host+path, 
