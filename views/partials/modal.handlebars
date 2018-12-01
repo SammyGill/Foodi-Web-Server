@@ -63,11 +63,13 @@
     $('#rating').text('rating: ' + rating);
     $('#likes').text('likes: ' + likes);
     $('#dislikes').text('dislikes: ' + dislikes);
+    $('body').css('overflow', 'hidden');
   }
 
   // close popup modal
   $('.close-modal').click(() =>
   {
     modal.attr('style', 'display:none');
+    $('body').css('overflow', 'auto');
   });
 </script>
