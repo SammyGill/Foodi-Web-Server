@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  
+
 }
 
 .custom-navbar {
@@ -41,10 +41,15 @@
   text-align: center;
 }
 
-
+/* Some general style code */
+.fix_gap {
+   margin: 0;
+ }
+ .white{
+   color: white;
+ }
 
  /* Style code for Nav Bar */
- 
  .nav_option {
   list-style-type: none;
   margin: 0;
@@ -55,7 +60,8 @@
 .nav_individual_place {
   float: right;
   display: inline;
-  margin-top: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
 }
 .nav_individual_option {
   display: block;
@@ -70,18 +76,20 @@
   float: right;
   display: inline;
   margin-right: 8px;
-  margin-top: 14px;
+  margin-top: 8px;
+  margin-bottom: 4px;
   border-radius: 15px;
   text-decoration: none;
-  border: 2px solid white;
+  border: 1.5px solid white;
   background-color: #d65452;
   position: relative;
 }
 .nav_individual_option_newpost {
   display: block;
-  font-family:"Comic Sans MS";
+  font-family:"Comic Sans MS", cursive, sans-serif;
   color: white;
-  padding: 8px 10px 8px 10px;
+  font-size: 18px;
+  padding: 8px 8px 8px 8px;
   text-align: center;
 }
 .nav_individual_option:hover, .nav_individual_option_newpost:hover, .foodi_header:hover {
@@ -93,7 +101,7 @@
 }
 .foodi_header {
   display: block;
-  font-family:"Gill Sans", sans-serif;
+  font-family:"Comic Sans MS", cursive, sans-serif;
   color: white;
   font-size: 28px;
   text-align: center;
@@ -153,13 +161,60 @@
   font-family: "Gill Sans", sans-serif;
   text-align: center;
 }
-.post_pics{
+.individual_post{
+  float: none;
+  background-color: #f08d8c;
+  width: 410px;
+  height: 440px;
+}
+.short_post_info{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.short_post_info_username{
+  float: left;
+  display: inline;
+  margin-left: 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.short_post_info_restaurant_and_dish{
+  float: right;
+  display: inline;
+  margin-right: 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.short_post_info_content {
+  display: block;
+  font-family:"Gill Sans", sans-serif;
+  color: white;
+  font-size: 15px;
+  text-decoration: none;
+}
+.short_post_info_content:hover{
+  color: #ccaf2f;
+  text-decoration: none;
+}
+.post_pics_profile{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 400px;
+  height: 400px;
+}
+.post_pics_feed{
   margin-left: auto;
   margin-right: auto;
   display: block;
   width: 500px;
   height: 500px;
 }
+
+
+
 .dish_and_likes_list {
   justify-content: space-around;
   box-sizing: border-box;
@@ -182,7 +237,6 @@
 .dish_name_element_content{
   display: block;
   font-family:"Gill Sans", sans-serif;
-
   font-size: 20px;
   text-align: center;
   text-decoration: none;
@@ -204,7 +258,3 @@
   background-color: #d65452;
   position: relative;
 }
-
-
-
-
