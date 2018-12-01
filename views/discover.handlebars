@@ -3,26 +3,119 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset='UTF-8'/>
-  <title>Create a Post</title>
-  <link rel='stylesheet' href=''/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Discover</title>
+  <!--   <link rel='stylesheet' type='text/css' href='./discover.css'/>   -->
 
   <style> 
-      .ui-autocomplete {
-        background-color: #fff;
-      }
+    .ui-autocomplete {
+      background-color: #fff;
+    }
+    /* General Style Code */
+    .fix_gap {
+      margin: 0;
+    }
+    .white{
+      color: white;
+    }
+    .before:hover{
+      class: fa fa-thumbs-up fa-lg white after;
+
+    }
+    /* Style code for Nav Bar */
+    .nav_option {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f08d8c;
+    }
+    .nav_individual_place {
+      float: right;
+      display: inline;
+      margin-top: 8px;
+    }
+    .nav_individual_option {
+      display: block;
+      font-family:"Comic Sans MS", cursive, sans-serif;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      padding: 14px 16px 14px 16px;
+      text-decoration: none;
+    }
+    .nav_individual_place_newpost {
+      float: right;
+      display: inline;
+      margin-right: 8px;
+      margin-top: 14px;
+      border-radius: 15px;
+      text-decoration: none;
+      border: 2px solid white;
+      background-color: #d65452;
+      position: relative;
+    }
+    .nav_individual_option_newpost {
+      display: block;
+      font-family:"Comic Sans MS";
+      color: white;
+      padding: 8px 10px 8px 10px;
+      text-align: center;
+    }
+    .nav_individual_option:hover, .nav_individual_option_newpost:hover, .foodi_header:hover {
+      color: #f5f3e9;
+      text-decoration: none;
+    }
+    .foodi_header_place {
+      float: left;
+    }
+    .foodi_header {
+      display: block;
+      font-family:"Gill Sans", sans-serif;
+      color: white;
+      font-size: 28px;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    /* Style for page content */
+    .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    .general {
+      text-align: center;
+    }
     </style>
 
 		</head>
 <body>
 
+  <!--  Navigation -->
+  <div>
+    <ul class = nav_option>
+      <li class = "foodi_header_place"> <a class = "foodi_header" href = "../"><b> FOODI! </b></a></li>
+      <li class = "nav_individual_place_newpost"><a class = "nav_individual_option_newpost" href="../createpost">New Post</a></li>
+      <li class = "nav_individual_place"><a class = "nav_individual_option" href="../discover">Discover</a></li>
+      <li class = "nav_individual_place"><a class = "nav_individual_option" href="../home">Home</a></li>
+    </ul>
+  </div>
 
-   <label> Enter username </label>
-   <input id="username">
-   <label> User ID </label>
-   <input id="uid" disabled="true">
+    <div class="general">
+   <input id="username" type="text" placeholder="Search restaurants...">
    
    <br>
    <br>
+
+   <button type="button" class="button">Click to view more...</button>
+   </div>
    
    <!--
    <label for="access_token"><b>Access token</b></label>
