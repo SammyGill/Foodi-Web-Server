@@ -1,0 +1,17 @@
+
+  <div class="card" style="width: 50%;margin-bottom:100px;">
+    <div class="card-header">
+        <a href="/profiles/{{username}}"> <p style="text-align:left;"> {{username}} </a>
+            <span style="float:right;">{{date}}</span>
+        </p>
+    </div>
+    <div class="card-body">
+      <a href="/posts/{{{post_id}}}">
+        <img class="card-img-top" src="/api/photos/{{picture}}" alt="Card image cap">
+      </a>
+    </div>
+
+    <div class="card-footer text-muted">
+      {{caption}}
+    </div>
+  </div>

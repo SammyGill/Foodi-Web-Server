@@ -67,14 +67,34 @@ exports.get_info = (req, res) => {
 
 }
 
+const getPostsQuery = 
+        `SELECT p.post_id, p.dish_name, p.author_id, p.caption, p.picture, p.picture_url, 
+                p.rating, p.date, p.likes, p.dislikes, p.likes - p.dislikes AS difference
+         FROM posts p, restaurants r 
+         WHERE p.restaurant_id=r.restaurant_id
+         ORDER BY difference DESC`;
 /** Function for getting all comments related to the post
  */
 exports.get_comments = (req, res) => {
   const post_id = req.params.post_id;
-  res.end("get comments");
+  const idx = (req.query.idx)? parseInt(req.query.idx) : 0;
+  const limit = (req.query.limit)? req.query.limit : 100000;
+  const query = 
+    `SELECT comments.comment_text, comments.date, users.username, users.profile_picture
+     FROM comments, users 
+     WHERE comments.user_id=users.user_id AND post_id = ? AND comment_id > ? 
+     ORDER BY date ASC LIMIT ` + limit;
+  mysql.query(query, [post_id, idx], (err, result) => {
+    console.log(result);
+    if(err) {
+      res.status(500).json(err).json(err);
+      throw err;
+    }
+    else { 
+      res.status(200).json(result);
+    }
+  });
 }
-
-
 /** Function to like a post
  */
 exports.like_post = (req, res) => {
@@ -94,7 +114,7 @@ exports.like_post = (req, res) => {
       }
 
       if (result.length == 1)  // user has disliked this post
-        res.status(409).json({"Conflict": "Cannot like because dislike exists"});
+        res.status(409).json({message: "Cannot like because you've already disliked this post"});
       else {
         mysql.query(findLikeDislike, [post_id, user_id, 1], (err, result) => {
           if (err){
@@ -139,7 +159,7 @@ exports.dislike_post = (req, res) => {
       }
 
       if (result.length == 1)  // user has liked this post
-        res.status(409).json({"Failure": "Cannot dislike because like exists"});
+        res.status(409).json({message: "Cannot dislike because you've already liked this post"});
       else {
         mysql.query(findLikeDislike, [post_id, user_id, -1], (err, result) => {
           if (err){
@@ -171,10 +191,11 @@ function like_dislike (query, post_id, user_id, value, count, message, res) {
     }
     else {
       const updateQuery = (value == 1)? updateLikeCount : updateDislikeCount; 
+      const updated_val = (value == 1)? {likes: count} : {dislikes: count};
       mysql.query(updateQuery, [count, post_id], (err) => {
         (err)?
           res.status(500).json({"Internal Service Error": err}) : 
-          res.status(200).json({"Success": message});
+          res.status(200).json( {OK: message, updated_val: updated_val} );
       });
     }
   });
@@ -190,15 +211,20 @@ exports.delete_post = (req, res) => {
       throw err;
     }
     else {
-      mysql.query(deletePost, [post_id, author_id], (err, result) => {
-        if (err) {
-          res.status(500).json( {"Internal Service Error": err} );
-         throw err;
-         }
-        else{
-          res.status(200).end("Post deleted");
-        }
-      });
+      if (post_id != author_id)
+        res.status(403).json({message: "Cannot delete post that is not yours"});
+      else {
+        mysql.query(deletePost, [post_id, author_id], (err, result) => {
+          if (err) {
+            res.status(500).json( {"Internal Service Error": err} );
+           throw err;
+           }
+          else{
+            res.status(200).end("Post deleted");
+          }
+        });
+      }
+      
     }
   });
 }

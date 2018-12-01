@@ -255,7 +255,12 @@
     </div>
 
 
+<<<<<<< HEAD
    <h1 id="text">Foodie Create a Post</h1>
+=======
+   <h1 id="text">Foodie Create a Post</h1> -->
+   <!-- form for creating post -->
+>>>>>>> 820ce49d7aab25647830f03a40ca19f8345abfd3
    <div class="form-container">
    <form id="data" method="post" enctype="multipart/form-data">
    </form>
@@ -361,6 +366,12 @@
     document.querySelector("#date").valueAsDate = new Date();
     $(document).ready( () => {
 
+      getCookie = (name) => {
+      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return match[2];
+      }
+      const access_token = getCookie('accessToken');
+
       $('#get_response').hide();
     
       $( "#dish_name" ).autocomplete({
@@ -380,7 +391,7 @@
         e.preventDefault();    
         var formData = new FormData(this);
 console.log(formData);      
-        const access_token = $('#access_token').val();
+        const access_token = access_token;
         $.ajax({
           url: '/api/posts/create',
           type: 'POST',

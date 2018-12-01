@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto navbar-right" >
+      <li class="nav-item active">
+        <a class="nav-link" href="#"><i class="fa fa-th-list" style="font-size:38px;"></i> <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="fa fa-search" style="font-size:38px;"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="fa fa-camera" style="font-size:38px;"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onClick="profilePage()"><i class="fa fa-user" style="font-size:38px;"></i></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+  const username = getCookie('username');
+  const accessToken = getCookie('accessToken');
+
+  function profilePage() {
+    location.href = "/profiles/" + username;
+  }
+</script>

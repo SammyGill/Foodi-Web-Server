@@ -12,7 +12,7 @@ router.get('/username-list', profiles_controller.username_list);
 router.get('/name-list', profiles_controller.name_list);
 
 //GET request for getting feed
-router.get('/feed', auth, posts_controller.get_feed);
+router.get('/get/feed', auth, posts_controller.get_feed);
 
 // GET request for getting all info related to the profile
 // can enter EITHER user id OR username

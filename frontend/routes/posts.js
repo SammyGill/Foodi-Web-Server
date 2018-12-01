@@ -7,5 +7,6 @@ router.get('/create', posts_controller.create);
 
 router.get('/:post_id', posts_controller.view);
 
+
 module.exports = router;
 

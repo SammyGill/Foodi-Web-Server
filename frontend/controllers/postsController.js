@@ -33,7 +33,7 @@ exports.view = (req, res) => {
     else {
       let obj = body;
 
-      path = '/api/comments/all/' + req.params.post_id;
+      path = '/api/posts/' + req.params.post_id + '/comments';
       url = host + path;
 
       request.get({url: url, json: true}, (err, response, body) => {
@@ -50,6 +50,31 @@ exports.view = (req, res) => {
         
       });
       
+    }
+  });
+}
+
+exports.feed = (req, res) => {
+  console.log(req.cookies.accessToken);
+
+  const host = 'http://' + req.headers.host;
+  const path = "/api/profiles/get/feed"
+  
+  request.get({
+    url: host+path, 
+    'json' : true,
+    headers: {
+    'content-type' : 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer ' + req.cookies.accessToken
+    },
+  }, (err, response, body) => {
+    // server error or client error
+    if (err || response.statusCode >= 400) {
+      res.render('error', getErrorMessage(err, response));
+    }
+
+    else {
+      res.render("homePage", {posts: body} );
     }
   });
 }
