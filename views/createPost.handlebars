@@ -25,17 +25,17 @@
         background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
         font-family: montserrat, arial, verdana;
       }
-       #post{
+       #data{
         width: 600px;
         margin: 50px auto;
         text-align: center;
         position: relative;
        }
 
-       #post fieldset{
+       #data fieldset{
         background: white;
         border: 0 none;
-        border-radius: 3px;
+        border-radius: 20px;
         box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
         padding: 20px 30px;
         box-sizing: border-box;
@@ -44,11 +44,11 @@
         position: relative;
        }
       
-      #post fieldset:not(:first-of-type){
+      #data fieldset:not(:first-of-type){
         display: none;
       }
 
-      #post input, #post textarea{
+      #data input, #data textarea{
         padding: 15px;
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -60,7 +60,7 @@
         font-size: 13px;
       }
 
-      #post .action-button{
+      #data .action-button{
         width: 100px;
         background: #27AE60;
         font-weight: bold;
@@ -72,7 +72,7 @@
         margin: 10px 5px;
       }
       
-      #post .action-button: hover, #post .action-button:focus {
+      #data .action-button: hover, #data .action-button:focus {
         box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
       }
 
@@ -138,7 +138,7 @@
         background: #27AE60;
         color: white;
       }
-/*
+
       .controls {
         background-color: #fff;
         border-radius: 2px;
@@ -169,7 +169,6 @@
       #map #infowindow-content {
         display: inline;
       }
-    */  
 
 
     </style>
@@ -178,15 +177,14 @@
 
 <body>
 
-  <form id="post">
+  <form id="data">  
     <!-- Progress Bar -->
     <ul id="progressbar">
       <li class="active">Food Picture</li>
-      <li>Your Info</li>
-  <!--    <li>Dish's Info</li> -->
+      <li>Dish's Info</li>
       <li>Your Review</li>
     </ul>
-    
+
     <!-- Field Sets -->
     <fieldset>
       <h2 class = "fs-title">Upload food picture</h2>
@@ -194,18 +192,10 @@
       <input type="file" id = "file" name="imgae">
       <input type ="button"  name="next" class="next action-button" value="Next"/>
     </fieldset>
-
-    <fieldset>
-      <h2 class="fs-title">Your token</h2>
-      <h3 class="fs-subtitle">This is step 2</h3>
-      <input type="text" id="access_token" name="access_token" placeholder="Enter access token" required/>
-      <input type="button" name="previous" class="previous action-button" value="Previous" />
-      <input type="button" name="next" class="next action-button" value="Next"/>
-    </fieldset>
-<!--
+    
     <fieldset>
       <h2 class="fs-title">Dish's Info</h2>
-      <h3 class="fs-subtitle">This is step 3</h3>
+      <h3 class="fs-subtitle">This is step 2</h3>
       <input type="text" id="pac-input" class="controls" placeholder="Enter a location"/>
         <div id="map"></div>
         <div id="infowindow-content">
@@ -213,15 +203,16 @@
           Place ID <span id="place-id"></span><br>
           <span id="place-address"></span>
         </div>
+      <br>
       <input id="restaurant_id" type="text" placeholder="Enter Restaurant ID" name="restaurant_id" required>
       <input id="dish_name" type="text" placeholder="Enter dish name" name="dish_name" required>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="button" name="next" class="next action-button" value="Next"/>
     </fieldset>
--->
+    
     <fieldset>
       <h2 class="fs-title">Your Review</h2>
-      <h3 class="fs-subtitle">This is step 4</h3>
+      <h3 class="fs-subtitle">This is step 3</h3>
       <input type="text" id="rating" placeholder="Enter rating" name="rating" required />
       <input type="text" id="caption" placeholder="Enter caption" name="caption" required/>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
@@ -244,48 +235,34 @@
 
 
 
-<!--
-<input id="pac-input" class="controls" type="text"
-        placeholder="Enter a location">
-    <div id="map"></div>
-    <div id="infowindow-content">
-      <span id="place-name"  class="title"></span><br>
-      Place ID <span id="place-id"></span><br>
-      <span id="place-address"></span>
-    </div>
 
-
-<<<<<<< HEAD
-   <h1 id="text">Foodie Create a Post</h1>
-=======
-   <h1 id="text">Foodie Create a Post</h1> -->
-   <!-- form for creating post -->
->>>>>>> 820ce49d7aab25647830f03a40ca19f8345abfd3
-   <div class="form-container">
-   <form id="data" method="post" enctype="multipart/form-data">
-   </form>
-  </div>
-
-   <input id="seed_one" type="text" name="seed_one"/>
-
-  <div id="get_response">
-    <p id="postid"> Post ID: </p>
-    <p id="id"> Restaurant ID: </p>
-    <p id="dish"> Dish name: </p>
-    <p id="author"> Author ID: </p>
-    <p id="post_caption"> Post caption: </p>
-    <p id="post_rating"> Post rating: </p>
-    <p id="post_date"> Post date: </p>
-    <p id="pic"> Dish image: </p>
-    <img id="image" src="">
-  </div>
-<!-- 1.11.4  -->
-<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.4/jquery-ui.min.js"></script> -->
 <script>
-  $.extend($.easing, window.easing);
+
+    $( "#dish_name" ).autocomplete({
+      source: (request, response) => {
+         $.ajax({
+          url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
+          type: 'GET',
+          dataType: 'json',
+          success: (data) => {
+            response(data.dish_names);
+          }
+        })
+      }
+    }); 
+
+  $(document).ready( () => {
+    getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+    const access_token = getCookie('accessToken');
+    console.log(access_token);  
+  });
+
   var current_fs, next_fs, previous_fs;
   var left, opacity, scale;
   var animating;
@@ -334,106 +311,38 @@
         current_fs.css({'left': left});
         previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
       },
-      duration: 800,
+      duration: 600,
       complete: function(){
         current_fs.hide();
         animating = false;
-      },
-      easing: 'easeIntOutBack'
+      }
     });
   });
     
   $(".submit").click(function(){
-    return false;
-  });
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-/*    
-    document.querySelector("#date").valueAsDate = new Date();
-    $(document).ready( () => {
-
-      getCookie = (name) => {
-      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        if (match) return match[2];
-      }
-      const access_token = getCookie('accessToken');
-
-      $('#get_response').hide();
-    
-      $( "#dish_name" ).autocomplete({
-        source: (request, response) => {
-          $.ajax({
-            url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
-            type: 'GET',
-            dataType: 'json',
-            success: (data) => {
-              response(data.dish_names);
-            }
-          })
-        }
+      var formData = new FormData(this);
+      console.log(formData);      
+      const access_token = access_token;
+      $.ajax({
+        url: '/api/posts/create',
+        type: 'POST',
+        data: formData,
+        beforeSend: function (xhr) {   //Include the bearer token in header
+          xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+        },
+        success: (data) => {},
+        error: (err) => {
+          alert(JSON.stringify(err));
+        },
+        cache: false,
+        contentType: false,
+        processData: false
       });
+  });
+        
+ 
 
-      $("form#data").submit(function(e) {
-        e.preventDefault();    
-        var formData = new FormData(this);
-console.log(formData);      
-        const access_token = access_token;
-        $.ajax({
-          url: '/api/posts/create',
-          type: 'POST',
-          data: formData,
-          beforeSend: function (xhr) {   //Include the bearer token in header
-            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
-          },
-          success: (data) => {
-            $('#text').text("Post created!");
-            $('#data').hide();
-            const picture = data.picture;
-            const post_id = data.post_id;
-            
-            $.ajax({
-              url: '/api/posts/'+post_id,
-              type: 'GET',
-              datetype: 'json',
-              success: (data) => {
-                $('#get_response').show();
-                $('#postid').append(data.post_id);
-                $('#id').append(data.restaurant_id);
-                $('#dish').append(data.dish_name);
-                $('#author').append(data.author_id);
-                $('#post_caption').append(data.caption);
-                $('#post_rating').append(data.rating);
-                $('#post_date').append(data.date);
-                $('#image').attr('src', '/api/photos/' + data.picture);
-              }
-            });
-
-          },
-          error: (err) => {
-            alert(JSON.stringify(err));
-          },
-          cache: false,
-          contentType: false,
-          processData: false
-        });
-      });    
-    })
-    
-  */
+  
       // This sample uses the Place Autocomplete widget to allow the user to search
       // for and select a place. The sample then displays an info window containing
       // the place ID and other information about the place that the user has
@@ -442,7 +351,6 @@ console.log(formData);
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-/*
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
@@ -496,7 +404,7 @@ console.log(formData);
               place.formatted_address;
           infowindow.open(map, marker);
         });
-      }*/
+      }
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
