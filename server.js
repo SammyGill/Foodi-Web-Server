@@ -62,12 +62,13 @@ app.use('/profiles', require('./frontend/routes/profiles'));
 // set access token from FB as a cookie
 app.post('/set-cookie', (req, res) => {
   const access_token = req.headers.authorization.split(" ")[1];
-  res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
+  console.log(access_token);
+  //res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
   res.status(200).json({message: "Success"});
 });
 
 app.get('/testcookie', (req, res) => {
-  res.status(200).json({accessToken : req.cookies.accessToken})
+  res.status(200).json({accessToken : req.cookies})
 })
 
 // Connect to AWS MySQL DB

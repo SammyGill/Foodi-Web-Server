@@ -42,12 +42,14 @@ function signin(accessToken) {
           $('#pic').attr('src', data.userData.picture.data.url);
           console.log(data.userData);
           if (xhr.status == 201) {
+            // document.cookie = "username="+data.userData.username;
             alert("Hi " + data.userData.first_name +"! Your current username is " + data.userData.username + ". You can change it below");
             $('#username_div').show();
           }
           else {
             alert("Welcome back " + data.userData.first_name);
-            //location.href = "/home";
+            // document.cookie = "username="+data.userData.username;
+            location.href = "/profiles/feed";
           }
         },
         error: (err) => {
@@ -77,6 +79,7 @@ $(document).ready( ()=> {
       },
       success: (data) => {
         alert('username set');
+        // document.cookie = "username="+username;
         location.href = "/home";
       },
       error: (err) => {

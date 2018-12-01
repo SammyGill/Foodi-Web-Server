@@ -15,8 +15,21 @@
         <a class="nav-link" href="#"><i class="fa fa-camera" style="font-size:38px;"></i></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><i class="fa fa-user" style="font-size:38px;"></i></a>
+        <a class="nav-link" onClick="profilePage()"><i class="fa fa-user" style="font-size:38px;"></i></a>
       </li>
     </ul>
   </div>
 </nav>
+
+<script>
+  getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+  const username = getCookie('username');
+  const accessToken = getCookie('accessToken');
+
+  function profilePage() {
+    location.href = "/profiles/" + username;
+  }
+</script>

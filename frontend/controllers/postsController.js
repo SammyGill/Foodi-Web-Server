@@ -56,13 +56,10 @@ exports.view = (req, res) => {
 
 exports.feed = (req, res) => {
   console.log(req.cookies.accessToken);
-  console.log(req.userData);
+
   const host = 'http://' + req.headers.host;
   const path = "/api/profiles/feed"
-  let posts = [];
-  console.log(host+path);
-  console.log("http://localhost:3000/api/profiles/feed")
-  console.log(req.cookies.accessToken);
+  
   request.get({
     url: host+path, 
     'json' : true,
