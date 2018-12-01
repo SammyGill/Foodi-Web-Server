@@ -12,7 +12,13 @@
 
       .ui-autocomplete {
         background-color: #fff;
+        width: 1px;
       }
+
+      .ui-helper-hidden-accessible {
+        display:none;
+      }
+
       #map {
         height: 400px;
         width: 400px;
@@ -101,7 +107,7 @@
         color: white;
         text-transform: uppercase;
         font-size: 9px;
-        width: 33.33%;
+        width: 33.333%;
         float: left;
         position: relative;
       }
@@ -200,12 +206,12 @@
         <div id="map"></div>
         <div id="infowindow-content">
           <span id="place-name" class="title"></span><br>
-          Place ID <span id="place-id"></span><br>
+          <!--Place ID <span id="place-id"></span><br>-->
           <span id="place-address"></span>
         </div>
       <br>
-      <input id="restaurant_id" type="text" placeholder="Enter Restaurant ID" name="restaurant_id" required>
-      <input id="dish_name" type="text" placeholder="Enter dish name" name="dish_name" required>
+      <input id="restaurant_id" type="text" autocomplete="off" placeholder="Enter Restaurant ID" name="restaurant_id" style="display:none">
+      <input id="dish_name" type="text" autocomplete="off" placeholder="Enter dish name" name="dish_name" style="display:none" required>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="button" name="next" class="next action-button" value="Next"/>
     </fieldset>
@@ -213,8 +219,8 @@
     <fieldset>
       <h2 class="fs-title">Your Review</h2>
       <h3 class="fs-subtitle">This is step 3</h3>
-      <input type="text" id="rating" placeholder="Enter rating" name="rating" required />
-      <input type="text" id="caption" placeholder="Enter caption" name="caption" required/>
+      <input type="text" id="rating" autocomplete="off" placeholder="Enter rating" name="rating" required />
+      <input type="text" id="caption" autocomplete="off" placeholder="Enter caption" name="caption" required/>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="submit" name="submit" class="submit action-button" value="Submit"/>
 <!--      <input type="date" id="date" placeholder="Enter date" name="date" />-->
@@ -237,22 +243,11 @@
 
 
 <script src="/js/jquery-3.3.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.4/jquery-ui.min.js"></script> -->
 <script>
 
-    $( "#dish_name" ).autocomplete({
-      source: (request, response) => {
-         $.ajax({
-          url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
-          type: 'GET',
-          dataType: 'json',
-          success: (data) => {
-            response(data.dish_names);
-          }
-        })
-      }
-    }); 
+
 
   $(document).ready( () => {
     getCookie = (name) => {
@@ -260,12 +255,14 @@
       if (match) return match[2];
     }
     const access_token = getCookie('accessToken');
-    console.log(access_token);  
-  });
+    
+
 
   var current_fs, next_fs, previous_fs;
   var left, opacity, scale;
   var animating;
+
+
 
   $(".next").click(function(){
     if(animating) return false;
@@ -319,6 +316,19 @@
     });
   });
     
+        $( "#dish_name" ).autocomplete({
+      source: (request, response) => {
+         $.ajax({
+          url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
+          type: 'GET',
+          dataType: 'json',
+          success: (data) => {
+            response(data.dish_names);
+          }
+        })
+      }
+    });
+
   $(".submit").click(function(){
       var formData = new FormData(this);
       console.log(formData);      
@@ -340,17 +350,7 @@
       });
   });
         
- 
-
-  
-      // This sample uses the Place Autocomplete widget to allow the user to search
-      // for and select a place. The sample then displays an info window containing
-      // the place ID and other information about the place that the user has
-      // selected.
-
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+});
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
@@ -399,12 +399,20 @@
           marker.setVisible(true);
 
           infowindowContent.children['place-name'].textContent = place.name;
-          infowindowContent.children['place-id'].textContent = place.place_id;
+//infowindowContent.children['place-id'].textContent = place.place_id;
           infowindowContent.children['place-address'].textContent =
               place.formatted_address;
           infowindow.open(map, marker);
+          $("#dish_name").show();
         });
       }
+
+
+
+
+
+
+  
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
