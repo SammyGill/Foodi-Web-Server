@@ -15,6 +15,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const exphbs  = require('express-handlebars');
 const cookieParser = require('cookie-parser');
+const request = require('request');
 
 const mysql = require('mysql').createConnection({
   host: process.env.DB_HOST,
@@ -40,17 +41,11 @@ app.use(express.static('static'));
 app.use("/api/photos", express.static("photos"));
 
 /* Application routes management */
-const accountsRoute = require('./rest_api/routes/accounts');
-const postsRoute    = require('./rest_api/routes/posts');
-const profilesRoute = require('./rest_api/routes/profiles');
-const restaurantsRoute = require('./rest_api/routes/restaurants');
-const commentsRoute = require('./rest_api/routes/comments');
-
-app.use('/api/accounts', accountsRoute);
-app.use('/api/posts', postsRoute);
-app.use('/api/profiles', profilesRoute);
-app.use('/api/restaurants', restaurantsRoute);
-app.use('/api/comments', commentsRoute);
+app.use('/api/accounts',    require('./rest_api/routes/accounts'));
+app.use('/api/posts',       require('./rest_api/routes/posts'));
+app.use('/api/profiles',    require('./rest_api/routes/profiles'));
+app.use('/api/restaurants', require('./rest_api/routes/restaurants'));
+app.use('/api/comments',    require('./rest_api/routes/comments'));
 
 /* Routes for frontend using Handlebars*/
 
@@ -59,11 +54,22 @@ app.get('/', (req, res, next) => {
   (!req.cookies.accessToken)? res.render('loginPage') : next();
 }, require('./frontend/controllers/postsController').feed );
 
-// set access token from FB as a cookie
+// get long lived token from FB and set that as cookie
 app.post('/set-cookie', (req, res) => {
   const access_token = req.headers.authorization.split(" ")[1];
-  res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
-  res.status(200).json({message: "Success"});
+  let url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&';
+  url += 'client_id=286717961952006&';
+  url += 'client_secret=3fef44d9c36a378aae14056d859ac48b&';
+  url += 'fb_exchange_token=' + access_token;
+  request.get({url: url, json:true}, (err, response, body) => {
+    if (err || response.statusCode >= 400) {
+      res.status(response.statusCode).end(response.statusMessage);
+    }
+    else {
+      res.cookie("accessToken" , body.access_token, {expire : new Date() + 9999});
+      res.status(200).json({message: "Success"});
+    }
+  });
 });
 
 // for logging out; deletes all cookies and redirect back to login page
