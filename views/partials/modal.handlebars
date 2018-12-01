@@ -1,0 +1,30 @@
+<!-- Page for deleting modal -->
+<link rel="stylesheet" href="/css/modal.css">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close close-modal">&times;</span>
+   
+    <header class="modal-header">
+      <h1 id="modal-header"> Info </h1>
+      <hr>
+      <br>
+    </header>
+    
+    <div class="modal-body"> Are you sure you want to delete {{firstName}} {{lastName}}? </div>
+    <p id="profile_id-modal" style="display:hidden"></p>
+    
+    <footer class="modal-footer">
+      <br>
+      <hr>
+      <br>
+      <a class="modal-btn modal-cancel-btn close-modal">Close</a>
+      <a class="modal-btn modal-confirm-btn" id="delete" >Delete Profile</a>
+    </footer>
+
+  </div>
+
+</div>

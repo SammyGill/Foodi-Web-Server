@@ -58,29 +58,30 @@ app.use('/api/comments', commentsRoute);
 app.get('/', (req, res, next) => { 
   (!req.cookies.accessToken)? res.render('loginPage') : next();
 }, require('./frontend/controllers/postsController').feed );
+
+// set access token from FB as a cookie
+app.post('/set-cookie', (req, res) => {
+  const access_token = req.headers.authorization.split(" ")[1];
+  res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
+  res.status(200).json({message: "Success"});
+});
+
+// for logging out; deletes all cookies and redirect back to login page
+app.get('/logout', (req, res) => {
+  Object.keys(req.cookies).forEach( e => res.clearCookie(e) );
+  res.redirect('/');
+});
+
 app.get('/discover', (req, res) => { res.render('discover') } );
 app.use('/posts', require('./frontend/routes/posts'));
 app.use('/restaurants', require('./frontend/routes/restaurants'));
 app.use('/profiles', require('./frontend/routes/profiles'));
 
-// set access token from FB as a cookie
-app.post('/set-cookie', (req, res) => {
-  const access_token = req.headers.authorization.split(" ")[1];
-  console.log(access_token);
-  res.cookie("accessToken" , access_token, {expire : new Date() + 9999});
-  res.status(200).json({message: "Success"});
-});
-
 // for testing cookie; delete later
 app.get('/test-cookie', (req, res) => {
   res.status(200).json(req.cookies);
 })
-app.get('/delete-cookie', (req, res) => {
-  Object.keys(req.cookies).forEach( e => {
-    res.clearCookie(e);
-  })
-  res.status(200).end("Cookie deleted");
-})
+
 // Connect to AWS MySQL DB
 mysql.connect((err) => {
   if(err) throw err;

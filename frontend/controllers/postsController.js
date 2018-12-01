@@ -72,7 +72,6 @@ exports.feed = (req, res) => {
     if (err || response.statusCode >= 400) {
       res.render('error', getErrorMessage(err, response));
     }
-
     else {
       res.render("homePage", {posts: body} );
     }
