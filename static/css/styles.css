@@ -1,3 +1,30 @@
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  
+}
+
+.custom-navbar {
+  background-color:#f08d8c;
+}
+
+.custom-nav-link {
+  padding-right:10px;
+  font-family:"Comic Sans MS", cursive, sans-serif;
+}
+
+.main {
+  padding: 16px;
+}
+
+.sticky + .main {
+  padding-top: 100px;
+}
+
+#feed-body {
+  background-color: #fff7d4;
+}
 .bg {
   background-image: url("../images/login_bg.jpeg");
 
@@ -14,8 +41,168 @@
   text-align: center;
 }
 
-body {
-  background-color: ;
+
+
+ /* Style code for Nav Bar */
+ 
+ .nav_option {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f08d8c;
+}
+.nav_individual_place {
+  float: right;
+  display: inline;
+  margin-top: 8px;
+}
+.nav_individual_option {
+  display: block;
+  font-family:"Comic Sans MS", cursive, sans-serif;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  padding: 14px 16px 14px 16px;
+  text-decoration: none;
+}
+.nav_individual_place_newpost {
+  float: right;
+  display: inline;
+  margin-right: 8px;
+  margin-top: 14px;
+  border-radius: 15px;
+  text-decoration: none;
+  border: 2px solid white;
+  background-color: #d65452;
+  position: relative;
+}
+.nav_individual_option_newpost {
+  display: block;
+  font-family:"Comic Sans MS";
+  color: white;
+  padding: 8px 10px 8px 10px;
+  text-align: center;
+}
+.nav_individual_option:hover, .nav_individual_option_newpost:hover, .foodi_header:hover {
+  color: #f5f3e9;
+  text-decoration: none;
+}
+.foodi_header_place {
+  float: left;
+}
+.foodi_header {
+  display: block;
+  font-family:"Gill Sans", sans-serif;
+  color: white;
+  font-size: 28px;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Style code for Basic Info section */
+
+.yellow_bg {
+  background-color: #fff7d4;
+  padding: 0xp 0xp 0xp 0xp;
+  height: 600px;
+}
+.profile_picture{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+.username {
+  padding-top: 10px;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+.basic_info {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+.basic_info_item{
+  float: none;
+  display: inline-block;
+  font-family: "Gill Sans", sans-serif;
+  font-size: 18px;
+  margin-top: 10px;
+  margin-left: 3em;
+  margin-right: 3em;
+  overflow: hidden;
+}
+.basic_info_content {
+  color: #ccaf2f;
+}
+.basic_info_content:hover{
+  color: #ccaf2f;
+}
+
+/* style for post section */
+.orange_bg {
+  background-color: #f5beaa;
+}
+.title_font {
+  font-family: "Gill Sans", sans-serif;
+  text-align: center;
+}
+.post_pics{
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 500px;
+  height: 500px;
+}
+.dish_and_likes_list {
+  justify-content: space-around;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.dish_and_likes_element {
+  float:none;
+  font-family: "Gill Sans", sans-serif;
+  font-size: 18px;
+  margin-top: 0;
+  overflow: hidden;
+  text-align:center;
+}
+.dish_name_element {
+  padding-top: 10px;
+  color: #fcfaf8;
+}
+.dish_name_element_content{
+  display: block;
+  font-family:"Gill Sans", sans-serif;
+
+  font-size: 20px;
+  text-align: center;
+  text-decoration: none;
+}
+.like_and_unlike_element{
+  float: none;
+  display: inline-block;
+  font-family: "Gill Sans", sans-serif;
+  font-size: 18px;
+  margin-top: 10px;
+  margin-left: 3em;
+  margin-right: 3em;
+  overflow: hidden;
+}
+.like_button{
+  float: right;
+  display: inline;
+  text-decoration: none;
+  background-color: #d65452;
+  position: relative;
 }
 
 
