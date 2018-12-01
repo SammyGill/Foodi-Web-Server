@@ -1,11 +1,261 @@
 <!DOCTYPE html>
-  <head>
-  </head>
-  <body>
+<head>
+  <!-- <link href="profile.css" type="text/css" rel="stylesheet"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>{{username}}'s Profile</title>
+  <style>
+  /* General Style Code */
+  .fix_gap {
+    margin: 0;
+  }
+  .white{
+    color: white;
+  }
+  .before:hover{
+    class: fa fa-thumbs-up fa-lg white after;
 
-    <p> username: {{username}} </p>
-    <p> full name: {{name}} </p>
-    <p> user_id: {{user_id}} </p>
-    <img src="{{picture}}">
-  </body>
+  }
+  /* Style code for Nav Bar */
+  .nav_option {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f08d8c;
+  }
+  .nav_individual_place {
+    float: right;
+    display: inline;
+    margin-top: 8px;
+  }
+  .nav_individual_option {
+    display: block;
+    font-family:"Comic Sans MS", cursive, sans-serif;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    padding: 14px 16px 14px 16px;
+    text-decoration: none;
+  }
+  .nav_individual_place_newpost {
+    float: right;
+    display: inline;
+    margin-right: 8px;
+    margin-top: 14px;
+    border-radius: 15px;
+    text-decoration: none;
+    border: 2px solid white;
+    background-color: #d65452;
+    position: relative;
+  }
+  .nav_individual_option_newpost {
+    display: block;
+    font-family:"Comic Sans MS";
+    color: white;
+    padding: 8px 10px 8px 10px;
+    text-align: center;
+  }
+  .nav_individual_option:hover, .nav_individual_option_newpost:hover, .foodi_header:hover {
+    color: #f5f3e9;
+    text-decoration: none;
+  }
+  .foodi_header_place {
+    float: left;
+  }
+  .foodi_header {
+    display: block;
+    font-family:"Gill Sans", sans-serif;
+    color: white;
+    font-size: 28px;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  /* Style code for Basic Info section */
+
+  .yellow_bg {
+    background-color: #fff7d4;
+    padding: 0xp 0xp 0xp 0xp;
+    height: 600px;
+  }
+  .profile_picture{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+  }
+  .username {
+    padding-top: 10px;
+    text-align: center;
+    font-family: "Gill Sans", sans-serif;
+  }
+  .basic_info {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    overflow: hidden;
+  }
+  .basic_info_item{
+    float: none;
+    display: inline-block;
+    font-family: "Gill Sans", sans-serif;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-left: 3em;
+    margin-right: 3em;
+    overflow: hidden;
+  }
+  .basic_info_content {
+    color: #ccaf2f;
+  }
+  .basic_info_content:hover{
+    color: #ccaf2f;
+  }
+
+  /* style for post section */
+  .orange_bg {
+    background-color: #f5beaa;
+  }
+  .title_font {
+    font-family: "Gill Sans", sans-serif;
+    text-align: center;
+  }
+  .post_pics{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 500px;
+    height: 500px;
+  }
+  .dish_and_likes_list {
+    justify-content: space-around;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .dish_and_likes_element {
+    float:none;
+    font-family: "Gill Sans", sans-serif;
+    font-size: 18px;
+    margin-top: 0;
+    overflow: hidden;
+    text-align:center;
+  }
+  .dish_name_element {
+    padding-top: 10px;
+    color: #fcfaf8;
+  }
+  .dish_name_element_content{
+    display: block;
+    font-family:"Gill Sans", sans-serif;
+
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+  }
+  .like_and_unlike_element{
+    float: none;
+    display: inline-block;
+    font-family: "Gill Sans", sans-serif;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-left: 3em;
+    margin-right: 3em;
+    overflow: hidden;
+  }
+  .like_button{
+    float: right;
+    display: inline;
+    text-decoration: none;
+    background-color: #d65452;
+    position: relative;
+  }
+  </style>
+</head>
+<body>
+
+  <!--  Navigation -->
+  <div>
+    <ul class = nav_option>
+      <li class = "foodi_header_place"> <a class = "foodi_header" href = "../"><b> FOODI! </b></a></li>
+      <li class = "nav_individual_place_newpost"><a class = "nav_individual_option_newpost" href="../createpost">New Post</a></li>
+      <li class = "nav_individual_place"><a class = "nav_individual_option" href="../discover">Discover</a></li>
+      <li class = "nav_individual_place"><a class = "nav_individual_option" href="../home">Home</a></li>
+    </ul>
+  </div>
+
+  <!-- Basic Info -->
+  <section class="jumbotron yellow_bg fix_gap">
+    <div>
+      <img class = "profile_picture" src="{{picture}}">
+      <h1 class = "username"><b>{{username}}</b></h1>
+      <h5 class="username">{{name}} | {{user_id}}</h5>
+      <hr width = "600px">
+      <ul class = "basic_info">
+        <li class = "basic_info_item">
+          <a  class = "basic_info_content" href="../following">following</a> <br>
+          <a class = "basic_info_content" href = "../following">5</a>
+        </li>
+        <li class = "basic_info_item">
+          <a class = "basic_info_content" href="../follower">follower</a> <br>
+          <a class = "basic_info_content" href = "../following">5</a>
+        </li>
+        <li class = "basic_info_item">
+          <a  class = "basic_info_content" href="#post">posts</a> <br>
+          <a class = "basic_info_content" href = "#post">5</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Posts Section -->
+  <section class="fix_gap jumbotron orange_bg" id = "post">
+    <div class = "fix_gap post_section">
+      <h2 class = "title_font"> POSTS </h2>
+      <hr width = "300px">
+      {{#each posts}}
+      <div class = "fix_gap individual_post">
+        <img class = "post_pics" src = "{{this.picture_url}}">
+        <div class = "fix_gap s_div">
+          <ul class = "dish_and_likes_list">
+            <li class = "dish_and_likes_element dish_name_element">
+              <a class = "dish_name_element_content">{{this.dish_name}}  | {{this.date}} | {{this.rating}} likes</a>
+            </li> <br>
+            <li class = "dish_and_likes_element like_and_unlike_element">
+              <i class="fa fa-thumbs-o-up fa-lg white before" aria-hidden="true"></i>
+              <!-- <i class="fa fa-thumbs-up fa-lg white after" aria-hidden="true"></i> -->
+            </li>
+            <li class = "dish_and_likes_element like_and_unlike_element">
+            <i class="fa fa-thumbs-o-down fa-lg white before" aria-hidden="true"></i>
+          </li>
+
+          </ul>
+        </div>
+
+        <li>postID: {{this.post_id}}</li>
+        <li>Dish Name: {{this.dish_name}}</li>
+        <li>Caption: {{this.caption}}</li>
+        <li>Rating: {{this.rating}}</li>
+        <li>Date :{{this.date}}</li>
+        <li>Likes: {{this.likes}}</li>
+        <li>Dislikes: {{this.dislikes}}</li>
+        <li>RestaurantId: {{this.restaurant_id}}</li>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+<!-- Copyright -->
+  <div class="copyright py-4 text-center text-white">
+    <div class="container">
+      <small>Copyright &copy; Your Website 2018</small>
+    </div>
+  </div>
+</body>
 <html>
