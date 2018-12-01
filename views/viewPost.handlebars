@@ -12,36 +12,10 @@ this one is up and running.-->
 <!--- For efficiency there is no CSS yet. This is so we have one CSS sheet
 made collaboratively-->
 
-    <h1 id="text">View Post</h1>
-<<<<<<< HEAD
-    <label> Enter post ID </label>
-    <input id="post_id" type="text">
-    <button id="btn"> Find post </button>
-    <br>
-    <br>
-    <br>
-    
-    <div id="like_dislike_delete" style="display:none">
-      <label> Enter access token </label>
-      <input id="access_token">
-      <br>
-      <br>
-      <button id="like"> Like </button>
-      <button id="dislike"> Dislike </button>
-      <br>
-      <br>
-      <button id="delete"> Delete post </button>
-      <br>
-      <br>
-      <input id="comment_text">
-      <button id="comment">Add comment! </button>
-    </div>
-=======
+    {{>modal}}
+    <div id="deleteProfile" onclick="showModal('{{id}}')" class="a-box flex-center">Modal</div>
+       <h1 id="text">View Post</h1>
 
->>>>>>> 820ce49d7aab25647830f03a40ca19f8345abfd3
-    
-    <br>
-    <br>
     
     <button id="like" onClick="like({{post_id}})"> Like </button>
     <button id="dislike" onClick="dislike({{post_id}})"> Dislike </button>
@@ -72,13 +46,28 @@ made collaboratively-->
         <br><br>
       {{/each}}
     </div>
-   
 
 
 
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/viewPost.js"></script>
   <script>
+    // modal stuff
+    const modal = $('#myModal');
+
+    function showModal(id)
+    {
+      modal.attr('style', 'display:block');
+      $('#modal-header').text('Delete Profile?');
+      $('#profile_id-modal').text(id);
+      $('#profile_id-modal').hide();
+    }
+
+    // close popup modal
+    $('.close-modal').click(() =>
+    {
+      modal.attr('style', 'display:none');
+  });
   </script>
 
   
