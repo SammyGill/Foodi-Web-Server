@@ -1,65 +1,3 @@
-<!DOCTYPE html>
-<html lang='eg'>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset='UTF-8'/>
-  <title>Create a Post</title>
-  <link rel="stylesheet" href="/css/createPost.css">
-</head>
-
-<body>
-
-  <form id="data">  
-    
-    <!-- Progress Bar -->
-    <ul id="progressbar">
-      <li class="active">Food Picture</li>
-      <li>Dish's Info</li>
-      <li>Your Review</li>
-    </ul>
-
-    <!-- Field Sets -->
-    <fieldset>
-      <h2 class = "fs-title">Upload food picture</h2>
-      <h3 class="fs-subtitle">This is step 1</h3>
-      <input type="file" id = "file" name="imgae">
-      <input type ="button"  name="next" class="next action-button" value="Next"/>
-    </fieldset>
-    
-    <fieldset>
-      <h2 class="fs-title">Dish's Info</h2>
-      <h3 class="fs-subtitle">This is step 2</h3>
-      <input type="text" id="pac-input" class="controls" placeholder="Enter a location"/>
-        <div id="map"></div>
-        <div id="infowindow-content">
-          <span id="place-name" class="title"></span><br>
-          <!--Place ID <span id="place-id"></span><br>-->
-          <span id="place-address"></span>
-        </div>
-      <br>
-      <input id="restaurant_id" type="text" autocomplete="off" placeholder="Enter Restaurant ID" name="restaurant_id" style="display:none">
-      <input id="dish_name" type="text" autocomplete="off" placeholder="Enter dish name" name="dish_name" style="display:none" required>
-      <input type="button" name="previous" class="previous action-button" value="Previous" />
-      <input type="button" name="next" class="next action-button" value="Next"/>
-    </fieldset>
-    
-    <fieldset>
-      <h2 class="fs-title">Your Review</h2>
-      <h3 class="fs-subtitle">This is step 3</h3>
-      <input type="text" id="rating" autocomplete="off" placeholder="Enter rating" name="rating" required />
-      <input type="text" id="caption" autocomplete="off" placeholder="Enter caption" name="caption" required/>
-      <input type="button" name="previous" class="previous action-button" value="Previous" />
-      <input type="submit" name="submit" class="submit action-button" value="Submit"/>
-    </fieldset>
-
-  </form>
-
-<script src="/js/jquery-3.3.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.4/jquery-ui.min.js"></script> -->
-<script>
-
-
 
   $(document).ready( () => {
     getCookie = (name) => {
@@ -177,20 +115,6 @@
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
         var infowindow = new google.maps.InfoWindow();
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            map.setCenter(pos);
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-        }
         var infowindowContent = document.getElementById('infowindow-content');
         infowindow.setContent(infowindowContent);
         var marker = new google.maps.Marker({
@@ -232,18 +156,3 @@
           $("#dish_name").show();
         });
       }
-
-
-
-
-
-
-  
-
-</script>
-<script src="/js/createPost.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
-        async defer></script>
-  
-</body>
-</html>
