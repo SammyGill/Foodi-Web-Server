@@ -7,6 +7,9 @@
   <link rel='stylesheet' href=''/>
 
   <style> 
+      @import url('https://fonts.googleapis.com/css?family=Montserrat');
+      
+
       .ui-autocomplete {
         background-color: #fff;
       }
@@ -19,7 +22,123 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
+        font-family: montserrat, arial, verdana;
       }
+       #post{
+        width: 600px;
+        margin: 50px auto;
+        text-align: center;
+        position: relative;
+       }
+
+       #post fieldset{
+        background: white;
+        border: 0 none;
+        border-radius: 3px;
+        box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+        padding: 20px 30px;
+        box-sizing: border-box;
+        width: 80%;
+        margin: 0 10%;
+        position: relative;
+       }
+      
+      #post fieldset:not(:first-of-type){
+        display: none;
+      }
+
+      #post input, #post textarea{
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: montserrat;
+        color: #2C3E50;
+        font-size: 13px;
+      }
+
+      #post .action-button{
+        width: 100px;
+        background: #27AE60;
+        font-weight: bold;
+        color: white;
+        border: 0 none;
+        border-radius: 1px;
+        cursor: pointer;
+        padding: 10px 5px;
+        margin: 10px 5px;
+      }
+      
+      #post .action-button: hover, #post .action-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+      }
+
+      .fs-title{
+        font-size: 15px;
+        text-transform: uppercase;
+        color: #2C3E50;
+        margin-bottom: 10px;
+      }
+      
+      .fs-subtitle {
+        font-weight: normal;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      #progressbar {
+        margin-bottom: 30px;
+        overflow: hidden;
+        counter-reset: step;
+      }
+
+      #progressbar li{
+        list-style-type: none;
+        color: white;
+        text-transform: uppercase;
+        font-size: 9px;
+        width: 33.33%;
+        float: left;
+        position: relative;
+      }
+
+      #progressbar li:before {
+        content: counter(step);
+        counter-increment: step;
+        width: 20px;
+        line-height: 20px;
+        display: block;
+        font-size: 10px;
+        color: #333;
+        background: white;
+        border-radius: 3px;
+        margin: 0 auto 5px auto;
+      }
+      
+      #progressbar li:after{
+        content: '';
+        width: 100%;
+        height: 3px;
+        background: white;
+        position: absolute;
+        left: -50%;
+        top: 9px;
+        z-index: -1;
+      }
+      
+      #progressbar li:first-child:after{
+        content: none;
+      }
+      
+      #progressbar li.active:before, #progressbar li.active:after{
+        background: #27AE60;
+        color: white;
+      }
+/*
       .controls {
         background-color: #fff;
         border-radius: 2px;
@@ -50,6 +169,8 @@
       #map #infowindow-content {
         display: inline;
       }
+    */  
+
 
     </style>
 
@@ -57,12 +178,12 @@
 
 <body>
 
-  <form id="data">
+  <form id="post">
     <!-- Progress Bar -->
     <ul id="progressbar">
       <li class="active">Food Picture</li>
       <li>Your Info</li>
-      <li>Dish's Info</li>
+  <!--    <li>Dish's Info</li> -->
       <li>Your Review</li>
     </ul>
     
@@ -77,11 +198,11 @@
     <fieldset>
       <h2 class="fs-title">Your token</h2>
       <h3 class="fs-subtitle">This is step 2</h3>
-      <input type="text" id="access_token" placeholder="Enter access token" required/>
+      <input type="text" id="access_token" name="access_token" placeholder="Enter access token" required/>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="button" name="next" class="next action-button" value="Next"/>
     </fieldset>
-
+<!--
     <fieldset>
       <h2 class="fs-title">Dish's Info</h2>
       <h3 class="fs-subtitle">This is step 3</h3>
@@ -97,7 +218,7 @@
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="button" name="next" class="next action-button" value="Next"/>
     </fieldset>
-
+-->
     <fieldset>
       <h2 class="fs-title">Your Review</h2>
       <h3 class="fs-subtitle">This is step 4</h3>
@@ -105,12 +226,11 @@
       <input type="text" id="caption" placeholder="Enter caption" name="caption" required/>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="submit" name="submit" class="submit action-button" value="Submit"/>
-      <input type="date" id="date" placeholder="Enter date" name="date" />
+<!--      <input type="date" id="date" placeholder="Enter date" name="date" />-->
     </fieldset>
 
   </form>
 
-</body>
 
 
 
@@ -136,7 +256,6 @@
 
 
    <h1 id="text">Foodie Create a Post</h1>
-   <!-- form for creating post -->
    <div class="form-container">
    <form id="data" method="post" enctype="multipart/form-data">
    </form>
@@ -144,7 +263,6 @@
 
    <input id="seed_one" type="text" name="seed_one"/>
 
-  <!-- show created post -->
   <div id="get_response">
     <p id="postid"> Post ID: </p>
     <p id="id"> Restaurant ID: </p>
@@ -156,26 +274,24 @@
     <p id="pic"> Dish image: </p>
     <img id="image" src="">
   </div>
-  <br>
--->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<!-- 1.11.4  -->
+<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.4/jquery-ui.min.js"></script> -->
 <script>
-  var current_fs;
-  var next_fs;
-  var previous_fs;
-  var left;
-  var opacity;
-  var scale;
+  $.extend($.easing, window.easing);
+  var current_fs, next_fs, previous_fs;
+  var left, opacity, scale;
   var animating;
 
-  #(".next").click(function()){
+  $(".next").click(function(){
     if(animating) return false;
     animating = true;
     current_fs = $(this).parent();
     next_fs = $(this).parent().next();
 
-    #("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
     next_fs.show();
     current_fs.animate({opacity: 0}, {
       step: function(now, mx) {
@@ -201,7 +317,7 @@
     if(animating) return false;
     animating = true;
     current_fs = $(this).parent();
-    previous_fs $(this).parent().prev();
+    previous_fs = $(this).parent().prev();
 
     $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
     previous_fs.show();
@@ -241,7 +357,7 @@
     
     
     
-    
+/*    
     document.querySelector("#date").valueAsDate = new Date();
     $(document).ready( () => {
 
@@ -306,7 +422,7 @@ console.log(formData);
       });    
     })
     
-  
+  */
       // This sample uses the Place Autocomplete widget to allow the user to search
       // for and select a place. The sample then displays an info window containing
       // the place ID and other information about the place that the user has
@@ -315,7 +431,7 @@ console.log(formData);
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
+/*
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
@@ -369,10 +485,11 @@ console.log(formData);
               place.formatted_address;
           infowindow.open(map, marker);
         });
-      }
-    </script>
+      }*/
+
+</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
         async defer></script>
   
 </body>
-<html>
+</html>
