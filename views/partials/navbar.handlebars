@@ -1,13 +1,32 @@
-<nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+<nav class="navbar navbar-expand-lg custom-navbar sticky-top fix_gap">
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto navbar-right" >
-      <h1> FOODI! </h1>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent fix_gap">
+    <ul class="navbar-nav mr-auto navbar-left nav_option" >
+      <li class = "foodi_header_place">
+        <a class = "foodi_header"> <b>FOODI!</b> </a>
+      </li>
     </ul>
-    <ul class="navbar-nav navbar-right">
-      <li class="custom-nav-link"><a href="../createpost">New Post</a></li>
-      <li class="custom-nav-link"><a href="../discover">Discover</a></li>
-      <li class="custom-nav-link"><a href="../home">Home</a></li>
+    <ul class="navbar-nav navbar-right nav_option">
+      <li class="nav_individual_place">
+        <a href="../home" class = "nav_individual_option">
+          Home
+        </a>
+      </li>
+      <li class="nav_individual_place">
+        <a href="../discover" class = "nav_individual_option">
+          Discover
+        </a>
+      </li>
+      <li class="nav_individual_place">
+        <a href="JavaScript:profilePage()" class = "nav_individual_option">
+          Profile
+        </a>
+      </li>
+      <li class="nav_individual_place_newpost">
+        <a href="../posts/create" class = "nav_individual_option_newpost">
+          New Post
+        </a>
+      </li>
     </ul>
   </div>
 </nav>
