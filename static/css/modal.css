@@ -15,6 +15,11 @@
 
 }
 
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
 /* Modal Content */
 .modal-content {
     background-color: #fefefe;
@@ -22,10 +27,10 @@
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 60%;
     max-height: calc(100% - 100px);
     position: fixed;
-    top: 50%;
+    top: 53%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -45,13 +50,13 @@
     cursor: pointer;
 }
 
-.modal-cancel-btn {
+.modal-cancel-btn, .modal-dislike-btn {
   color: #fff;
   background-color: #dc7070;
   border-color: #f53c3c;
 }
 
-.modal-confirm-btn {
+.modal-confirm-btn, .modal-like-btn {
   color: #fff;
   background-color: #428bca;
   border-color: #357ebd;
