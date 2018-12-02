@@ -8,21 +8,16 @@
   .card {
     width:75%;
     }
+  .modal-custom {
+    min-width: 60%;
+    margin: auto;
   }
-
-  
-.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-
 }
 
-.freezePage{
-  overflow: hidden;
-  height: 100%;
-  position: relative;
+body.modal-open {
+  overflow: visible;
 }
+
 .custom-navbar {
   background-color:#f08d8c;
 }
