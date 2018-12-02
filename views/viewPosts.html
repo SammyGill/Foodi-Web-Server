@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang='eg'>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset='UTF-8'/>
+  <title>View Posts of a Profile</title>
+  <link rel='stylesheet' href=''/>
+		</head>
+<body>
+    <h1 id="text">View Posts</h1>
+    <label> Enter User ID </label>
+    <input id="user_id" type="text">
+    <button id="btn"> Search User's Posts</button>
+    <br>
+    <br>
+    <div id="delete_post_div" style="display:none">
+      <label> Enter access token </label>
+      <input id="access_token">
+      <label> Enter ID of post to delete </label>
+      <input id="post_id"> 
+      <button id="deleteBtn"> Delete post </button>
+    </div>
+    <br>
+    <br>
+    
+  <!-- show created post -->
+  <div id="get_response">
+   <div id="tableContainer">
+   </div>
+  </div>
+
+   <h4 id="not_found"> </h4>
+
+
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+    $(document).ready( () => {
+    /*  $('#get_response').hide();
+      $('#not_found').hide();*/
+      $("#btn").on('click', function () {
+      console.log("clicked??");
+        const user_id = $('#user_id').val();
+        $.ajax({
+          url: '/api/profiles/'+ user_id +'/posts',
+          type: 'GET',
+          datetype: 'json',
+          success: (data) => {
+            $('#delete_post_div').show();
+            /*$('#get_response').show();
+            $('#not_found').hide();*/
+            $("#tableContainer").html("");
+//            $("#tableContainer").append('<div class="row">');
+            $.each(data, function(){
+              var username = "";
+              $.ajax({
+                url: '/api/profiles/' + user_id,
+                type: 'GET',
+                datatype: 'json',
+                success: (data) => {
+                  username = data.username;
+                  var url = "/api/photos/" + this.picture;
+  //                var toAdd = '<div class="column"> <img src="' + url + '" style="width:100%">' + '</div>';
+                  var toAdd = '<img src="' + url + '" width="150" height="150">'+'<br>';
+                  toAdd += "<p> Post id: " + this.post_id + "</p>";
+                  toAdd += '<p>' + "Dish's name:  "+ this.dish_name + "       Likes: " + this.likes + 
+                       "      Dislikes: " + this.dislikes + '</p>';
+                  toAdd += '<p><strong>Username: ' + username + '    ' + '</strong></p><p>Caption: '+ this.caption + '</p>';
+                  toAdd += '<hr>';
+                  $("#tableContainer").append(toAdd);
+                }
+              });
+            });
+            
+          },
+          error: (err) => {
+            $('#get_response').hide();
+            $('#not_found').show();
+            $('#not_found').text(JSON.stringify(err));
+            
+          },
+        });
+      });  
+
+
+
+      $('#deleteBtn').click( () => {
+        const access_token = $('#access_token').val();
+
+        $.ajax({
+          url: '/api/posts/' + $('#post_id').val() + '/delete',
+          type: 'DELETE',
+          beforeSend: function (xhr) {   //Include the bearer token in header
+            xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+          },
+          success: (data) => {
+            $('#btn').click(); // click search button
+          },
+          error: (err) => {
+            alert(JSON.stringify(err));
+          },
+        });
+      })
+    
+    }); 
+  </script>
+
+  
+</body>
+<html>
