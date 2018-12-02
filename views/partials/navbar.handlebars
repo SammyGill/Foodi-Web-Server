@@ -1,34 +1,21 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/styles.css">
-<nav class="navbar navbar-expand-lg custom-navbar sticky-top fix_gap">
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent fix_gap">
-    <ul class="navbar-nav mr-auto navbar-left nav_option" >
-      <li class = "foodi_header_place">
-        <a href="/" class = "foodi_header"> <b>FOODI!</b> </a>
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar sticky-top">
+  <a class="navbar-brand" href="#"><b>FOODI!</b></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="nav navbar-nav ml-auto" style="text-align:center">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
-    </ul>
-    <ul class="navbar-nav navbar-right nav_option">
-      <li class="nav_individual_place">
-        <a href="/" class = "nav_individual_option">
-          Home
-        </a>
+      <li class="nav-item">
+        <a class="nav-link" href="../discover">Discover</a>
       </li>
-      <li class="nav_individual_place">
-        <a href="../discover" class = "nav_individual_option">
-          Discover
-        </a>
+      <li class="nav-item">
+        <a class="nav-link" onClick="profilePage()" style="cursor: pointer;">Profile</a>
       </li>
-      <li class="nav_individual_place">
-        <a onClick="profilePage()" style="cursor: pointer;" class = "nav_individual_option">
-          Profile
-        </a>
-      </li>
-      <li class="nav_individual_place_newpost">
-        <a href="../posts/create" class = "nav_individual_option_newpost">
-          New Post
-        </a>
+      <li class="nav-item">
+        <a class="nav-link" href="../posts/create">New Post</a>
       </li>
     </ul>
   </div>
