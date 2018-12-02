@@ -1,6 +1,7 @@
 body {
-  background-color: #33cc99; /* light greu */
+  background-color: #33cc99; /* light grey */
   text-align: center;
+  background-image: url("../images/login_bg.jpeg");
 }
 
 h1 {

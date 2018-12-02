@@ -19,32 +19,30 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     
   </head>
-  <body>
-
-    
-    <div class="bg">
-      <h1> WELCOME TO FOODI </h1> 
+  <body class="bg">
+   
+  <div>
+      <h1 style="font-weight:bold; font-size:100px"> Foodi </h1> 
     </div> 
 
-    <div class="faceook" align="center">
+    <div class="facebook" align="center">
       <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
       </fb:login-button>
     </div>
 
-  <div id="username_div" style="display:none">
-  <label> Please set username </label>
-  <input id="username" required>  
-  <button id="btn"> Set username </button>
-  </div>
+    <div id="username_div" style="display:none">
+    <label> Please set username </label>
+    <input id="username" required>  
+    <button id="btn"> Set username </button>
+    </div>
   
-  <p id="name"></p> 
-  <p id="user_id"></p>
-  <img id="pic" src="">
-
-
+    <p id="name"></p> 
+    <p id="user_id"></p>
+    <img id="pic" src="">
 
 
     {{> facebook}}
     <script src="/js/facebook.js"></script>
+    
   </body>
 </html>

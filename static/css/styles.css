@@ -28,17 +28,26 @@
 .bg {
   background-image: url("../images/login_bg.jpeg");
 
-
-
   /* Center and scale the image nicely */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment:fixed; 
   opacity: 0.7;
-  height:300px;
+  color:white;  
 
-  color:white;
+  padding-top:300px;
+  padding-bottom:500px;
+
+  overflow:hidden;
+  vertical-align: middle;
+
+  height:100%;
+  width:100%; 
+  position: absolute;
+  background-color:black;
   text-align: center;
+
 }
 
 /* Some general style code */
