@@ -7,22 +7,22 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close close-modal">&times;</span>
-   
+
     <header class="modal-header">
-      
-      <a href="/profiles/{{username}}"> 
-        <img id="profile_picture" style="width: 5rem; display:inline;" src="">    
+
+      <a href="/profiles/{{username}}">
+        <img id="profile_picture" style="width: 5rem; display:inline;" src="">
           <span id="username"></span> </a>
           <span id="date" style="float:right;"></span>
         </p>
         <br><br><br><br>
     </header>
-    
+
     <!-- <div class="modal-body"> Are you sure you want to delete {{firstName}} {{lastName}}? </div> -->
     <div class="modal-body">
-      
+
       <img id="picture" class="card-img-top" style="width: 100%; height: 100%;"src="" alt="Card image cap">
-      
+
       <p id="dish_name"></p>
       <p id="caption"></p>
       <p id="rating"></p>
@@ -31,7 +31,7 @@
     </div>
 
     <p id="profile_id-modal" style="display:hidden"></p>
-    
+
     <footer class="modal-footer">
       <br>
       <hr>
@@ -51,7 +51,10 @@
   // modal stuff
   const modal = $('#myModal');
 
-  function showModal(profile_picture, username, date, picture, 
+  function test() {
+
+  }
+  function showModal(profile_picture, username, date, picture,
                      dish_name, caption, rating, likes, dislikes) {
     modal.attr('style', 'display:block');
     $('#profile_picture').attr('src', profile_picture);
