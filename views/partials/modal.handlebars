@@ -64,6 +64,20 @@ $('.modal').on('hidden.bs.modal', function (e) {
   $('body').removeClass('freezePage');
 });
 
+
+$(function(){
+    if (/iPhone|iPod|iPad/.test(navigator.userAgent))
+        $('iframe').wrap(function(){
+            var $this = $(this);
+            return $('<div />').css({
+                width: $this.attr('width'),
+                height: $this.attr('height'),
+                overflow: 'scroll',
+                '-webkit-overflow-scrolling': 'touch'
+            });
+        });
+})
+
   function showModal(profile_picture, username, date, picture,
                      dish_name, caption, rating, likes, dislikes, restaurant_id) {
 
