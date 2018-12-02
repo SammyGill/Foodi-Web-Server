@@ -41,7 +41,7 @@
           <span id="dislikes"></span>
         </span>
 
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
 
     </div>
   </div>
@@ -51,6 +51,9 @@
 <!-- JS for modal -->
 <script>
   // modal stuff
+  $('#postModal').on('hidden.bs.modal', function () {
+    $('body').css('overflow', 'auto');
+})
 
   function showModal(profile_picture, username, date, picture,
                      dish_name, caption, rating, likes, dislikes, restaurant_id) {
@@ -74,7 +77,6 @@
   // close popup modal
   $('.close-modal').click(() =>
   {
-    modal.attr('style', 'display:none');
     $('body').css('overflow', 'auto');
   });
 </script>
