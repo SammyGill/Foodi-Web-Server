@@ -88,6 +88,10 @@ app.get('/test-cookie', (req, res) => {
   res.status(200).json(req.cookies);
 })
 
+app.get("/test",(req, res) => {
+  res.render("test");
+})
+
 // Connect to AWS MySQL DB
 mysql.connect((err) => {
   if(err) throw err;
