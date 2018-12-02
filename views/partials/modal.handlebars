@@ -55,6 +55,15 @@
     $('body').css('overflow', 'auto');
 })
 
+$('#postModal').on('shown.bs.modal', function (e) {
+  $('html').addClass('freezePage'); 
+  $('body').addClass('freezePage');
+});
+$('.modal').on('hidden.bs.modal', function (e) {
+  $('html').removeClass('freezePage');
+  $('body').removeClass('freezePage');
+});
+
   function showModal(profile_picture, username, date, picture,
                      dish_name, caption, rating, likes, dislikes, restaurant_id) {
 

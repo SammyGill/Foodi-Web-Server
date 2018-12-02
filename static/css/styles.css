@@ -5,6 +5,12 @@
 
 }
 
+.freezePage{
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+}
+
 .navbar-collapse.collapse {
   display: block!important;
   }
