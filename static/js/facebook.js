@@ -28,7 +28,7 @@ function signin(accessToken) {
       xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
     },
     success: (data) => {
-      
+
       $.ajax({
         url: '/api/accounts/signin',
         type: 'POST',
@@ -42,20 +42,20 @@ function signin(accessToken) {
           $('#pic').attr('src', data.userData.picture.data.url);
           console.log(data.userData);
           if (xhr.status == 201) {
-            // document.cookie = "username="+data.userData.username;
+            document.cookie = "username="+data.userData.username;
             alert("Hi " + data.userData.first_name +"! Your current username is " + data.userData.username + ". You can change it below");
             $('#username_div').show();
           }
           else {
             alert("Welcome back " + data.userData.first_name);
-            // document.cookie = "username="+data.userData.username;
+            document.cookie = "username="+data.userData.username;
             location.href = "/";
           }
         },
         error: (err) => {
           alert(JSON.stringify(err));
         }
-      });  
+      });
 
     },
     error: (err) => {
@@ -66,7 +66,7 @@ function signin(accessToken) {
 $(document).ready( ()=> {
 
   $('#btn').click( ()=> {
-    
+
     const username = $('#username').val();
     const body = {username: username};
     $.ajax({
@@ -79,7 +79,7 @@ $(document).ready( ()=> {
       },
       success: (data) => {
         alert('username set');
-        // document.cookie = "username="+username;
+        document.cookie = "username="+username;
         location.href = "/";
       },
       error: (err) => {

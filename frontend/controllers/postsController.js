@@ -68,6 +68,7 @@ exports.feed = (req, res) => {
     'Authorization': 'Bearer ' + req.cookies.accessToken
     },
   }, (err, response, body) => {
+    console.log(body);
     if (response.statusCode == 400) //bad gateway error (token expired)
       res.render('loginPage');
     else if (err || response.statusCode >= 400) // server error or client error

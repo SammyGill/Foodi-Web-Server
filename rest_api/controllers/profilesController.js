@@ -1,5 +1,5 @@
 /**
- *  The profiles controller is responsible for managing all requests 
+ *  The profiles controller is responsible for managing all requests
  *  associated with the profile of a user. This includes pulling a user's
  *  posts, updating their followers, etc.
  */
@@ -47,7 +47,7 @@ exports.get_info = (req, res) => {
     }
     else if (result.length == 1) { // found user
       const user_info = result;
-      
+
       // get all of the user's posts
       let getPostsQuery = "Select * FROM posts where author_id = ?";
       mysql.query(getPostsQuery, [user_info[0].user_id], (err, results) => {
@@ -65,13 +65,13 @@ exports.get_info = (req, res) => {
 
 }
 
-/** 
- *  get_posts returns all of the posts for a user. 
+/**
+ *  get_posts returns all of the posts for a user.
  */
 exports.get_posts = (req, res) => {
   const user_id = req.params.user_id;
   let getPostsQuery = "Select * FROM posts where author_id = ?";
-  
+
   mysql.query(getPostsQuery, [user_id], (err, results) => {
     if (err) {
       res.status(500).json( {"Internal Service Error": err} );
@@ -126,7 +126,7 @@ exports.get_activities = (req, res) => {
 }
 
 
-/** 
+/**
  *  get_following returns all of the other users that this user follow
  */
 exports.get_following = (req, res) => {
@@ -139,10 +139,10 @@ exports.get_following = (req, res) => {
     }
     res.status(200).json( {following: result.map( e => e.followee_id )} );
   });
-  
+
 }
 
-/** 
+/**
  *  get_following returns a list of users that follow this user
  */
 exports.get_followers = (req, res) => {
@@ -155,15 +155,15 @@ exports.get_followers = (req, res) => {
     }
     res.status(200).json( {followers: result.map( e => e.follower_id )} );
   })
-  
+
 }
 
 
-/** 
- *  follow takes a user A, who wants to follow a user B, and updates the 
+/**
+ *  follow takes a user A, who wants to follow a user B, and updates the
  *  followering and followers lists for these users appropriately so that
- *  user A now followers user B. If the user B does not exist, an error 
- *  is returned. If user A already follows user B, an error is returned as 
+ *  user A now followers user B. If the user B does not exist, an error
+ *  is returned. If user A already follows user B, an error is returned as
  *  well.
  */
 exports.follow = (req, res) => {
@@ -210,10 +210,10 @@ exports.follow = (req, res) => {
 }
 
 
-/** 
- *  follow takes a user A, who wants to unfollow a user B, and updates the 
+/**
+ *  follow takes a user A, who wants to unfollow a user B, and updates the
  *  followering and followers lists for these users appropriately so that
- *  user A no longer followers user B. If the user B does not exist, an error 
+ *  user A no longer followers user B. If the user B does not exist, an error
  *  is returned. If user A already does not follow user B, an error is returned
  *  as well.
  */
@@ -235,7 +235,7 @@ exports.unfollow = (req, res) => {
       mysql.query(followQuery, [user_id, unfollowee_id], (err, result) => {
         if (err) {
           res.status(500).json(err);
-          throw err;          
+          throw err;
         }
 
         const update = 'UPDATE users SET following_count=following_count-1 WHERE user_id=?';
@@ -246,4 +246,3 @@ exports.unfollow = (req, res) => {
     }
   });
 }
-
