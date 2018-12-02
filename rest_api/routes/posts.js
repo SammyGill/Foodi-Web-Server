@@ -11,7 +11,7 @@ const auth = require('../middleware/auth');
 
 
 function isImage(fileName) {
-  const extensions = [".jpg", ".jpeg", ".png", ".JPG", ".PNG", ".JPEG"];
+  const extensions = [".jpg", ".jpeg", ".png", ".JPG", ".PNG", ".JPEG", ".gif"];
   for(let i = 0; i < extensions.length; i++) {
     if(fileName.endsWith(extensions[i])) {
     return (null, true);
@@ -21,7 +21,7 @@ function isImage(fileName) {
 }
 
 function extractExtension(fileName) {
-  const extensions = [".jpg", ".jpeg", ".png"];
+  const extensions = [".jpg", ".jpeg", ".png", ".JPG", ".PNG", ".JPEG", ".gif"];
   for(let i = 0; i < extensions.length; i++) {
     if(fileName.endsWith(extensions[i])) {
       return extensions[i];
