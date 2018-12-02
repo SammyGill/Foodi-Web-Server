@@ -71,6 +71,9 @@
   display: inline;
   margin-right: 8px;
   margin-top: 4px;
+  font-family:"Comic Sans MS", cursive, sans-serif;
+  color: white;
+  font-size: 18px;
 }
 .nav_individual_option {
   display: block;
@@ -166,15 +169,19 @@
 .orange_bg {
   background-color: #f5beaa;
 }
+.post_section{
+  text-align: center;
+}
 .title_font {
   font-family: "Gill Sans", sans-serif;
   text-align: center;
 }
 .individual_post{
-  float: none;
+  display: inline-block;
   background-color: #f08d8c;
   width: 410px;
-  height: 440px;
+  height: 450px;
+  margin: 0 40px;
 }
 .short_post_info{
   list-style-type: none;
@@ -186,21 +193,21 @@
   float: left;
   display: inline;
   margin-left: 10px;
-  margin-top: 6px;
-  margin-bottom: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .short_post_info_restaurant_and_dish{
   float: right;
   display: inline;
   margin-right: 10px;
-  margin-top: 6px;
-  margin-bottom: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .short_post_info_content {
   display: block;
   font-family:"Gill Sans", sans-serif;
   color: white;
-  font-size: 15px;
+  font-size: 17px;
   text-decoration: none;
 }
 .short_post_info_content:hover{
@@ -208,6 +215,7 @@
   text-decoration: none;
 }
 .post_pics_profile{
+  margin-top: auto;
   margin-left: auto;
   margin-right: auto;
   display: block;
