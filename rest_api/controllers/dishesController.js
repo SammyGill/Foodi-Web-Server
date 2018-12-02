@@ -15,7 +15,19 @@ exports.list = (req, res) => {
       res.status(500).json(err);
       throw err;
   	}
-    console.log(results);
+    res.status(200).json( results.map( e => e.dish_name ) );
+  })
+}
+
+/** For autocomplete; returns all dish names beginning with the given query */
+exports.suggestions = (req, res) => {
+  const dish_name = req.query.dish;
+  const query = `SELECT DISTINCT dish_name FROM posts WHERE dish_name LIKE '` + dish_name + `%'`;
+  mysql.query(query, [dish_name], (err, results) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
     res.status(200).json( results.map( e => e.dish_name ) );
   })
 }
