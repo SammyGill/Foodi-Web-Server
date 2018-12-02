@@ -17,8 +17,8 @@
           Discover
         </a>
       </li>
-      <li class="nav_individual_place">
-        <a href="JavaScript:profilePage()" class = "nav_individual_option">
+      <li onClick="profilePage()" class="nav_individual_place">
+        <a class = "nav_individual_option">
           Profile
         </a>
       </li>
@@ -40,6 +40,7 @@
   const accessToken = getCookie('accessToken');
 
   function profilePage() {
+
     location.href = "/profiles/" + username;
   }
 </script>

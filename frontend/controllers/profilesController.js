@@ -2,7 +2,7 @@ const request = require('request');
 
 /** function to determine the appropriate error messsage to render */
 function getErrorMessage(err, response) {
-  if (err) 
+  if (err)
     throw err;
   return {
     statusCode: response.responseCode,
@@ -25,11 +25,14 @@ exports.view = (req, res) => {
     // successful api call
     else {
       user_info = body.user_info[0];
+
       res.render('profile', {
         user_id: user_info.user_id,
         username: user_info.username,
         name: user_info.first_name + ' ' + user_info.last_name,
         picture: user_info.profile_picture,
+        following_count: user_info.following_count,
+        follower_count: user_info.follower_count,
         posts: body.posts
       });
     }
