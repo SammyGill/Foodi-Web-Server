@@ -11,7 +11,7 @@ const auth = require('../middleware/auth');
 
 
 function isImage(fileName) {
-  const extensions = [".jpg", ".jpeg", ".png"];
+  const extensions = [".jpg", ".jpeg", ".png", ".JPG", ".PNG", ".JPEG"];
   for(let i = 0; i < extensions.length; i++) {
     if(fileName.endsWith(extensions[i])) {
     return (null, true);
@@ -36,7 +36,7 @@ function fileFilter(req, file, callback) {
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, dir+"/../photos")
+    callback(null, dir+"../../../photos")
   },
   filename: (req, file, callback) => {
     callback(null, Date.now() + "-" + file.originalname);
