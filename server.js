@@ -46,6 +46,7 @@ app.use('/api/posts',       require('./rest_api/routes/posts'));
 app.use('/api/profiles',    require('./rest_api/routes/profiles'));
 app.use('/api/restaurants', require('./rest_api/routes/restaurants'));
 app.use('/api/comments',    require('./rest_api/routes/comments'));
+app.use('/api/dishes',      require('./rest_api/routes/dishes'));
 
 /* Routes for frontend using Handlebars*/
 

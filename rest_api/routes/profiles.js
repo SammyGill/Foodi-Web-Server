@@ -16,7 +16,7 @@ router.get('/get/feed', auth, posts_controller.get_feed);
 
 // GET request for getting all info related to the profile
 // can enter EITHER user id OR username
-router.get('/:id_or_username', profiles_controller.get_info);
+router.get('/:id_or_username', auth, profiles_controller.get_info);
 
 // PATCH request for editing profile
 router.patch('/:user_id/edit', profiles_controller.edit);

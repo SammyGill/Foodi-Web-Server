@@ -15,7 +15,7 @@ const checkUserExistsQuery = "SELECT * FROM users WHERE user_id = ?";
 const checkUsersExistQuery = "SELECT * FROM users WHERE user_id = ? OR user_id=?";
 const checkIdOrUsername = "SELECT * FROM users WHERE user_id = ? OR username=?";
 const checkUsername = "SELECT * FROM users WHERE username=?";
-
+const isFollowingQuery = "SELECT * FROM following WHERE follower_id = ? AND followee_id = ?";
 
 exports.username_list = (req, res) => {
   mysql.query("SELECT username AS label, user_id AS value FROM users", (err, result) => {
@@ -39,6 +39,7 @@ exports.name_list = (req, res) => {
 /** Function for gettting all info related to the usert
  */
 exports.get_info = (req, res) => {
+  const requesting_user_id = req.userData.id;
   const id = req.params.id_or_username;
   mysql.query(checkIdOrUsername, [id, id], (err, result) => {
     if (err) {
@@ -46,6 +47,7 @@ exports.get_info = (req, res) => {
       throw err;
     }
     else if (result.length == 1) { // found user
+      let requestee_user_id = result[0].user_id;
       const user_info = result;
 
       // get all of the user's posts
@@ -55,7 +57,21 @@ exports.get_info = (req, res) => {
           res.status(500).json( {"Internal Service Error": err} );
           throw err;
         }
-        res.status(200).json({user_info: user_info, posts: results});
+        let isFollowing = undefined;
+        mysql.query(isFollowingQuery, [requesting_user_id, requestee_user_id], (err, result) => {
+          if (err) {
+            res.status(500).json( {"Internal Service Error": err} );
+            throw err;
+          }
+          if(result.length == 0) {
+            isFollowing = false;
+          }
+          else {
+            isFollowing = true;
+          }
+          res.status(200).json({user_info: user_info, posts: results, isFollowing: isFollowing});
+        })
+
       });
     }
     else {
@@ -198,9 +214,22 @@ exports.follow = (req, res) => {
               throw err;
             }
 
-            const update = 'UPDATE users SET following_count=following_count+1 WHERE user_id=?';
-            mysql.query(update, [user_id], (err, result) => {
-              (err)? res.status(500).json(err) : res.status(200).json( {message: "Followed"} );
+            const updateFollowing = 'UPDATE users SET following_count=following_count+1 WHERE user_id=?';
+            const updateFollower = "UPDATE users SET follower_count=follower_count+1 WHERE user_id=?"
+            mysql.query(updateFollowing, [user_id], (err, result) => {
+              if(err) {
+                res.status(500).json(err);
+              }
+              else {
+                mysql.query(updateFollower, [followee_id], (err, result) => {
+                  if(err) {
+                    res.status(500).json(err);
+                  }
+                  else {
+                    res.status(200).json( {message: "Followed"})
+                  }
+                })
+              }
             })
           });
         }
@@ -238,9 +267,22 @@ exports.unfollow = (req, res) => {
           throw err;
         }
 
-        const update = 'UPDATE users SET following_count=following_count-1 WHERE user_id=?';
-        mysql.query(update, [user_id], (err, result) => {
-          (err)? res.status(500).json(err) : res.status(200).json( {message: "Unfollowed"} );
+        const updateFollowing = 'UPDATE users SET following_count=following_count-1 WHERE user_id=?';
+        const updateFollower = "UPDATE users SET follower_count=follower_count-1 WHERE user_id=?"
+
+        mysql.query(updateFollowing, [user_id], (err, result) => {
+          if(err) {
+            res.status(500).json(err)
+          } else {
+            mysql.query(updateFollower, [unfollowee_id], (err, result) => {
+              if(err) {
+                res.status(500).json(err)
+              }
+              else {
+                res.status(200).json( {message: "Unfollowed"} )
+              }
+            })
+          }
         })
       });
     }

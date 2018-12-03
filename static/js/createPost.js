@@ -1,18 +1,27 @@
 
-  $(document).ready( () => {
-    getCookie = (name) => {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
-    }
-    const access_token = getCookie('accessToken');
-    
-
-
+$(document).ready( () => {
+  document.querySelector("#date").valueAsDate = new Date();
   var current_fs, next_fs, previous_fs;
   var left, opacity, scale;
   var animating;
+  var rating_val;
 
-
+  $(".btnrating").on('click',(function(e) {
+    var previous_value = $("#selected_rating").val();
+    var selected_value = $(this).attr("data-attr");
+    $("#selected_rating").val(selected_value);
+    $(".selected-rating").empty();
+    $(".selected-rating").html(selected_value);
+    for (i = 1; i <= selected_value; ++i) {
+      $("#rating-star-"+i).toggleClass('btn-warning');
+      $("#rating-star-"+i).toggleClass('btn-default');
+    }
+    for (ix = 1; ix <= previous_value; ++ix) {
+      $("#rating-star-"+ix).toggleClass('btn-warning');
+      $("#rating-star-"+ix).toggleClass('btn-default');
+    }
+    rating_val = selected_value;
+  }));
 
   $(".next").click(function(){
     if(animating) return false;
@@ -40,7 +49,7 @@
       },
       easing: 'easeInOutBack'
       });
-    });
+  });
   
   $(".previous").click(function(){
     if(animating) return false;
@@ -66,23 +75,37 @@
     });
   });
     
-        $( "#dish_name" ).autocomplete({
-      source: (request, response) => {
-         $.ajax({
-          url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
-          type: 'GET',
-          dataType: 'json',
-          success: (data) => {
-            response(data.dish_names);
-          }
-        })
-      }
-    });
+  $( "#dish_name" ).autocomplete({
+    source: (request, response) => {
+       $.ajax({
+        url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
+        type: 'GET',
+        dataType: 'json',
+        success: (data) => {
+          response(data.dish_names);
+        }
+      })
+    }
+  });
 
-  $(".submit").click(function(){
-      var formData = new FormData(this);
-      console.log(formData);      
-      const access_token = access_token;
+  $("form#data").submit(function(e){
+    e.preventDefault();
+    alert('test');
+      // var formData = new FormData(this);
+      getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+    const access_token = getCookie('accessToken');
+
+      let formData = new FormData();
+      formData.append('restaurant_id', $('#restaurant_id').val());
+      formData.append('dish_name', $('#dish_name').val());
+      formData.append('image', $('#file').prop('files')[0]);
+      formData.append('date', $('#date').val());
+      formData.append('rating', parseInt(rating_val));
+      formData.append('caption', $('#caption').val());
+      alert(JSON.stringify(formData));
       $.ajax({
         url: '/api/posts/create',
         type: 'POST',
@@ -90,7 +113,10 @@
         beforeSend: function (xhr) {   //Include the bearer token in header
           xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
         },
-        success: (data) => {},
+        success: (data) => {
+          alert("post created");
+          location.href = '/'
+        },
         error: (err) => {
           alert(JSON.stringify(err));
         },
@@ -101,72 +127,73 @@
   });
         
 });
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13
-        });
 
-        var input = document.getElementById('pac-input');
 
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
 
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.8688, lng: 151.2195},
+    zoom: 13
+  });
 
-        var infowindow = new google.maps.InfoWindow();
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            map.setCenter(pos);
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-        }
-        var infowindowContent = document.getElementById('infowindow-content');
-        infowindow.setContent(infowindowContent);
-        var marker = new google.maps.Marker({
-          map: map
-        });
-        marker.addListener('click', function() {
-          infowindow.open(map, marker);
-        });
+  var input = document.getElementById('pac-input');
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-        autocomplete.addListener('place_changed', function() {
-          infowindow.close();
-          var place = autocomplete.getPlace();
-          var restaurant = {};
-          var a = place.address_components;
-          $('#restaurant_id').val(place.place_id);
-          if (!place.geometry) {
-            return;
-          }
+  var infowindow = new google.maps.InfoWindow();
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      map.setCenter(pos);
+    }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());});
+  } 
+  else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+  var infowindowContent = document.getElementById('infowindow-content');
+  infowindow.setContent(infowindowContent);
+  var marker = new google.maps.Marker({
+     map: map
+  });
+  marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
+  autocomplete.addListener('place_changed', function() {
+  infowindow.close();
+  var place = autocomplete.getPlace();
+  var restaurant = {};
+  var a = place.address_components;
+  $('#restaurant_id').val(place.place_id);
+  if (!place.geometry) {
+    return;
+  }
 
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
+  if (place.geometry.viewport) {
+    map.fitBounds(place.geometry.viewport);
+  } else {
+    map.setCenter(place.geometry.location);
+    map.setZoom(17);
+  }
 
-          // Set the position of the marker using the place ID and location.
-          marker.setPlace({
-            placeId: place.place_id,
-            location: place.geometry.location
-          });
-          marker.setVisible(true);
+  // Set the position of the marker using the place ID and location.
+  marker.setPlace({
+    placeId: place.place_id,
+    location: place.geometry.location
+  });
+  marker.setVisible(true);
 
-          infowindowContent.children['place-name'].textContent = place.name;
-//infowindowContent.children['place-id'].textContent = place.place_id;
-          infowindowContent.children['place-address'].textContent =
-              place.formatted_address;
-          infowindow.open(map, marker);
-          $("#dish_name").show();
-        });
-      }
+  infowindowContent.children['place-name'].textContent = place.name;
+  //infowindowContent.children['place-id'].textContent = place.place_id;
+  infowindowContent.children['place-address'].textContent =
+  place.formatted_address;
+  infowindow.open(map, marker);
+  $("#dish_name").show();
+  $("#enter_dish_name").show();
+  });
+}

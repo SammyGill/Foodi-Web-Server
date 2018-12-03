@@ -1,16 +1,22 @@
-<!DOCTYPE html>
 <html lang='eg'>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset='UTF-8'/>
   <title>Create a Post</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/createPost.css">
+
 </head>
 
 <body>
 
-  <form id="data">  
-    
+  {{> navbar}}
+
+
+<div class="post_form">
+
+  <form id="data" method="post" enctype="multipart/form-data">
     <!-- Progress Bar -->
     <ul id="progressbar">
       <li class="active">Food Picture</li>
@@ -21,14 +27,15 @@
     <!-- Field Sets -->
     <fieldset>
       <h2 class = "fs-title">Upload food picture</h2>
-      <h3 class="fs-subtitle">This is step 1</h3>
-      <input type="file" id = "file" name="imgae" required>
+      <h3 class="fs-subtitle">Upload your food photo for the post!</h3>
+      <input type="file" id = "file" name="image">
+      <input id="date" type="date" placeholder="Enter Date" name="date" style="display:none">
       <input type ="button"  name="next" class="next action-button" value="Next"/>
     </fieldset>
     
     <fieldset>
       <h2 class="fs-title">Dish's Info</h2>
-      <h3 class="fs-subtitle">This is step 2</h3>
+      <h3 class="fs-subtitle">Select the restaurant!</h3>
       <input type="text" id="pac-input" class="controls" placeholder="Enter a location"/>
         <div id="map"></div>
         <div id="infowindow-content">
@@ -38,6 +45,8 @@
         </div>
       <br>
       <input id="restaurant_id" type="text" autocomplete="off" placeholder="Enter Restaurant ID" name="restaurant_id" style="display:none">
+      <br>
+      <h3 class="fs-subtitle" id="enter_dish_name" style="display:none">Enter your the dish's name!</h3>
       <input id="dish_name" type="text" autocomplete="off" placeholder="Enter dish name" name="dish_name" style="display:none" required>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="button" name="next" class="next action-button" value="Next"/>
@@ -45,21 +54,46 @@
     
     <fieldset>
       <h2 class="fs-title">Your Review</h2>
-      <h3 class="fs-subtitle">This is step 3</h3>
-      <input type="text" id="rating" autocomplete="off" placeholder="Enter rating" name="rating" required />
+      <h3 class="fs-subtitle">What's your rating for this dish?</h3>
+      <div class="form-group" id="rating-ability-wrapper">
+      <label class="control-label" for="rating">
+      <input type="hidden" id="selected_rating" name="selected_rating" value="" required="required">
+      </label>
+        <h2 class="bold rating-header" style="">
+        <span class="selected-rating">0</span><small> / 5</small>
+        </h2>
+        <button type="button" class="btnrating btn btn-default btn-lg" data-attr="1" id="rating-star-1">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btnrating btn btn-default btn-lg" data-attr="2" id="rating-star-2">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btnrating btn btn-default btn-lg" data-attr="3" id="rating-star-3">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btnrating btn btn-default btn-lg" data-attr="4" id="rating-star-4">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btnrating btn btn-default btn-lg" data-attr="5" id="rating-star-5">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </button>
+      </div>  
+      <br>
+      <h3 class="fs-subtitle">Enter your caption!</h3>
       <input type="text" id="caption" autocomplete="off" placeholder="Enter caption" name="caption" required/>
       <input type="button" name="previous" class="previous action-button" value="Previous" />
       <input type="submit" name="submit" class="submit action-button" value="Submit"/>
     </fieldset>
-
   </form>
+
+</div>
 
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.4/jquery-ui.min.js"></script> -->
-<script src="/js/createPost.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
         async defer></script>
-  
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="/js/createPost.js"></script>
+ 
 </body>
 </html>

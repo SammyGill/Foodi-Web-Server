@@ -23,6 +23,7 @@ exports.create_post = (req, res) => {
   const dish_name = req.body.dish_name;
   const author_id = req.userData.id;
   const caption = req.body.caption;
+  console.log(req.file);
   const picture = req.file.filename;
   const picture_url = "http://18.224.14.57/api/photos/" + picture;
   const rating = req.body.rating;
