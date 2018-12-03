@@ -16,11 +16,9 @@ module.exports = (req, res, next) => {
   request(options, (err, response, body) => {
     
     if (response.statusCode != 200) {
-      console.log("error");
       res.status(response.statusCode).json(body);
     }
     else {
-      console.log("success");
       req.userData = body;
       next();
     }
