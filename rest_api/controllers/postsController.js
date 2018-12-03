@@ -205,17 +205,18 @@ function like_dislike (query, post_id, user_id, value, count, message, res) {
 */ 
 exports.delete_post = (req, res) => {
   const post_id = req.params.post_id;
-  const author_id = req.userData.id;
+  const user_id = req.userData.id;
   mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
     if (err) {
       res.status(500).json({"Internal Service Error": err});
       throw err;
     }
     else {
-      if (post_id != author_id)
+      const author_id = results[0].author_id;
+      if (user_id != author_id)
         res.status(403).json({message: "Cannot delete post that is not yours"});
       else {
-        mysql.query(deletePost, [post_id, author_id], (err, result) => {
+        mysql.query(deletePost, [post_id, user_id], (err, result) => {
           if (err) {
             res.status(500).json( {"Internal Service Error": err} );
            throw err;
@@ -265,10 +266,10 @@ exports.get_feed = (req, res) => {
   const query = 
     `SELECT DISTINCT * FROM posts 
      INNER JOIN users ON users.user_id=posts.author_id 
-     INNER JOIN following ON posts.author_id=following.followee_id 
+     INNER JOIN following ON posts.author_id=following.followee_id OR posts.author_id=?
      WHERE following.follower_id = ? 
      ORDER BY post_id DESC`;
-  mysql.query(query, [user_id], (err, result) => {
+  mysql.query(query, [user_id, user_id], (err, result) => {
     if(err){
       res.status(500).json({"Internal Service Error": err});
       throw err;

@@ -5,13 +5,14 @@
       <div class="modal-header">
 
         <div class="col">
-        <a href="/profiles/{{username}}" style="float:left;">
-        <img id="profile_picture" style="width: 5rem; display:inline;" src="">
-        <ul style="display:inline-block;">
-          <li>1</li>
-          <li>2</li>
-        </ul>
-        </a>
+        <a id="link" href="/profiles/{{username}}" style="float:left;">
+          <img id="profile_picture" style="width: 5rem; display:inline;" src="">
+          <dl style="display:inline-block;">
+            <dt id="username"></dt> </a>
+            <br>
+            <dt id="date">2</dt>
+          </dl>
+        
       </div>
       <div class="col">
 
@@ -41,6 +42,10 @@
           <span id="dislikes"></span>
         </span>
 
+        <p id="delete-message" style="display:none"> Are you sure? </p>
+        <button id="delete-yes" style="display:none" class="btn btn-secondary"> Yes </button>
+        <button id="delete-no" style="display:none" class="btn btn-secondary"> No </button>
+        <button id="delete-btn" class="btn btn-secondary"> Delete post </button>
         <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
 
     </div>
@@ -53,36 +58,45 @@
   // modal stuff
   $('#postModal').on('hidden.bs.modal', function () {
     $('body').css('overflow', 'auto');
-})
+  })
 
-$('#postModal').on('shown.bs.modal', function (e) {
-  $('html').addClass('freezePage'); 
-  $('body').addClass('freezePage');
-});
-$('.modal').on('hidden.bs.modal', function (e) {
-  $('html').removeClass('freezePage');
-  $('body').removeClass('freezePage');
-});
+  $('#postModal').on('shown.bs.modal', function (e) {
+    $('html').addClass('freezePage'); 
+    $('body').addClass('freezePage');
+  });
+  $('.modal').on('hidden.bs.modal', function (e) {
+    $('html').removeClass('freezePage');
+    $('body').removeClass('freezePage');
+  });
 
 
-$(function(){
-    if (/iPhone|iPod|iPad/.test(navigator.userAgent))
-        $('iframe').wrap(function(){
-            var $this = $(this);
-            return $('<div />').css({
-                width: $this.attr('width'),
-                height: $this.attr('height'),
-                overflow: 'scroll',
-                '-webkit-overflow-scrolling': 'touch'
-            });
+  $(function(){
+    if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
+      $('iframe').wrap(function(){
+        var $this = $(this);
+        return $('<div />').css({
+          width: $this.attr('width'),
+          height: $this.attr('height'),
+          overflow: 'scroll',
+          '-webkit-overflow-scrolling': 'touch'
         });
-})
+      });
+    }
+  })
+
+  getCookie = (name) => {
+  var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+  const access_token = getCookie('accessToken');
+  let post_id = 0;
 
   function showModal(profile_picture, username, date, picture,
-                     dish_name, caption, rating, likes, dislikes, restaurant_id) {
+                     dish_name, caption, rating, likes, dislikes, restaurant_id, id) {
 
 
     $('#profile_picture').attr('src', profile_picture);
+    $('#link').attr('href', '/profiles/' + username)
     $('#username').text(username)
     $('#date').text(date);
     $('#picture').attr('src', '/api/photos/' + picture);
@@ -93,7 +107,12 @@ $(function(){
     $('#dislikes').text('dislikes: ' + dislikes);
     $('body').css('overflow', 'hidden');
     $('#restaurant_id').text(restaurant_id);
+    post_id = id;
 
+    if (getCookie('username') != username) // only show delete button for your own post
+      $('#delete-btn').hide();
+    else
+      $('#delete-btn').show();
     $("#postModal").modal()
   }
 
@@ -102,4 +121,34 @@ $(function(){
   {
     $('body').css('overflow', 'auto');
   });
+
+  $('#delete-btn').click( () => {
+    $('#delete-btn').hide();
+    $('#delete-message').show();
+    $('#delete-yes').show();
+    $('#delete-no').show();
+  })
+
+  $('#delete-no').click( () => {
+    $('#delete-btn').show();
+    $('#delete-message').hide();
+    $('#delete-yes').hide();
+    $('#delete-no').hide();
+  })
+
+  $('#delete-yes').click( () => {
+    $.ajax({
+      url: '/api/posts/' + post_id + '/delete',
+      type: 'DELETE',
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+      },
+      success: (data) => {
+        alert('deleted')
+      },
+      error: (err) => {
+        alert(JSON.stringify(err));
+      },
+    });
+  })
 </script>
