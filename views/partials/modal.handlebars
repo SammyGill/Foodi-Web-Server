@@ -109,8 +109,10 @@
     $('#restaurant_id').text(restaurant_id);
     post_id = id;
 
-    if (getCookie('accessToken') != username) // only show delete button for your own post
+    if (getCookie('username') != username) // only show delete button for your own post
       $('#delete-btn').hide();
+    else
+      $('#delete-btn').show();
     $("#postModal").modal()
   }
 

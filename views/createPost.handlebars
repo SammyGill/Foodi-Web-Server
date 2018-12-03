@@ -27,6 +27,10 @@
       <h2 class = "fs-title">Upload food picture</h2>
       <h3 class="fs-subtitle">Upload your food photo for the post!</h3>
       <input type="file" id = "file" name="image">
+      <br>
+      <img id="picture1" src="#" height="350" width=auto style="display: none">
+      <br>
+      <br>
       <input id="date" type="date" placeholder="Enter Date" name="date" style="display:none">
       <input type ="button"  name="next" class="next action-button" value="Next"/>
     </fieldset>
@@ -35,7 +39,7 @@
       <h2 class="fs-title">Dish's Info</h2>
       <h3 class="fs-subtitle">Select the restaurant!</h3>
       <input type="text" id="pac-input" class="controls" placeholder="Enter a location"/>
-        <div id="map"></div>
+        <center> <div id="map"></div> </center>
         <div id="infowindow-content">
           <span id="place-name" class="title"></span><br>
           <!--Place ID <span id="place-id"></span><br>-->
@@ -53,6 +57,10 @@
     <fieldset>
       <h2 class="fs-title">Your Review</h2>
       <h3 class="fs-subtitle">What's your rating for this dish?</h3>
+      <br>
+      <img id="picture2" style="display: none">
+      <br>
+
       <div class="form-group" id="rating-ability-wrapper">
       <label class="control-label" for="rating">
       <input type="hidden" id="selected_rating" name="selected_rating" value="" required="required">

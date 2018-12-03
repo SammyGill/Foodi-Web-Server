@@ -265,10 +265,10 @@ exports.get_feed = (req, res) => {
   const query = 
     `SELECT DISTINCT * FROM posts 
      INNER JOIN users ON users.user_id=posts.author_id 
-     INNER JOIN following ON posts.author_id=following.followee_id 
+     INNER JOIN following ON posts.author_id=following.followee_id OR posts.author_id=?
      WHERE following.follower_id = ? 
      ORDER BY post_id DESC`;
-  mysql.query(query, [user_id], (err, result) => {
+  mysql.query(query, [user_id, user_id], (err, result) => {
     if(err){
       res.status(500).json({"Internal Service Error": err});
       throw err;

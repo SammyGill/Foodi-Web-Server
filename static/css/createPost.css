@@ -3,12 +3,6 @@
 
 * {margin: 0; padding: 0;}
 
-
-
-
-
-
-
 .ui-autocomplete {
   background-color: #fff;
   width: 1px;
@@ -32,7 +26,7 @@ html, body {
 
 
  #data{
-  width: 600px;
+  width: 700px;
   margin: 50px auto;
   text-align: center;
   position: relative;
@@ -162,6 +156,7 @@ html, body {
   text-overflow: ellipsis;
   width: 400px;
 }
+
 
 .controls:focus {
   border-color: #4d90fe;
