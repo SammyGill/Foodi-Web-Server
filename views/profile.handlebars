@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 
-    <script src="/js/profile.js"></script>
+  <script src="/js/profile.js"></script>
 
   <title>{{username}}'s Profile</title>
 </head>
@@ -36,11 +36,11 @@
       <ul class = "basic_info">
         <li class = "basic_info_item">
           <a  class = "basic_info_content" href="../following">following</a> <br>
-          <a class = "basic_info_content">{{following_count}}</a>
+          <a class = "basic_info_content" href = "../following">{{following_count}}</a>
         </li>
         <li class = "basic_info_item">
           <a class = "basic_info_content" href="../follower">follower</a> <br>
-          <a class = "basic_info_content" href = "../following">{{follower_count}}</a>
+          <a class = "basic_info_content" href = "../follower">{{follower_count}}</a>
         </li>
         <li class = "basic_info_item">
           <a  class = "basic_info_content" href="#post">posts</a> <br>
@@ -55,136 +55,39 @@
     <div class = "fix_gap post_section">
       <h2 class = "title_font"> POSTS </h2>
       <hr width = "300px"> <br>
-      <div class = "individual_post">
-        <ul class = "short_post_info">
-          <li class = "short_post_info_username">
-            <a class = "short_post_info_content" href = "../prifiles">meredith</a>
-          </li>
-          <li class = "short_post_info_restaurant_and_dish">
-            <a class = "short_post_info_content" href = "../restaurant_id">dishName · RestaurantName</a>
-          </li>
-        </ul>
-        <img class = "post_pics_profile" src = "https://www.w3schools.com/images/picture.jpg">
-      </div>
-      <div class = "individual_post">
-        <ul class = "short_post_info">
-          <li class = "short_post_info_username">
-            <a class = "short_post_info_content" href = "../prifiles">meredith</a>
-          </li>
-          <li class = "short_post_info_restaurant_and_dish">
-            <a class = "short_post_info_content" href = "../restaurant_id">dishName · RestaurantName</a>
-          </li>
-        </ul>
-        <img class = "post_pics_profile" src = "https://www.w3schools.com/images/picture.jpg">
-      </div>
-
-
 
       {{#each posts}}
-      {{> post post=this}}
-      <div class="individual_post" onClick="showModal('{{profile_picture}}','{{username}}','{{date}}','{{picture}}',
-                         '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}')">
-          <ul class = "short_post_info">
-            <li class = "short_post_info_username">
-              <a class = "short_post_info_content" href = "/profiles/{{../username}}">{{../username}}</a>
-            </li>
-            <li class = "short_post_info_restaurant_and_dish">
-              <a class = "short_post_info_content" href = "/restaurants/{{restaurant_id}}">{{dish_name}} · {{restaurant_id}}</a>
-            </li>
-          </ul>
-          <img class = "post_pics_profile" src = "/api/photos/{{picture}}">
-        </div>
+      <div class = "post_pics" "width: 40%; display:inline-block; text-align: center">
+        {{> profilepost post=this}}
+      </div>
       {{/each}}
-      <!-- <ul class = "dish_and_likes_list">
-      <li class = "dish_and_likes_element dish_name_element">
-      <a class = "dish_name_element_content">{{this.dish_name}}  | {{this.date}} | {{this.rating}} likes</a>
-    </li> <br>
-    <li class = "dish_and_likes_element like_and_unlike_element">
-    <i class="fa fa-thumbs-o-up fa-lg white before" aria-hidden="true"></i>
-    <i class="fa fa-thumbs-up fa-lg white after" aria-hidden="true"></i>
-  </li>
-  <li class = "dish_and_likes_element like_and_unlike_element">
-  <i class="fa fa-thumbs-o-down fa-lg white before" aria-hidden="true"></i>
-</li>
-
-</ul> -->
-
-
-
-</div>
-</section>
-
-  <div class ="col" align="center">
-      {{#each posts}}
-        {{> post post=this}}
-      {{/each}}
-
-
-  </div>
-
+    </div>
+  </section>
 
 
   {{>modal}}
 
   <script>
-    let following = {{is_following}}
-    let button = document.getElementById("follow-btn");
+  let following = {{is_following}}
+  let button = document.getElementById("follow-btn");
+  if(following) {
+    button.innerText = "Unfollow"
+    // button.onclick = unfollow('{{user_id}}');
+  }
+  else {
+    button.innerText = "Follow"
+    //button.onclick = follow('{{user_id}}');
+  }
+
+  function makeFollowChange() {
     if(following) {
-      button.innerText = "Unfollow"
-     // button.onclick = unfollow('{{user_id}}');
+      unfollow('{{user_id}}')
     }
     else {
-      button.innerText = "Follow"
-      //button.onclick = follow('{{user_id}}');
+      follow('{{user_id}}')
     }
-
-    function makeFollowChange() {
-      if(following) {
-        unfollow('{{user_id}}')
-      }
-      else {
-        follow('{{user_id}}')
-      }
-    }
-
-    // function follow(user_id) {
-    //   alert(user_id);
-    //   alert(accessToken)
-    //   $.ajax({
-    //     url: '/api/profiles/meredith',
-    //     type: 'GET',
-    //     datetype: 'json',
-    //     beforeSend: (xhr) => {   //Include the bearer token in header
-    //       xhr.setRequestHeader("Authorization", 'Bearer '+ accessToken);
-    //     },
-    //     success: (data, textStatus, xhr) => {
-    //       alert("Success");
-    //       alert(JSON.stringify(data))
-    //
-    //     },
-    //     error: (err) => {
-    //
-    //       alert(JSON.stringify(err));
-    //     }
-    //   });
-    // }
+  }
   </script>
-
-<li>postID: {{this.post_id}}</li>
-<li>Dish Name: {{this.dish_name}}</li>
-<li>Caption: {{this.caption}}</li>
-<li>Rating: {{this.rating}}</li>
-<li>Date :{{this.date}}</li>
-<li>Likes: {{this.likes}}</li>
-<li>Dislikes: {{this.dislikes}}</li>
-<li>RestaurantId: {{this.restaurant_id}}</li>
-
-<!-- Copyright -->
-<div class="copyright py-4 text-center text-white">
-  <div class="container">
-    <small>Copyright &copy; Your Website 2018</small>
-  </div>
-</div>
 
 </body>
 
