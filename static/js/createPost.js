@@ -1,10 +1,9 @@
-
 $(document).ready( () => {
   document.querySelector("#date").valueAsDate = new Date();
   var current_fs, next_fs, previous_fs;
   var left, opacity, scale;
   var animating;
-  var rating_val;
+
 
   $(".btnrating").on('click',(function(e) {
     var previous_value = $("#selected_rating").val();
@@ -77,8 +76,9 @@ $(document).ready( () => {
     
   $( "#dish_name" ).autocomplete({
     source: (request, response) => {
+      alert($('#restaurant_id2').val());
        $.ajax({
-        url: '/api/restaurants/' + $('#restaurant_id').val() + '/dish-list',
+        url: '/api/restaurants/' + $('#restaurant_id2').val() + '/dish-list',
         type: 'GET',
         dataType: 'json',
         success: (data) => {
@@ -90,45 +90,83 @@ $(document).ready( () => {
 
   $("form#data").submit(function(e){
     e.preventDefault();
-    alert('test');
-      // var formData = new FormData(this);
-      getCookie = (name) => {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
-    }
-    const access_token = getCookie('accessToken');
-
-      let formData = new FormData();
-      formData.append('restaurant_id', $('#restaurant_id').val());
-      formData.append('dish_name', $('#dish_name').val());
-      formData.append('image', $('#file').prop('files')[0]);
-      formData.append('date', $('#date').val());
-      formData.append('rating', parseInt(rating_val));
-      formData.append('caption', $('#caption').val());
-      alert(JSON.stringify(formData));
-      $.ajax({
-        url: '/api/posts/create',
-        type: 'POST',
-        data: formData,
-        beforeSend: function (xhr) {   //Include the bearer token in header
-          xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
-        },
-        success: (data) => {
-          alert("post created");
-          location.href = '/'
-        },
-        error: (err) => {
-          alert(JSON.stringify(err));
-        },
-        cache: false,
-        contentType: false,
-        processData: false
-      });
+    const url = '/api/restaurants/' + $('#restaurant_id2').val();
+    $.ajax({
+      url: url,
+      type: 'GET',
+      success: (data) => {
+          createPost();
+      },
+      error: (err) =>{
+          createRestaurant();
+          createPost();
+      }
+    });     
   });
-        
+
+function createRestaurant(){
+  $.ajax({
+    url: '/api/restaurants/create',
+    type: 'POST',
+    data: {
+      name: $("#name").val(),
+      restaurant_id: $('#restaurant_id2').val(),
+      street_number: $("#street_number").val(),
+      route: $("#route").val(),
+      neighborhood: $("#neighborhood").val(),
+      locality: $("#locality").val(),
+      administrative_area_level_1: $("#administrative_area_level_1").val(),
+      country: $("#country").val(),
+      postal_code: $("#postal_code").val(),
+      phone_number: $("#phone_number").val(),
+      hours: $("#hours").val()
+    },
+    success: (data) => {
+      console.log("*** NEW RESTAURANT CREATED ***");
+    },
+    error: (err) => {
+      alert(JSON.stringify(err));
+    }
+  });
+}
+
+
+function createPost(){
+  getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+  const access_token = getCookie('accessToken');
+
+  let formData = new FormData();
+  formData.append('restaurant_id', $('#restaurant_id2').val());
+  formData.append('restuarnat_name', $('#name').val());
+  formData.append('dish_name', $('#dish_name').val());
+  formData.append('image', $('#file').prop('files')[0]);
+  formData.append('date', $('#date').val());
+  formData.append('rating', parseInt(rating_val));
+  formData.append('caption', $('#caption').val());  
+  $.ajax({
+      url: '/api/posts/create',
+      type: 'POST',
+      data: formData,
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+      },
+      success: (data) => {
+        console.log("*** POST CREATED ***");
+        location.href = '/'
+      },
+      error: (err) => {
+        alert(JSON.stringify(err));
+      },
+      cache: false,
+      contentType: false,
+      processData: false
+  });
+}
+    
 });
-
-
 
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -167,9 +205,23 @@ function initMap() {
   autocomplete.addListener('place_changed', function() {
   infowindow.close();
   var place = autocomplete.getPlace();
-  var restaurant = {};
-  var a = place.address_components;
-  $('#restaurant_id').val(place.place_id);
+  const hours = place.opening_hours.weekday_text;
+  var parsed_hours = hours[0] + '\n' + hours[1] + '\n' + hours[2] + '\n' +hours[3] + '\n' +hours[4] + '\n' +hours[5] + '\n' +hours[6];
+  
+  /* information for creating a restaurant */
+  $("#name").val(place.name);
+  $("#restaurant_id2").val(place.place_id);
+  $("#street_number").val(place.address_components[1]['short_name']);
+  $("#route").val(place.address_components[2]['long_name']);
+  $("#neighborhood").val(place.address_components[3]['long_name']);
+  $("#locality").val(place.address_components[4]['long_name']);
+  $("#administrative_area_level_1").val(place.address_components[4]['long_name']);
+  $("#country").val(place.address_components[7]['long_name']);
+  $("#postal_code").val(place.address_components[8]['short_name']);
+  $("#phone_number").val(place.international_phone_number);
+  $("#hours").val(parsed_hours);
+
+
   if (!place.geometry) {
     return;
   }
@@ -197,3 +249,5 @@ function initMap() {
   $("#enter_dish_name").show();
   });
 }
+
+

@@ -5,8 +5,6 @@
   <title>Create a Post</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" href="/css/createPost.css">
-
 </head>
 
 <body>
@@ -86,7 +84,21 @@
     </fieldset>
   </form>
 
-</div>
+  <div class="hidden">
+    <input id="name" type="text" name="name" style="display:none">
+    <input id="restaurant_id2" type="text" name="restaurant_id2" style="display:none">
+    <input id="street_number" type="text" name="street_number" style="display:none">
+    <input id="route" type="text" name="route" style="display:none">
+    <input id="neighborhood" type="text" name="neighborhood" style="display:none">
+    <input id="locality" type="text" name="locality" style="display:none">
+    <input id="administrative_area_level_1" type="text" name="administrative_area_level_1" style="display:none">
+    <input id="country" type="text" name="country" style="display:none">
+    <input id="postal_code" type="text" name="postal_code" style="display:none">
+    <input id="phone_number" type="text" name="phone_number" style="display:none">
+    <input id="hours" type="text" name="hours" style="display:none">
+  </div>
+
+
 
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -94,6 +106,7 @@
         async defer></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="/js/createPost.js"></script>
- 
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/createPost.css">
 </body>
 </html>
