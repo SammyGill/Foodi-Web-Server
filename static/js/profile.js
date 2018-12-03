@@ -16,7 +16,7 @@ function follow(user_id) {
       xhr.setRequestHeader("Authorization", 'Bearer '+ access_token);
     },
     success: (data, textStatus, xhr) => {
-      alert(JSON.stringify(data));
+      location.reload();
     },
     error: (err) => {
       alert(JSON.stringify(err));
@@ -41,7 +41,7 @@ function unfollow(user_id) {
       xhr.setRequestHeader("Authorization", 'Bearer '+ access_token);
     },
     success: (data, textStatus, xhr) => {
-      alert(JSON.stringify(data));
+      location.reload();
     },
     error: (err) => {
       alert(JSON.stringify(err));
