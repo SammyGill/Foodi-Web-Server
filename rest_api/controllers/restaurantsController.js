@@ -162,3 +162,45 @@ exports.get_dish_list = (req, res) => {
     res.status(200).json( {dish_names: results.map(e => e.dish_name)} );
   });
 }
+
+exports.discover = (req, res) => {
+  
+  const arr = req.query.restaurants.split(',');
+  let query =  `SELECT *, likes - dislikes AS difference FROM posts WHERE `;
+  
+  for (let i = 0; i < arr.length; i++) {
+    query += `restaurant_id='` + arr[i] + `'`;
+    if (i != arr.length - 1)
+      query += ` OR `;
+  }
+  query += ` ORDER BY difference DESC`;
+  mysql.query(query, (err, results) => {
+    if (err) {
+      res.status(500).json(err);
+      throw err;
+    }
+    
+    // groups posts by dish name; not sorted, though
+    let groupBy = (xs, key) => {
+      return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+      }, {});
+    };
+    let grouped = groupBy(results, 'restaurant_id')
+    Object.keys(grouped).forEach( restaurant => {
+      grouped[restaurant] = groupBy(grouped[restaurant], 'dish_name');
+    });
+
+    let posts = [];
+    Object.keys(grouped).forEach( restaurant => {
+      Object.keys(grouped[restaurant]).forEach( dish => {
+        posts.push(grouped[restaurant][dish][0]);
+      });
+    })
+    // console.log(posts);
+    res.status(200).json(posts);
+
+  })
+  
+}
