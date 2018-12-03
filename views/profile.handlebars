@@ -25,14 +25,13 @@
   <!--  Navigation -->
   {{> navbar}}
 
-<button id="follow-btn" onClick="follow('{{user_id}}')"> Follow </button>
-<button id="unfollow-btn" onClick="unfollow('{{user_id}}')"> Unfollow </button>
   <!-- Basic Info -->
   <section class="jumbotron yellow_bg fix_gap">
-    <div>
+    <div align="center">
       <img class = "profile_picture" src="{{picture}}">
       <h1 class = "username"><b>{{username}}</b></h1>
       <h5 class="username">{{name}}</h5>
+      <button id="follow-btn" type="button" onClick="makeFollowChange()" class="btn btn-primary username"></button>
       <hr width = "600px">
       <ul class = "basic_info">
         <li class = "basic_info_item">
@@ -128,6 +127,25 @@
   {{>modal}}
 
   <script>
+    let following = {{is_following}}
+    let button = document.getElementById("follow-btn");
+    if(following) {
+      button.innerText = "Unfollow"
+     // button.onclick = unfollow('{{user_id}}');
+    }
+    else {
+      button.innerText = "Follow"
+      //button.onclick = follow('{{user_id}}');
+    }
+
+    function makeFollowChange() {
+      if(following) {
+        unfollow('{{user_id}}')
+      }
+      else {
+        follow('{{user_id}}')
+      }
+    }
 
     // function follow(user_id) {
     //   alert(user_id);

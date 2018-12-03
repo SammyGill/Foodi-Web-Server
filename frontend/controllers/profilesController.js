@@ -17,7 +17,11 @@ exports.view = (req, res) => {
   const path = '/api/profiles/' + req.params.username;
   const url =  host + path;
 
-  request.get({url: url, json: true}, (err, response, body) => {
+  request.get({url: url, json: true, headers: {
+    'content-type' : 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer ' + req.cookies.accessToken
+    },}, (err, response, body) => {
+      console.log(body)
     // server error or client error
     if (err || response.statusCode >= 400) {
       res.render('error', getErrorMessage(err, response));
@@ -25,7 +29,8 @@ exports.view = (req, res) => {
     // successful api call
     else {
       user_info = body.user_info[0];
-
+      console.log("follower count " + user_info.follower_count);
+      console.log("following count " + user_info.following_count)
       res.render('profile', {
         user_id: user_info.user_id,
         username: user_info.username,
@@ -33,7 +38,8 @@ exports.view = (req, res) => {
         picture: user_info.profile_picture,
         following_count: user_info.following_count,
         follower_count: user_info.follower_count,
-        posts: body.posts
+        posts: body.posts,
+        is_following: body.isFollowing
       });
     }
 
