@@ -1,31 +1,57 @@
 <!DOCTYPE html>
-<html lang='eg'>
+<html lang='en'>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="icon" href="bitmap/img/favicon.png" type="image/png">
-  <!-- <title>Bitmap Photography Multi</title> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <link rel="icon" href="img/favicon.png" type="image/png">
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="bitmap/css/bootstrap.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="bitmap/css/bootstrap.css">
   <link rel="stylesheet" href="bitmap/vendors/linericon/style.css">
   <link rel="stylesheet" href="bitmap/css/font-awesome.min.css">
   <link rel="stylesheet" href="bitmap/vendors/owl-carousel/owl.carousel.min.css">
   <link rel="stylesheet" href="bitmap/vendors/lightbox/simpleLightbox.css">
   <link rel="stylesheet" href="bitmap/vendors/nice-select/css/nice-select.css">
-  <link rel="stylesheet" href="bitmap/vendors/animate-css/animate.css">
+  <link rel="stylesheet" href="bitmap/vendors/animate-css/animate.css"> -->
   <!-- main css -->
-  <link rel="stylesheet" href="bitmap/css/style.css">
-  <link rel="stylesheet" href="bitmap/css/responsive.css">
+ <!--  <link rel="stylesheet" href="bitmap/css/style.css">
+  <link rel="stylesheet" href="bitmap/css/responsive.css"> -->
   <title>View restaurant</title>
+
 </head>
+
 <body>
+  {{> navbar}}
+  <!-- <section class="home_banner_area">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
+      <div class="container">
+        <div class="banner_content text-center">
+          <h2>{{name}}</h2>
+        </div>
+      </div>
+    </div>
+  </section> -->
 
   <section class="banner_area">
     <div class="banner_inner d-flex align-items-center">
       <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
       <div class="container">
         <div class="banner_content text-center">
-          <h2>Restaurant name</h2>
+          <h2>{{name}}</h2>
           <div class="page_link">
             <!-- <a href="index.html">Home</a> -->
             <!-- <a href="gallery.html">Gallery</a> -->
@@ -35,41 +61,56 @@
     </div>
   </section>
 
-  <div id = galleries class="gallery_f_inner row imageGallery1">                
+<!--   <div class="row">
+    <div class="col-sm-4">.col-sm-4</div>
+    <div class="col-sm-4">.col-sm-4</div>
+    <div class="col-sm-4">.col-sm-4</div>
+  </div> -->
 
+  <div id = galleries class="gallery_f_inner row imageGallery1">         
     {{#each dishes as |dish|}} 
-    <img id = "gallery{{dish.posts.0.picture}}" src="/api/photos/{{dish.posts.0.picture}}" height = 300 alt="" onclick="myFunction('{{dish.posts.0.picture}}', '{{dish.posts.0.dish_name}}')">
+      <div class = "col-sm-4">
+        <img id = "gallery{{dish.posts.0.picture}}" src="/api/photos/{{dish.posts.0.picture}}" width = 250 height = 300 alt="" onclick="myFunction('{{dish.posts.0.picture}}', '{{dish.posts.0.dish_name}}')">
+      </div>
     {{/each}} 
   </div>
 
-  <div id = "pics">
+  <div id = "pics" class = "row align-items-center">
     {{#each dishes as |dish|}}
     <div hidden id = "{{dish.posts.0.dish_name}}">
+      <div class = "col-sm-12" class = "row">
+        <button id = "backToGalButton" type = "button" onclick="myFunc2('{{dish.posts.0.picture}}', '{{dish.posts.0.dish_name}}')">Back to Restaurant Page</button>
+      </div>
       {{#each posts}}
-      <img id = "gallery" src="/api/photos/{{this.picture}}" height = 300 alt="" onClick="showMod('{{this.date}}','{{this.picture}}', '{{this.dish_name}}','{{this.caption}}','{{this.rating}}','{{this.likes}}','{{this.dislikes}}', '{{restaurant_id}}')">
+        <div class = "col-sm-4">
+          <img id = "gallery" src="/api/photos/{{this.picture}}" height = 300 alt="" onClick="showMod('{{this.date}}','{{this.picture}}', '{{this.dish_name}}','{{this.caption}}','{{this.rating}}','{{this.likes}}','{{this.dislikes}}', '{{restaurant_id}}')">
+        </div>
       {{/each}}
     </div>
     {{/each}}
+
   </div>
 
   <script> 
     function myFunction(picName, dishName) {
       var x = "";
-      document.getElementById("galleries").style.visibility = 'hidden';
+      document.getElementById("galleries").hidden = true;
       document.getElementById(dishName).hidden = false;
+      document.getElementById("galleries").style.display = "none";
     }
   </script>
   <script> 
     function myFunc2(picName, dishName) {
       var x = "";
-      document.getElementById("galleries").style.visibility = 'visible';
+      document.getElementById("galleries").hidden = false;
       document.getElementById(dishName).hidden = true;
+      document.getElementById("galleries").style.display = "block";
     }
   </script>
 
-  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <!-- <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-
+ -->
 
   <script>
 // This sample uses the Place Autocomplete widget to allow the user to search
@@ -139,19 +180,6 @@
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
   async defer></script>
-  <script src="bitmap/js/jquery-3.2.1.min.js"></script>
-  <script src="bitmap/js/popper.js"></script>
-  <script src="bitmap/js/bootstrap.min.js"></script>
-  <script src="bitmap/js/stellar.js"></script>
-  <script src="bitmap/vendors/lightbox/simpleLightbox.min.js"></script>
-  <script src="bitmap/vendors/nice-select/js/jquery.nice-select.min.js"></script>
-  <script src="bitmap/vendors/isotope/imagesloaded.pkgd.min.js"></script>
-  <script src="bitmap/vendors/isotope/isotope-min.js"></script>
-  <script src="bitmap/vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="bitmap/js/jquery.ajaxchimp.min.js"></script>
-  <script src="bitmap/js/mail-script.js"></script>
-  <script src="bitmap/js/theme.js"></script>
-
   {{>resModal}}
 
 </body>

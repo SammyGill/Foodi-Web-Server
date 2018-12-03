@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade" id="resModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -50,7 +50,10 @@
 
 <!-- JS for modal -->
 <script>
-  // modal stuff
+// modal stuff
+  $('#resModal').on('hidden.bs.modal', function () {
+    $('body').css('overflow', 'auto');
+  })
 
   function showMod(date, picture, dish_name, caption, rating, likes, dislikes, restaurant_id) {
 
@@ -64,13 +67,12 @@
     $('body').css('overflow', 'hidden');
     $('#restaurant_id').text(restaurant_id);
 
-    $("#postModal").modal()
+    $("#resModal").modal()
   }
 
   // close popup modal
   $('.close-modal').click(() =>
   {
-    modal.attr('style', 'display:none');
     $('body').css('overflow', 'auto');
   });
 </script>
