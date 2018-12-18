@@ -1,0 +1,40 @@
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-title-text"></h4>
+      </div>
+      
+      <div class="modal-body" id="modal-body" style="margin: 1px; padding: 1px;">
+        <br>
+        <p id="modal-body-text"></p>
+        <br>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function alertModal(titleMessage, bodyMessage) {
+    if (bodyMessage) {
+      $('#modal-body').show();
+      $('#modal-body-text').text(bodyMessage);
+    }
+    else {
+      $('#modal-body').hide();
+    }
+    
+    $('#modal-title-text').text(titleMessage);
+    $('#alertModal').modal();
+  }
+  
+</script>
+

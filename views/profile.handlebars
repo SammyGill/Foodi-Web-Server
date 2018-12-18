@@ -31,7 +31,17 @@
       <img class = "profile_picture" src="{{picture}}">
       <h1 class = "username"><b>{{username}}</b></h1>
       <h5 class="username">{{name}}</h5>
-      <button id="follow-btn" type="button" onClick="makeFollowChange()" class="btn btn-primary username"></button>
+
+      {{#if can_edit}}
+        <button id="edit-btn" onClick="" class="btn btn-secondary">Edit</button>
+      {{else}}
+        {{#if is_following}}
+          <button id="unfollow-btn" onClick="unfollow('{{user_id}}')" class="btn btn-secondary">Unfollow</button>
+        {{else}}
+          <button id="follow-btn" onClick="follow('{{user_id}}')" class="btn btn-primary">Follow</button>
+        {{/if}}
+      {{/if}}
+
       <hr width = "600px">
       <ul class = "basic_info">
         <li class = "basic_info_item">
@@ -57,37 +67,22 @@
       <hr width = "300px"> <br>
 
       {{#each posts}}
-      <div class = "post_pics" "width: 40%; display:inline-block; text-align: center">
-        {{> profilepost post=this}}
-      </div>
+        <div id="post{{post_id}}" class = "post_pics" "width: 40%; display:inline-block; text-align: center">
+         <div class="card card_profile" style="margin-bottom:100px;"
+          onClick="showModal('{{../picture}}','{{../username}}','{{date}}','{{picture}}',
+                             '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}',
+                             '{{restaurant_id}}', '{{post_id}}', '{{canEdit}}')">
+            <img class="card-img-top card-img_profile" src="/api/photos/{{picture}}" alt="Card image cap">
+          
+          </div>
+        </div>
       {{/each}}
     </div>
   </section>
 
-
+  {{>alertModal}}
   {{>modal}}
 
-  <script>
-  let following = {{is_following}}
-  let button = document.getElementById("follow-btn");
-  if(following) {
-    button.innerText = "Unfollow"
-    // button.onclick = unfollow('{{user_id}}');
-  }
-  else {
-    button.innerText = "Follow"
-    //button.onclick = follow('{{user_id}}');
-  }
-
-  function makeFollowChange() {
-    if(following) {
-      unfollow('{{user_id}}')
-    }
-    else {
-      follow('{{user_id}}')
-    }
-  }
-  </script>
 
 </body>
 
