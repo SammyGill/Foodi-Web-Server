@@ -4,6 +4,7 @@ const router = express.Router();
 const profiles_controller = require('../controllers/profilesController');
 const posts_controller = require('../controllers/postsController');
 const auth = require('../middleware/auth');
+const auth2 = require('../middleware/auth2');
 
 // GET request for getting list of all usernames in the database (for autocompletion)
 router.get('/username-list', profiles_controller.username_list);
@@ -16,7 +17,7 @@ router.get('/get/feed', auth, posts_controller.get_feed);
 
 // GET request for getting all info related to the profile
 // can enter EITHER user id OR username
-router.get('/:id_or_username', auth, profiles_controller.get_info);
+router.get('/:id_or_username', auth2, profiles_controller.get_info);
 
 // PATCH request for editing profile
 router.patch('/:user_id/edit', profiles_controller.edit);

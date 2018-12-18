@@ -23,7 +23,6 @@ exports.create_post = (req, res) => {
   const dish_name = req.body.dish_name;
   const author_id = req.userData.id;
   const caption = req.body.caption;
-  console.log(req.file);
   const picture = req.file.filename;
   const picture_url = "http://18.224.14.57/api/photos/" + picture;
   const rating = req.body.rating;
@@ -86,7 +85,7 @@ exports.get_comments = (req, res) => {
      WHERE comments.user_id=users.user_id AND post_id = ? AND comment_id > ? 
      ORDER BY date ASC LIMIT ` + limit;
   mysql.query(query, [post_id, idx], (err, result) => {
-    console.log(result);
+    //console.log(result);
     if(err) {
       res.status(500).json(err).json(err);
       throw err;
@@ -266,12 +265,13 @@ exports.get_feed = (req, res) => {
   const query = 
     `SELECT DISTINCT * FROM posts 
      INNER JOIN users ON users.user_id=posts.author_id 
-     INNER JOIN following ON posts.author_id=following.followee_id OR posts.author_id=?
-     WHERE following.follower_id = ? 
+     INNER JOIN following ON posts.author_id=following.followee_id
+     WHERE following.follower_id = ? OR posts.author_id=?
+     GROUP BY post_id
      ORDER BY post_id DESC`;
   mysql.query(query, [user_id, user_id], (err, result) => {
     if(err){
-      res.status(500).json({"Internal Service Error": err});
+      res.status(500).json({message: err});
       throw err;
     }
     else {

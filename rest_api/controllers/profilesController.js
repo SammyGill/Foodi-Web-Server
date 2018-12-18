@@ -39,43 +39,44 @@ exports.name_list = (req, res) => {
 /** Function for gettting all info related to the usert
  */
 exports.get_info = (req, res) => {
-  const requesting_user_id = req.userData.id;
+  const requesting_user_id = req.userData.id; //id of the person making the request
   const id = req.params.id_or_username;
-  mysql.query(checkIdOrUsername, [id, id], (err, result) => {
+
+  mysql.query(checkUsername, [id], (err, result) => {
     if (err) {
-      res.status(500).json( {"Internal Service Error": err} );
+      res.status(500).json( {message: err} );
       throw err;
     }
-    else if (result.length == 1) { // found user
-      let requestee_user_id = result[0].user_id;
+    else if (result.length != 1) { // user doesn't exist'
+      res.status(404).json( {message: "User with this ID does not exist"} );
+    }
+    else { // found user
+      const requestee_user_id = result[0].user_id; //id of the profile being viewed
       const user_info = result;
 
       // get all of the user's posts
-      let getPostsQuery = "Select * FROM posts where author_id = ?";
+      const getPostsQuery = "Select * FROM posts where author_id = ?";
       mysql.query(getPostsQuery, [user_info[0].user_id], (err, results) => {
         if (err) {
-          res.status(500).json( {"Internal Service Error": err} );
+          res.status(500).json( {message: err} );
           throw err;
         }
-        let isFollowing = undefined;
+
+        // check if the requester is already following the requestee
         mysql.query(isFollowingQuery, [requesting_user_id, requestee_user_id], (err, result) => {
-          if (err) {
-            res.status(500).json( {"Internal Service Error": err} );
+          if (err) { 
+            res.status(500).json( {message: err} ); 
             throw err;
           }
-          if(result.length == 0) {
-            isFollowing = false;
-          }
-          else {
-            isFollowing = true;
-          }
-          res.status(200).json({user_info: user_info, posts: results, isFollowing: isFollowing});
+          
+          res.status(200).json({
+            user_info: user_info, 
+            posts: results, 
+            canEdit: (requesting_user_id === requestee_user_id)? true : false,
+            isFollowing: (result.length == 0)? false : true
+          });
         })
-
       });
-    }
-    else {
-      res.status(404).json( {"Not Found": "User with this ID does not exist"} );
     }
   });
 
