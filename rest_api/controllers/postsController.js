@@ -211,7 +211,7 @@ exports.delete_post = (req, res) => {
       throw err;
     }
     else {
-      const author_id = results[0].author_id;
+      const author_id = result[0].author_id;
       if (user_id != author_id)
         res.status(403).json({message: "Cannot delete post that is not yours"});
       else {
@@ -263,13 +263,16 @@ exports.add_comment = (req, res) => {
 exports.get_feed = (req, res) => {
   const user_id = req.userData.id;
   const query = 
-    `SELECT DISTINCT * FROM posts 
+    `SELECT DISTINCT 
+      *,
+      CASE WHEN author_id = ? then true else false end AS canEdit
+     FROM posts 
      INNER JOIN users ON users.user_id=posts.author_id 
      INNER JOIN following ON posts.author_id=following.followee_id
      WHERE following.follower_id = ? OR posts.author_id=?
      GROUP BY post_id
      ORDER BY post_id DESC`;
-  mysql.query(query, [user_id, user_id], (err, result) => {
+  mysql.query(query, [user_id, user_id, user_id], (err, result) => {
     if(err){
       res.status(500).json({message: err});
       throw err;

@@ -55,8 +55,14 @@ exports.get_info = (req, res) => {
       const user_info = result;
 
       // get all of the user's posts
-      const getPostsQuery = "Select * FROM posts where author_id = ?";
-      mysql.query(getPostsQuery, [user_info[0].user_id], (err, results) => {
+      const getPostsQuery = 
+        `SELECT
+          *,
+          CASE WHEN author_id = ? then true else false end AS canEdit
+        FROM posts
+        WHERE author_id=?`;
+      // const getPostsQuery = "Select * FROM posts where author_id = ?";
+      mysql.query(getPostsQuery, [requesting_user_id, requestee_user_id], (err, results) => {
         if (err) {
           res.status(500).json( {message: err} );
           throw err;
