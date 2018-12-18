@@ -265,21 +265,30 @@ exports.get_feed = (req, res) => {
   const query = 
     `SELECT DISTINCT 
       *,
-      CASE WHEN author_id = ? then true else false end AS canEdit
-     FROM posts 
+      CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
+      CASE 
+        WHEN EXISTS (SELECT 1 FROM likes 
+          WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+        THEN true ELSE false END AS liked,
+      CASE 
+        WHEN EXISTS (SELECT 1 FROM likes 
+          WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+        THEN true ELSE false END AS disliked
+     FROM posts
      INNER JOIN users ON users.user_id=posts.author_id 
      INNER JOIN following ON posts.author_id=following.followee_id
      WHERE following.follower_id = ? OR posts.author_id=?
      GROUP BY post_id
      ORDER BY post_id DESC`;
-  mysql.query(query, [user_id, user_id, user_id], (err, result) => {
+  mysql.query(query, [user_id,user_id, user_id, user_id, user_id], (err, results) => {
     if(err){
       res.status(500).json({message: err});
       throw err;
     }
     else {
+      console.log(results[1]) ;
       //console.log(result.map(e=>e.post_id));
-      res.status(200).json(result);
+      res.status(200).json(results);
     }
   });
 
