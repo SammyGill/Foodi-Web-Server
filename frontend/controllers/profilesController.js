@@ -31,7 +31,7 @@ exports.view = (req, res) => {
       user_info = body.user_info[0];
       console.log("follower count " + user_info.follower_count);
       console.log("following count " + user_info.following_count)
-      res.render('profile', {
+      let obj = {
         user_id: user_info.user_id,
         username: user_info.username,
         name: user_info.first_name + ' ' + user_info.last_name,
@@ -39,8 +39,13 @@ exports.view = (req, res) => {
         following_count: user_info.following_count,
         follower_count: user_info.follower_count,
         posts: body.posts,
-        is_following: body.isFollowing
-      });
+      };
+      if (body.isFollowing)
+        obj.is_following = true;
+      if (body.canEdit)
+        obj.can_edit = true;
+      console.log(obj);
+      res.render('profile', obj);
     }
 
   });
