@@ -91,6 +91,7 @@
   let post_id = 0;
   let data;
 
+  // set dynamic data such as like and dislike counts
   function setData(postid, likes, dislikes, liked, disliked) {
     console.log('set data');
     $('#post'+postid).data({
@@ -100,6 +101,7 @@
       disliked: disliked
     });
   }
+
   function showModal(profile_picture, username, date, picture, dish_name, 
     caption, rating, likes, dislikes, restaurant_id, postid, canEdit, liked, disliked) {
     post_id = postid;
@@ -145,8 +147,6 @@
       $('#undo-dislike-btn').show();
     else
       $('#dislike-btn').show();
-
-
 
 
     $("#postModal").modal()
