@@ -32,7 +32,12 @@
 
       <div class="modal-footer">
         <span class="mr-auto">
+          <img src="/images/fork_outline.png" id="like-btn" onClick="like()" width="10rem" height="20rem">
+          <img src="/images/fork_filled.png" id="undo-like-btn" onClick="like()" width="10rem" height="20rem">
           <span id="likes"></span>
+
+          <img src="/images/knife_outline.png" id="dislike-btn" onClick="dislike()" width="10rem" height="20rem">
+          <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem">
           <span id="dislikes"></span>
         </span>
 
@@ -84,10 +89,25 @@
   }
   const access_token = getCookie('accessToken');
   let post_id = 0;
+  let data;
 
+  function setData(postid, likes, dislikes, liked, disliked) {
+    console.log('set data');
+    $('#post'+postid).data({
+      likes: likes,
+      dislikes: dislikes,
+      liked: liked,
+      disliked: disliked
+    });
+  }
   function showModal(profile_picture, username, date, picture, dish_name, 
-    caption, rating, likes, dislikes, restaurant_id, postid, canEdit) {
+    caption, rating, likes, dislikes, restaurant_id, postid, canEdit, liked, disliked) {
+    post_id = postid;
+    postData = $('#post'+postid).data();
 
+    if ( $('#post'+postid).data('likes') === undefined )
+      setData(postid, likes, dislikes, liked, disliked);
+    
 
     $('#profile_picture').attr('src', profile_picture);
     $('#link').attr('href', '/profiles/' + username)
@@ -97,17 +117,37 @@
     $('#dish_name').text('dish name: ' + dish_name);
     $('#caption').text('caption: ' + caption);
     $('#rating').text('rating: ' + rating);
-    $('#likes').text('likes: ' + likes);
-    $('#dislikes').text('dislikes: ' + dislikes);
+    $('#likes').text(postData.likes);
+    $('#dislikes').text(postData.dislikes);
     $('body').css('overflow', 'hidden');
     $('#restaurant_id').text(restaurant_id);
-    post_id = postid;
+
     
     //SQL doesn't support boolean in CASE statement, so values are set as 1 or 0
     if (canEdit == '1') // only show delete button for your own post
       $('#delete-btn').show();
     else
       $('#delete-btn').hide();
+
+
+    //check if the user has liked/disliked post and display the appropriate buttons
+    $('#like-btn').hide();
+    $('#undo-like-btn').hide();
+    $('#dislike-btn').hide();
+    $('#undo-dislike-btn').hide();
+
+    if (postData.liked == '1') 
+      $('#undo-like-btn').show()  //already liked the post; show filled in fork
+    else
+      $('#like-btn').show()  //haven't liked the post; show fork outline
+
+    if (postData.disliked == '1') //already disliked; show filled in knife
+      $('#undo-dislike-btn').show();
+    else
+      $('#dislike-btn').show();
+
+
+
 
     $("#postModal").modal()
   }
@@ -116,6 +156,112 @@
   $('.close-modal').click(() => {
     $('body').css('overflow', 'auto');
   });
+
+
+  $('#likes').click( () => { like(); } );
+  function like(callback) {
+    $.ajax({
+      url: '/api/posts/' + post_id + '/like',
+      type: 'POST',
+      datetype: 'json',
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
+      },
+      success: (data) => {
+        const prevLikes = postData.likes;
+        const currLikes = data.updated_val.likes; 
+        $('#likes').text(currLikes);
+        postData.likes = currLikes;
+
+        if (prevLikes < currLikes) { // user liked post
+          $('#undo-like-btn').show();
+          $('#like-btn').hide();
+          postData.liked = '1';
+        }
+        else { // user undo liked post
+          $('#undo-like-btn').hide();
+          $('#like-btn').show();
+          postData.liked = '0';
+        }
+
+        if (callback)
+          callback();
+
+      },
+      error: (err) => {
+        // user tried to like post while already disliked; dislike the post for
+        // the user and then like it
+        if (err.status == 409) { 
+          dislike( () => like() );
+        }
+        else {
+          $('.close-modal').click();
+          const alertTitle = "Error " + err.status + ": " + err.statusText;
+          let alertText = "";
+          if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+            alertText = err.responseJSON.error.message + " Please log in and try again.";
+          else // other error
+            alertText = err.responseJSON.message;
+          
+          alertModal(alertTitle, alertText);
+        }
+        
+      },
+    });
+  }
+
+  $('#dislikes').click( () => { dislike(); } );
+  function dislike(callback) {
+    $.ajax({
+      url: '/api/posts/' + post_id + '/dislike',
+      type: 'POST',
+      datetype: 'json',
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
+      },
+      success: (data) => {
+        
+        const prevDislikes = postData.dislikes;
+        const currDislikes = data.updated_val.dislikes; 
+        postData.dislikes = currDislikes;
+        $('#dislikes').text(currDislikes);
+
+        if (prevDislikes < currDislikes) { // user disliked post
+          $('#undo-dislike-btn').show();
+          $('#dislike-btn').hide();
+          postData.disliked = '1';
+        }
+        else { // user undo disliked post
+          $('#undo-dislike-btn').hide();
+          $('#dislike-btn').show();
+          postData.disliked = '0';
+        }
+        if (callback)
+          callback();
+      },
+      error: (err) => {
+
+        // user tried to dislike post while already liked; like the post for
+        // the user and then dislike it
+        if (err.status == 409) { 
+          like( () => dislike() );
+        }
+        else {
+          $('.close-modal').click();
+          const alertTitle = "Error " + err.status + ": " + err.statusText;
+          let alertText = "";
+          if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+            alertText = err.responseJSON.error.message + " Please log in and try again.";
+          else // other error
+            alertText = err.responseJSON.message;
+          
+          alertModal(alertTitle, alertText);
+        }
+
+      },
+    });
+  };
+
 
   $('#delete-btn').click( () => {
     $('#delete-btn').hide();

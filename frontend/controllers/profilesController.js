@@ -39,6 +39,7 @@ exports.view = (req, res) => {
         following_count: user_info.following_count,
         follower_count: user_info.follower_count,
         posts: body.posts,
+        num_posts: body.posts.length
       };
       if (body.isFollowing)
         obj.is_following = true;

@@ -19,7 +19,11 @@ function follow(user_id) {
       location.reload();
     },
     error: (err) => {
-      alert(JSON.stringify(err));
+      const alertTitle = "Error " + err.status + ": " + err.statusText;
+      let alertText = err.responseJSON.error.message;
+      if (err.responseJSON.error.code == 190)
+        alertText += " Please log in and try again."
+      alertModal(alertTitle, alertText);
     }
   });
 
@@ -44,7 +48,11 @@ function unfollow(user_id) {
       location.reload();
     },
     error: (err) => {
-      alert(JSON.stringify(err));
+      const alertTitle = "Error " + err.status + ": " + err.statusText;
+      let alertText = err.responseJSON.error.message;
+      if (err.responseJSON.error.code == 190)
+        alertText += " Please log in and try again."
+      alertModal(alertTitle, alertText);
     }
   });
 
