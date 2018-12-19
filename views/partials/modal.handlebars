@@ -17,7 +17,7 @@
       <div class="col">
 
         <br>
-        <div id="restaurant_id" style="float:right;"></div>
+        <a href='' id="restaurant_link"><div id="restaurant_name" style="float:right;"></div></a>
         <br>
         <div id="dish_name" style="float:right;"></div>
         </div>
@@ -102,15 +102,15 @@
     });
   }
 
-  function showModal(profile_picture, username, date, picture, dish_name, 
-    caption, rating, likes, dislikes, restaurant_id, postid, canEdit, liked, disliked) {
+  function showModal(profile_picture, username, date, picture, dish_name, caption, 
+    rating, likes, dislikes, restaurant_id, restaurant_name, postid, canEdit, liked, disliked) {
     post_id = postid;
     postData = $('#post'+postid).data();
 
     if ( $('#post'+postid).data('likes') === undefined )
       setData(postid, likes, dislikes, liked, disliked);
     
-
+    
     $('#profile_picture').attr('src', profile_picture);
     $('#link').attr('href', '/profiles/' + username)
     $('#username').text(username)
@@ -122,7 +122,8 @@
     $('#likes').text(postData.likes);
     $('#dislikes').text(postData.dislikes);
     $('body').css('overflow', 'hidden');
-    $('#restaurant_id').text(restaurant_id);
+    $('#restaurant_link').attr('href', '/restaurants/' + restaurant_id);
+    $('#restaurant_name').text(restaurant_name);
 
     
     //SQL doesn't support boolean in CASE statement, so values are set as 1 or 0

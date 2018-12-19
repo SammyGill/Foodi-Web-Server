@@ -264,7 +264,8 @@ exports.get_feed = (req, res) => {
   const user_id = req.userData.id;
   const query = 
     `SELECT DISTINCT 
-      *,
+      users.username, users.profile_picture, posts.*,
+      restaurants.name AS restaurant_name,
       CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
       CASE 
         WHEN EXISTS (SELECT 1 FROM likes 
@@ -277,6 +278,7 @@ exports.get_feed = (req, res) => {
      FROM posts
      INNER JOIN users ON users.user_id=posts.author_id 
      INNER JOIN following ON posts.author_id=following.followee_id
+     LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
      WHERE following.follower_id = ? OR posts.author_id=?
      GROUP BY post_id
      ORDER BY post_id DESC`;
@@ -286,7 +288,7 @@ exports.get_feed = (req, res) => {
       throw err;
     }
     else {
-      console.log(results[1]) ;
+      // console.log(results[1]) ;
       //console.log(result.map(e=>e.post_id));
       res.status(200).json(results);
     }
