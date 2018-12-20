@@ -47,7 +47,8 @@
   <div id = galleries class="gallery_f_inner row imageGallery1">         
     {{#each dishes as |dish|}} 
       <div class = "col-sm-4">
-        <center><h6>{{dish.posts.0.dish_name}}</h4></center>
+        <br>
+        <h6>{{dish.posts.0.dish_name}}</h6>
         <img id = "gallery{{dish.posts.0.picture}}" src="/api/photos/{{dish.posts.0.picture}}" width = 250 height = 300 alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"' onclick="showDish('{{dish.posts.0.dish_name}}')" style="cursor:pointer">
       </div>
     {{/each}} 
