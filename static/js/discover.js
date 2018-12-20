@@ -72,9 +72,9 @@ jQuery.curCSS = function(element, prop, val) {
   return jQuery(element).css(prop, val);
 };
 
-$(function(){
+$(function() {
   $("#input_user").autocomplete({
-    source :function( request, response ) {
+    source: (request, response) => {
       $.ajax({
         url: '/api/profiles/suggestions?user='+request.term,
         dataType: "json",
@@ -82,7 +82,9 @@ $(function(){
         success: (data) => {
           response($.map(data, (item) => {
             return {
-              label : item.label,
+              label : item.username,
+              first_name: item.first_name,
+              last_name: item.last_name,
               profile_picture: item.profile_picture
             };
           }));
@@ -92,10 +94,15 @@ $(function(){
     select: (event, ui) => {
       window.location.href = "/profiles/" + ui.item.label;
     }
-  }).data('autocomplete')._renderItem = function(ul, item) {
+  }).data('autocomplete')._renderItem = (ul, item) => {
+    let regex = new RegExp( $('#input_user').val(), 'ig' );
+    let str = item.label  + ' (' + item.first_name + ' ' + item.last_name; 
+    
+    let html = '<a><img src="' + item.profile_picture + '" alt="" style="width:10%; cursor:pointer"/></a> ';
+    html += '<a style="cursor:pointer">' + str.replace( regex , "<b>$&</b>" ) + ')</a>';
     return $('<li>')
       .data('item.autocomplete', item)
-      .append('<a><img src="' + item.profile_picture + '" alt="" style="width:10%"/> ' + item.label + '</a>')
+      .append(html)
       .appendTo(ul);
   };;
 

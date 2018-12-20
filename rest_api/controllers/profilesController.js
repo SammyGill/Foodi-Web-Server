@@ -21,7 +21,7 @@ const isFollowingQuery = "SELECT * FROM following WHERE follower_id = ? AND foll
 exports.suggestions = (req, res) => {
   const user = req.query.user;
   const query = 
-  `SELECT DISTINCT username AS label, user_id AS value, profile_picture
+  `SELECT DISTINCT username, first_name, last_name, profile_picture
    FROM users 
    WHERE 
     username LIKE '` + user + `%' OR 
