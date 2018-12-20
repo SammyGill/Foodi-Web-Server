@@ -4,7 +4,7 @@ function showDish(dishName) {
   // document.getElementById("galleries").style.display = "none";
 }
 
-function showGallery(dishName) {
+function hideDish(dishName) {
   document.getElementById("galleries").hidden = false;
   document.getElementById(dishName).hidden = true;
   // document.getElementById("galleries").style.display = "block";

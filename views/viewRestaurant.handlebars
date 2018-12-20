@@ -60,12 +60,15 @@
 
       <!-- all posts from same dish are grouped into one div; hidden by default -->
       <div hidden id = "{{dish.posts.0.dish_name}}">
-        <div class = "col-sm-12" class = "row">
-          <button onclick="showGallery('{{dish.posts.0.dish_name}}')">Back to Restaurant Page</button>
+        <div class = "col-sm-4">
+          <img src="/images/back_icon2.png" onclick="hideDish('{{dish.posts.0.dish_name}}')" width="65%" style="cursor:pointer">
+          <!-- <button onclick="showGallery('{{dish.posts.0.dish_name}}')">Back to Restaurant Page</button> -->
         </div>
+
+        <center><h4>{{name}}</h4></center>
         
         {{#each posts}}
-          <div id="post{{post_id}}" class="post_pics" style="width: 40%; display:inline-block; text-align: center">
+          <div id="post{{post_id}}" class="post_pics" style="max-width:100%; text-align: center">
            <div class="card card_profile" style="margin-bottom:100px;"
            onClick="showModal('{{profile_picture}}','{{username}}','{{date}}','{{picture}}',
                     '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}', '{{restaurant_id}}', '{{restaurant_name}}', '{{post_id}}', '{{canEdit}}', '{{liked}}', '{{disliked}}')">
@@ -80,7 +83,7 @@
   </div>
 
   <script src="/js/viewRestaurants.js"></script>
-  
+  {{>alertModal}}
   {{>modal}}
 
 </body>

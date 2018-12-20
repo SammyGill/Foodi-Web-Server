@@ -66,3 +66,38 @@ function initMap() {
     infowindow.open(map, marker);
   });
 }
+
+// so autocomplete works; dunno why this is needed
+jQuery.curCSS = function(element, prop, val) {
+  return jQuery(element).css(prop, val);
+};
+
+$(function(){
+  $("#input_user").autocomplete({
+    source :function( request, response ) {
+      $.ajax({
+        url: '/api/profiles/suggestions?user='+request.term,
+        dataType: "json",
+        type: 'GET',
+        success: (data) => {
+          response($.map(data, (item) => {
+            return {
+              label : item.label,
+              profile_picture: item.profile_picture
+            };
+          }));
+        }
+      });
+    },
+    select: (event, ui) => {
+      window.location.href = "/profiles/" + ui.item.label;
+    }
+  }).data('autocomplete')._renderItem = function(ul, item) {
+    return $('<li>')
+      .data('item.autocomplete', item)
+      .append('<a><img src="' + item.profile_picture + '" alt="" style="width:10%"/> ' + item.label + '</a>')
+      .appendTo(ul);
+  };;
+
+});
+

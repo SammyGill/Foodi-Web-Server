@@ -17,15 +17,24 @@ const checkIdOrUsername = "SELECT * FROM users WHERE user_id = ? OR username=?";
 const checkUsername = "SELECT * FROM users WHERE username=?";
 const isFollowingQuery = "SELECT * FROM following WHERE follower_id = ? AND followee_id = ?";
 
-exports.username_list = (req, res) => {
-  mysql.query("SELECT username AS label, user_id AS value FROM users", (err, result) => {
+
+exports.suggestions = (req, res) => {
+  const user = req.query.user;
+  const query = 
+  `SELECT DISTINCT username AS label, user_id AS value, profile_picture
+   FROM users 
+   WHERE 
+    username LIKE '` + user + `%' OR 
+    first_name LIKE '` + user + `%' OR
+    last_name LIKE '` + user + `%'`;
+  mysql.query(query, [user], (err, results) => {
     if (err) {
       res.status(500).json(err);
       throw err;
     }
-    res.status(200).json(result);
+    res.status(200).json(results);
   })
-};
+}
 
 exports.name_list = (req, res) => {
   mysql.query("SELECT first_name, last_name FROM users", (err, result) => {

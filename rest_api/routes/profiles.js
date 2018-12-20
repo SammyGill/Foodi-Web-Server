@@ -6,8 +6,7 @@ const posts_controller = require('../controllers/postsController');
 const auth = require('../middleware/auth');
 const auth2 = require('../middleware/auth2');
 
-// GET request for getting list of all usernames in the database (for autocompletion)
-router.get('/username-list', profiles_controller.username_list);
+router.get('/suggestions', profiles_controller.suggestions);
 
 // GET request for getting a list of all names (used for autocompletion)
 router.get('/name-list', profiles_controller.name_list);
