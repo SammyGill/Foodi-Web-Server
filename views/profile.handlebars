@@ -24,7 +24,7 @@
 
   <!--  Navigation -->
   {{> navbar}}
-  
+
   <!-- Basic Info -->
   <section class="jumbotron yellow_bg fix_gap">
     <div align="center">
@@ -67,12 +67,12 @@
       <hr width = "300px"> <br>
 
       {{#each posts}}
-        <div id="post{{post_id}}" class = "post_pics" "width: 40%; display:inline-block; text-align: center">
+        <div id="post{{post_id}}" class = "post_pics" style="width: 40%; display:inline-block; text-align: center">
          <div class="card card_profile" style="margin-bottom:100px;"
           onClick="showModal('{{../picture}}','{{../username}}','{{date}}','{{picture}}',
                              '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}',
-                             '{{restaurant_id}}', '{{post_id}}', '{{canEdit}}')">
-            <img class="card-img-top card-img_profile" src="/api/photos/{{picture}}" alt="Card image cap">
+                             '{{restaurant_id}}', '{{restaurant_name}}', '{{post_id}}', '{{canEdit}}', '{{liked}}', '{{disliked}}')">
+            <img class="card-img-top card-img_profile" src="/api/photos/{{picture}}" alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"' style="cursor:pointer">
           
           </div>
         </div>

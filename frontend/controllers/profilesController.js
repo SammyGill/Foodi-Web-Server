@@ -21,7 +21,7 @@ exports.view = (req, res) => {
     'content-type' : 'application/x-www-form-urlencoded',
     'Authorization': 'Bearer ' + req.cookies.accessToken
     },}, (err, response, body) => {
-      console.log(body)
+      
     // server error or client error
     if (err || response.statusCode >= 400) {
       res.render('error', getErrorMessage(err, response));
@@ -29,8 +29,6 @@ exports.view = (req, res) => {
     // successful api call
     else {
       user_info = body.user_info[0];
-      console.log("follower count " + user_info.follower_count);
-      console.log("following count " + user_info.following_count)
       let obj = {
         user_id: user_info.user_id,
         username: user_info.username,
@@ -45,7 +43,7 @@ exports.view = (req, res) => {
         obj.is_following = true;
       if (body.canEdit)
         obj.can_edit = true;
-      console.log(obj);
+      
       res.render('profile', obj);
     }
 

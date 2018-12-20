@@ -10,7 +10,9 @@
           <dl style="display:inline-block;">
             <dt id="username"></dt> </a>
             <br>
-            <dt id="date">2</dt>
+            <dt id="time" style="font-weight: initial"></dt>
+            <dt id="date" style="font-weight: initial"></dt>
+            
           </dl>
         
       </div>
@@ -24,7 +26,7 @@
       </div>
 
       <div class="modal-body" style="margin: 1px; padding: 1px;">
-        <img id="picture" class="card-img-top" style="width: 100%; height: 100%;"src="" alt="Card image cap">
+        <img id="picture" class="card-img-top" style="width: 100%; height: 100%;"src="" alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"'>
         <p id="rating"></p>
         <p id="caption"></p>
       </div>
@@ -32,14 +34,25 @@
 
       <div class="modal-footer">
         <span class="mr-auto">
-          <img src="/images/fork_outline.png" id="like-btn" onClick="like()" width="10rem" height="20rem">
-          <img src="/images/fork_filled.png" id="undo-like-btn" onClick="like()" width="10rem" height="20rem">
-          <span id="likes"></span>
+          <div id="stars">
+            <i class="fa fa-star-o" id="star1" aria-hidden="true"></i>
+            <i class="fa fa-star-o" id="star2" aria-hidden="true"></i>
+            <i class="fa fa-star-o" id="star3" aria-hidden="true"></i>
+            <i class="fa fa-star-o" id="star4" aria-hidden="true"></i>
+            <i class="fa fa-star-o" id="star5" aria-hidden="true"></i>
+          </div>
 
-          <img src="/images/knife_outline.png" id="dislike-btn" onClick="dislike()" width="10rem" height="20rem">
-          <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem">
-          <span id="dislikes"></span>
+          <img src="/images/fork_outline.png" id="like-btn" onClick="like()" width="10rem" height="20rem"style="cursor:pointer">
+          <img src="/images/fork_filled.png" id="undo-like-btn" onClick="like()" width="10rem" height="20rem" style="cursor:pointer">
+          <span id="likes" style="cursor:pointer"></span>
+
+          <img src="/images/knife_outline.png" id="dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
+          <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
+          <span id="dislikes" style="cursor:pointer"></span>
+          
         </span>
+
+
 
         <p id="delete-message" style="display:none"> Are you sure? </p>
         <button id="delete-yes" style="display:none" class="btn btn-secondary"> Yes </button>
@@ -93,7 +106,6 @@
 
   // set dynamic data such as like and dislike counts
   function setData(postid, likes, dislikes, liked, disliked) {
-    console.log('set data');
     $('#post'+postid).data({
       likes: likes,
       dislikes: dislikes,
@@ -110,13 +122,30 @@
     if ( $('#post'+postid).data('likes') === undefined )
       setData(postid, likes, dislikes, liked, disliked);
     
-    
+
+    const utcdate = new Date(date);
+    const month = utcdate.toLocaleString(navigator.language, { month: "short" })
+    const day = utcdate.getDate();
+    const year = utcdate.getFullYear();
+    const time = utcdate.toLocaleTimeString();
+
+    //fill in rating stars
+    for (let i = 1; i <= 5; i ++) {
+      $('#star'+i).removeClass(); //clear class
+      if ( i <= rating )
+        $('#star'+i).addClass('fa fa-star') //filled in star
+      else
+        $('#star'+i).addClass('fa fa-star-o') //star outline
+    }
+
     $('#profile_picture').attr('src', profile_picture);
     $('#link').attr('href', '/profiles/' + username)
     $('#username').text(username)
-    $('#date').text(date);
+    $('#date').text(day + " " + month + " " + year);
+    $('#time').text(time);
     $('#picture').attr('src', '/api/photos/' + picture);
-    $('#dish_name').text('dish name: ' + dish_name);
+    $('#picture').attr('onerror', 'this.onerror=null;this.src="/images/alt_img.png"');
+    $('#dish_name').text(dish_name);
     $('#caption').text('caption: ' + caption);
     $('#rating').text('rating: ' + rating);
     $('#likes').text(postData.likes);
@@ -149,7 +178,6 @@
     else
       $('#dislike-btn').show();
 
-
     $("#postModal").modal()
   }
 
@@ -164,7 +192,7 @@
     $.ajax({
       url: '/api/posts/' + post_id + '/like',
       type: 'POST',
-      datetype: 'json',
+      datatype: 'json',
       beforeSend: function (xhr) {   //Include the bearer token in header
         xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
       },
@@ -216,7 +244,7 @@
     $.ajax({
       url: '/api/posts/' + post_id + '/dislike',
       type: 'POST',
-      datetype: 'json',
+      datatype: 'json',
       beforeSend: function (xhr) {   //Include the bearer token in header
         xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
       },

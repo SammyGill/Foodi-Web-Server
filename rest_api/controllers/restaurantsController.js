@@ -66,26 +66,42 @@ exports.get_all_restaurants = (req, res) => {
 /** Functoin for gettting all info related to the restaurant
  */
 exports.get_info = (req, res) => {
+  const requester_uid = req.userData.id;
   const restaurant_id = req.params.restaurant_id;
+
   mysql.query(checkRestaurantExistsQuery, [restaurant_id], (err, result) => {
     if (err) {
-      res.status(500).json( {"Internal Service Error": err} );
+      res.status(500).json( {message: err} );
       throw err;
     }
     else if (result.length != 1) {
-      res.status(404).json( {"Not Found": "Restaurant with this ID does not exist"} );
+      res.status(404).json( {message: "Restaurant with this ID does not exist"} );
     }
     else { // found restaurant
       body = result[0];
-      
+
       const getPostsQuery = 
-        `SELECT p.post_id, p.dish_name, p.author_id, p.caption, p.picture, p.picture_url, 
-                p.rating, p.date, p.likes, p.dislikes, p.likes - p.dislikes AS difference
-         FROM posts p, restaurants r 
-         WHERE p.restaurant_id=r.restaurant_id
+       `SELECT posts.post_id, posts.dish_name, posts.author_id, posts.caption, 
+              posts.picture, posts.picture_url, posts.rating, posts.date, 
+              posts.likes, posts.dislikes, posts.likes - posts.dislikes AS difference,
+              users.username, users.profile_picture,
+        CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
+        CASE 
+          WHEN EXISTS (SELECT 1 FROM likes 
+            WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+          THEN true ELSE false END AS liked,
+        CASE 
+          WHEN EXISTS (SELECT 1 FROM likes 
+            WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+          THEN true ELSE false END AS disliked
+         FROM posts
+         INNER JOIN users ON users.user_id=posts.author_id 
+         WHERE restaurant_id=?
          ORDER BY difference DESC`;
 
-      mysql.query(getPostsQuery, [restaurant_id], (err, results) => { 
+      mysql.query(getPostsQuery, [requester_uid, requester_uid, requester_uid, restaurant_id], (err, results) => { 
+        console.log(results[0]);
+        
         // group posts by dish name, then sort dishes by median rating
         sortByRating(results, (dishes) => {
           body.dishes = dishes;

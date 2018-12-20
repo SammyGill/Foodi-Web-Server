@@ -25,7 +25,14 @@ exports.view = (req, res) => {
   const path = '/api/restaurants/' + req.params.restaurant_id;
   const url = host + path;
   
-  request.get({url: url, json: true}, (err, response, body) => {
+  request.get({
+    url: host+path, 
+    'json' : true,
+    headers: {
+    'content-type' : 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer ' + req.cookies.accessToken
+    },
+  }, (err, response, body) => {
     // server error or client error
     if (err || response.statusCode >= 400) {
       res.render('error', getErrorMessage(err, response));

@@ -39,7 +39,7 @@ exports.name_list = (req, res) => {
 /** Function for gettting all info related to the usert
  */
 exports.get_info = (req, res) => {
-  const requesting_user_id = req.userData.id; //id of the person making the request
+  const requester_uid = req.userData.id; //id of the person making the request
   const id = req.params.id_or_username;
 
   mysql.query(checkUsername, [id], (err, result) => {
@@ -51,25 +51,37 @@ exports.get_info = (req, res) => {
       res.status(404).json( {message: "User with this ID does not exist"} );
     }
     else { // found user
-      const requestee_user_id = result[0].user_id; //id of the profile being viewed
+      const requestee_uid = result[0].user_id; //id of the profile being viewed
       const user_info = result;
 
       // get all of the user's posts
       const getPostsQuery = 
-        `SELECT
-          *,
-          CASE WHEN author_id = ? then true else false end AS canEdit
+       `SELECT DISTINCT
+        posts.*, restaurants.name AS restaurant_name,
+        CASE WHEN author_id = ? then true else false end AS canEdit,
+        CASE 
+          WHEN EXISTS (SELECT 1 FROM likes 
+            WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+          THEN true ELSE false END AS liked,
+        CASE 
+          WHEN EXISTS (SELECT 1 FROM likes 
+            WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+          THEN true ELSE false END AS disliked
         FROM posts
-        WHERE author_id=?`;
+        LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
+        WHERE author_id=?
+        GROUP BY post_id
+        ORDER BY post_id DESC`;
       // const getPostsQuery = "Select * FROM posts where author_id = ?";
-      mysql.query(getPostsQuery, [requesting_user_id, requestee_user_id], (err, results) => {
+      mysql.query(getPostsQuery, [requester_uid, requester_uid, requester_uid, requestee_uid], 
+        (err, results) => {
         if (err) {
           res.status(500).json( {message: err} );
           throw err;
         }
 
         // check if the requester is already following the requestee
-        mysql.query(isFollowingQuery, [requesting_user_id, requestee_user_id], (err, result) => {
+        mysql.query(isFollowingQuery, [requester_uid, requestee_uid], (err, result) => {
           if (err) { 
             res.status(500).json( {message: err} ); 
             throw err;
@@ -78,7 +90,7 @@ exports.get_info = (req, res) => {
           res.status(200).json({
             user_info: user_info, 
             posts: results, 
-            canEdit: (requesting_user_id === requestee_user_id)? true : false,
+            canEdit: (requester_uid === requestee_uid)? true : false,
             isFollowing: (result.length == 0)? false : true
           });
         })
