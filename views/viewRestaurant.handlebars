@@ -71,7 +71,7 @@
           <div  class="post_pics" style="max-width:100%; text-align: center">
            <div id="post{{post_id}}" class="card card_profile" style="margin-bottom:100px;"
            onClick="showModal('{{profile_picture}}','{{username}}','{{date}}','{{picture}}',
-                    '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}', '{{restaurant_id}}', '{{restaurant_name}}', '{{post_id}}', '{{canEdit}}', '{{liked}}', '{{disliked}}')">
+                    '{{dish_name}}','{{caption}}','{{rating}}','{{likes}}','{{dislikes}}', '{{../../restaurant_id}}', '{{../../name}}', '{{post_id}}', '{{canEdit}}', '{{liked}}', '{{disliked}}')">
               <img class="card-img-top card-img_profile" src="/api/photos/{{picture}}" alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"' style="cursor:pointer">
             
             </div>
@@ -85,6 +85,7 @@
   <script src="/js/viewRestaurants.js"></script>
   {{>alertModal}}
   {{>modal}}
+  {{>shareModal}}
 
 </body>
 </html>

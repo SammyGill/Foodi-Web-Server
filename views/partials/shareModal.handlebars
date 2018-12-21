@@ -1,0 +1,50 @@
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h4 class="modal-title" id="share-modal-title-text"></h4>
+      </div>
+      
+      <div class="modal-body" id="share-modal-body" style="margin: 1px; padding: 1px;">
+        <br>
+        <p id="share-modal-body-text"></p>
+        <br>
+      </div>
+      
+      <div class="modal-footer">
+        <button id="shareModal_close" type="button" class="btn btn-secondary">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style type="text/css">
+  #shareModal {
+  padding-top: 20%;
+}
+</style>
+
+<script>
+  function shareModal(titleMessage, bodyMessage) {
+
+    if (bodyMessage) {
+      $('#share-modal-body').show();
+      $('#share-modal-body-text').text(bodyMessage);
+    }
+    else {
+      $('#share-modal-body').hide();
+    }
+    
+    $('#share-modal-title-text').text(titleMessage);
+    $('#shareModal').modal();
+  }
+
+  $('#shareModal_close').click( () => {
+    $('#shareModal').modal('hide'); 
+  })
+
+</script>
+

@@ -1,3 +1,8 @@
+<style type="text/css">
+  .modal-body p {
+    word-wrap: break-word;
+}
+</style>
 <!-- Modal -->
 <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-custom" role="document">
@@ -53,12 +58,12 @@
         </span>
 
 
-
+        <button id="share" class="btn btn-primary"> Share </button>
         <p id="delete-message" style="display:none"> Are you sure? </p>
         <button id="delete-yes" style="display:none" class="btn btn-secondary"> Yes </button>
         <button id="delete-no" style="display:none" class="btn btn-secondary"> No </button>
         <button id="delete-btn" class="btn btn-secondary"> Delete post </button>
-        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary close-modal">Close</button>
 
     </div>
   </div>
@@ -103,6 +108,7 @@
   const access_token = getCookie('accessToken');
   let post_id = 0;
   let data;
+  let url;
 
   // set dynamic data such as like and dislike counts
   function setData(postid, likes, dislikes, liked, disliked) {
@@ -118,6 +124,8 @@
     rating, likes, dislikes, restaurant_id, restaurant_name, postid, canEdit, liked, disliked) {
     post_id = postid;
     postData = $('#post'+postid).data();
+    url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+    url += '/restaurants/' + restaurant_id + '#post' + post_id + '_' + dish_name;
 
     if ( $('#post'+postid).data('likes') === undefined )
       setData(postid, likes, dislikes, liked, disliked);
@@ -153,7 +161,6 @@
     $('body').css('overflow', 'hidden');
     $('#restaurant_link').attr('href', '/restaurants/' + restaurant_id);
     $('#restaurant_name').text(restaurant_name);
-
     
     //SQL doesn't support boolean in CASE statement, so values are set as 1 or 0
     if (canEdit == '1') // only show delete button for your own post
@@ -184,6 +191,7 @@
   // close popup modal
   $('.close-modal').click(() => {
     $('body').css('overflow', 'auto');
+    $('#postModal').modal('hide');
   });
 
 
@@ -297,6 +305,7 @@
     $('#delete-message').show();
     $('#delete-yes').show();
     $('#delete-no').show();
+    $('#share').hide();
   })
 
   $('#delete-no').click( () => {
@@ -304,6 +313,7 @@
     $('#delete-message').hide();
     $('#delete-yes').hide();
     $('#delete-no').hide();
+    $('#share').show();
   })
 
   $('#delete-yes').click( () => {
@@ -311,6 +321,8 @@
     $('#delete-no').click();
     $('.close-modal').click();
     alertModal("Post deleted");
+    
+    // shareModal("Link to This Post", url);
 
     // $.ajax({
     //   url: '/api/posts/' + post_id + '/delete',
@@ -325,5 +337,9 @@
     //     alert(JSON.stringify(err));
     //   },
     // });
+  })
+
+  $('#share').click( () => {
+    shareModal("Link to This Post", url); 
   })
 </script>

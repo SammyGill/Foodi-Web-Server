@@ -14,13 +14,18 @@
       </div>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+        <button id="alertModal_close" type="button" class="btn btn-secondary">Close</button>
       </div>
 
     </div>
   </div>
 </div>
 
+<style type="text/css">
+  #alertModal {
+  padding-top: 20%;
+}
+</style>
 
 <script>
   function alertModal(titleMessage, bodyMessage) {
@@ -35,6 +40,10 @@
     $('#modal-title-text').text(titleMessage);
     $('#alertModal').modal();
   }
-  
+
+  $('#alertModal_close').click( () => {
+    $('#alertModal').modal('hide'); 
+  })
+
 </script>
 
