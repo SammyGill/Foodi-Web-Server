@@ -169,10 +169,13 @@ function sortByRating(results, cb) {
 /** Function for getting a list of all dishes in a restaurant **/
 exports.get_dish_list = (req, res) => {
   const restaurant_id = req.params.restaurant_id;
+  const dish_name = req.query.dish;
+
+  const query = `SELECT DISTINCT dish_name FROM posts WHERE dish_name LIKE '` + dish_name + `%'`;
   const getPostsQuery = 
     `SELECT DISTINCT posts.dish_name 
-     FROM posts, restaurants 
-     WHERE posts.restaurant_id = ?`;
+     FROM posts 
+     WHERE posts.restaurant_id = ? AND dish_name LIKE '` + dish_name + `%'`;
   
   mysql.query(getPostsQuery, [restaurant_id], (err, results) => {
     res.status(200).json( {dish_names: results.map(e => e.dish_name)} );

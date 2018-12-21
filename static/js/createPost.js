@@ -79,7 +79,7 @@ $(document).ready( () => {
     source: (request, response) => {
       
        $.ajax({
-        url: '/api/restaurants/' + $('#restaurant_id2').val() + '/dish-list',
+        url: '/api/restaurants/' + $('#restaurant_id2').val() + '/dish-list?dish=' + request.term,
         type: 'GET',
         dataType: 'json',
         success: (data) => {
@@ -138,27 +138,27 @@ $(document).ready( () => {
 
 
 function checkRestaurantExists(restaurant) {
-    $.ajax({
-      url: '/api/restaurants/' + restaurant.restaurant_id,
-      dataType: "json",
-      type: 'GET',
-      success: (data) => { // restaurant exists
-        console.log('restaurant exists');
-      },
-      error: (err) => {
-        if (err.status == 404) { // restaurant doesn't exist; create restaurant
-          createRestaurant(restaurant);
-        }
-        else { // other error
-          const alertTitle = "Error " + err.status + ": " + err.statusText;
-          const alertText = err.responseJSON.message;
-          alertModal(alertTitle, alertText);
-        }
+  $.ajax({
+    url: '/api/restaurants/' + restaurant.restaurant_id,
+    dataType: "json",
+    type: 'GET',
+    success: (data) => { // restaurant exists
+      console.log('restaurant exists');
+    },
+    error: (err) => {
+      if (err.status == 404) { // restaurant doesn't exist; create restaurant
+        createRestaurant(restaurant);
       }
-    });
-  }
+      else { // other error
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        const alertText = err.responseJSON.message;
+        alertModal(alertTitle, alertText);
+      }
+    }
+  });
+}
 
-  function createRestaurant(restaurant) {
+function createRestaurant(restaurant) {
   $.ajax({
     url: '/api/restaurants/create',
     type: 'POST',
@@ -176,49 +176,48 @@ function checkRestaurantExists(restaurant) {
 }
 
 
-  function createPost(){
-    getCookie = (name) => {
-      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
-    }
-    const access_token = getCookie('accessToken');
-
-    console.log('createPost()');
-    console.log($("#restaurant_id2").val());
-    let formData = new FormData();
-    formData.append('restaurant_id', $('#restaurant_id2').val());
-    formData.append('restuarnat_name', $('#name').val());
-    formData.append('dish_name', $('#dish_name').val());
-    formData.append('image', $('#file').prop('files')[0]);
-    formData.append('date', $('#date').val());
-    formData.append('rating', parseInt(rating_val));
-    formData.append('caption', $('#caption').val());  
-    $.ajax({
-      url: '/api/posts/create',
-      type: 'POST',
-      data: formData,
-      beforeSend: function (xhr) {   //Include the bearer token in header
-        xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
-      },
-      success: (data) => {
-        let url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
-        url += '/restaurants/' + $('#restaurant_id2').val() + '#post' + data.post_id + '_' + $('#dish_name').val();
-        
-        // go to restaurant page to view post
-        window.location.href = url;
-
-        // go to feed page to view post
-        window.location.href = '/';
-
-      },
-      error: (err) => {
-        alert(JSON.stringify(err));
-      },
-      cache: false,
-      contentType: false,
-      processData: false
-    });
+function createPost() {
+  getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
   }
+  const access_token = getCookie('accessToken');
+
+  console.log('createPost()');
+  console.log($("#restaurant_id2").val());
+  let formData = new FormData();
+  formData.append('restaurant_id', $('#restaurant_id2').val());
+  formData.append('restuarnat_name', $('#name').val());
+  formData.append('dish_name', $('#dish_name').val());
+  formData.append('image', $('#file').prop('files')[0]);
+  formData.append('date', $('#date').val());
+  formData.append('rating', parseInt(rating_val));
+  formData.append('caption', $('#caption').val());  
+  $.ajax({
+    url: '/api/posts/create',
+    type: 'POST',
+    data: formData,
+    beforeSend: function (xhr) {   //Include the bearer token in header
+      xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+    },
+    success: (data) => {
+      let url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+      url += '/restaurants/' + $('#restaurant_id2').val() + '#post' + data.post_id + '_' + $('#dish_name').val();
+      
+      // go to restaurant page to view post
+      window.location.href = url;
+
+      // go to feed page to view post
+      //window.location.href = '/';
+    },
+    error: (err) => {
+      alert(JSON.stringify(err));
+    },
+    cache: false,
+    contentType: false,
+    processData: false
+  });
+}
 
 
 function initMap() {
@@ -319,130 +318,11 @@ function initMap() {
     restaurant.phone_number = place.international_phone_number;
     restaurant.name = place.name;
     
-    // check if restaurant exists; if it doesn't, create restaurant
-    checkRestaurantExists(restaurant, (success) => {
-      // go to the restaurant page
-      if (success) {
-        window.location.href = '/restaurants/' + place.place_id;
-      }   
-    });
-
     $("#name").val(place.name);
     $("#restaurant_id2").val(place.place_id);
-    console.log($("#restaurant_id2").val());
 
-
+    // check if restaurant exists; if it doesn't, create restaurant
+    checkRestaurantExists(restaurant);
   })
     
 }
-
-// function initMap() {
-//   var map = new google.maps.Map(document.getElementById('map'), {
-//     center: {lat: -33.8688, lng: 151.2195},
-//     zoom: 13
-//   });
-
-//   var input = document.getElementById('pac-input');
-//   var autocomplete = new google.maps.places.Autocomplete(input);
-//   autocomplete.bindTo('bounds', map);
-//   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-//   var infowindow = new google.maps.InfoWindow();
-//   if (navigator.geolocation) {
-//     navigator.geolocation.getCurrentPosition(function(position) {
-//       var pos = {
-//         lat: position.coords.latitude,
-//         lng: position.coords.longitude
-//       };
-//       map.setCenter(pos);
-//     }, function() {
-//         handleLocationError(true, infoWindow, map.getCenter());});
-//   } 
-//   else {
-//     // Browser doesn't support Geolocation
-//     handleLocationError(false, infoWindow, map.getCenter());
-//   }
-//   var infowindowContent = document.getElementById('infowindow-content');
-//   infowindow.setContent(infowindowContent);
-//   var marker = new google.maps.Marker({
-//      map: map
-//   });
-//   marker.addListener('click', function() {
-//     infowindow.open(map, marker);
-//   });
-//   autocomplete.addListener('place_changed', function() {
-//       $("#dish_name").show();
-//   $("#enter_dish_name").show();
-//   infowindow.close();
-//   var place = autocomplete.getPlace();
-
-//   if (!place.geometry) {
-//     return;
-//   }
-
-//   if (place.geometry.viewport) {
-//     map.fitBounds(place.geometry.viewport);
-//   } else {
-//     map.setCenter(place.geometry.location);
-//     map.setZoom(17);
-//   }
-
-//   // Set the position of the marker using the place ID and location.
-//   marker.setPlace({
-//     placeId: place.place_id,
-//     location: place.geometry.location
-//   });
-//   marker.setVisible(true);
-
-//   infowindowContent.children['place-name'].textContent = place.name;
-//   //infowindowContent.children['place-id'].textContent = place.place_id;
-//   infowindowContent.children['place-address'].textContent =
-//   place.formatted_address;
-//   infowindow.open(map, marker);
-//   });
-
-
-//   let restaurant = {};
-//   // grab restaurant info
-//   var componentForm = {
-//     street_number: 'short_name',
-//     route: 'long_name',
-//     locality: 'long_name',
-//     administrative_area_level_1: 'short_name',
-//     country: 'long_name',
-//     postal_code: 'short_name'
-//   };
-
-//   // automatically fill in fields
-//   for (let i = 0; i < place.address_components.length; i++) {
-//     let addressType = place.address_components[i].types[0];
-
-//     if (componentForm[addressType]) {
-//       var val = place.address_components[i][componentForm[addressType]];
-//       restaurant[addressType] = val;
-//     }
-//   }
-  
-//   const hours = place.opening_hours.weekday_text;
-//   restaurant['hours'] = '';
-//   for (let i = 0; i < hours.length; i++) {
-//     restaurant.hours += hours[i];
-//     if (i != hours.length - 1)
-//       restaurant.hours += ', ';
-//   }
-//   restaurant.restaurant_id = place.place_id;
-//   restaurant.phone_number = place.international_phone_number;
-//   restaurant.name = place.name;
-  
-//   /* information for creating a restaurant */
-//   $("#name").val(place.name);
-//   $("#restaurant_id2").val(place.place_id);
-//   console.log($("#restaurant_id2").val());
-
-//   checkRestaurantExists(restaurant);
-  
-
-// }    
-
-
-
