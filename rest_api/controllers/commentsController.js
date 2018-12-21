@@ -70,7 +70,33 @@ exports.get_comments = (req, res) => {
   const post_id = req.params.post_id;
   const idx = (req.query.idx)? parseInt(req.query.idx) : 0;
   const limit = (req.query.limit)? req.query.limit : 100000;
-  const query = "SELECT * FROM comments WHERE post_id = ? AND comment_id > ? ORDER BY date ASC LIMIT "+limit;
+  // `SELECT DISTINCT 
+  //     users.username, users.profile_picture, posts.*,
+  //     restaurants.name AS restaurant_name,
+  //     CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
+  //     CASE 
+  //       WHEN EXISTS (SELECT 1 FROM likes 
+  //         WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+  //       THEN true ELSE false END AS liked,
+  //     CASE 
+  //       WHEN EXISTS (SELECT 1 FROM likes 
+  //         WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+  //       THEN true ELSE false END AS disliked
+  //    FROM posts
+  //    INNER JOIN users ON users.user_id=posts.author_id 
+  //    INNER JOIN following ON posts.author_id=following.followee_id
+  //    LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
+  //    WHERE following.follower_id = ? OR posts.author_id=?
+  //    GROUP BY post_id
+  //    ORDER BY post_id DESC`;
+  const query = 
+  `SELECT comments.*, users.username, users.profile_picture
+   FROM comments 
+   INNER JOIN users ON comments.user_id=users.user_id
+   WHERE post_id = ? AND comment_id > ? 
+   ORDER BY date ASC 
+   LIMIT `+limit;
+
   mysql.query(query, [post_id, idx], (err, result) => {
     if(err) {
       res.status(500).json(err).json(err);

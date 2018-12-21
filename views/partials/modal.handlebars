@@ -32,8 +32,13 @@
 
       <div class="modal-body" style="margin: 1px; padding: 1px;">
         <img id="picture" class="card-img-top" style="width: 100%; height: 100%;"src="" alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"'>
-        <p id="rating"></p>
         <p id="caption"></p>
+        <hr>
+
+        <div id="comment-div" style="margin: 1px; padding: 1px;"> 
+          <button id="load-comments-btn" style="display:none"> View comments </button>
+        </div>
+
       </div>
       
 
@@ -60,7 +65,7 @@
 
         <button id="share" class="btn btn-primary"> Share </button>
         <p id="delete-message" style="display:none"> Are you sure? </p>
-        <button id="delete-yes" style="display:none" class="btn btn-secondary"> Yes </button>
+        <button id="delete-yes" style="display:none" class="btn btn-danger"> Yes </button>
         <button id="delete-no" style="display:none" class="btn btn-secondary"> No </button>
         <button id="delete-btn" class="btn btn-secondary"> Delete post </button>
         <button type="button" class="btn btn-secondary close-modal">Close</button>
@@ -109,6 +114,7 @@
   let post_id = 0;
   let data;
   let url;
+  let commentOffset;
 
   // set dynamic data such as like and dislike counts
   function setData(postid, likes, dislikes, liked, disliked) {
@@ -126,6 +132,13 @@
     postData = $('#post'+postid).data();
     url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
     url += '/restaurants/' + restaurant_id + '#post' + post_id + '_' + dish_name;
+    
+    // for viewing comments
+    commentOffset = 0;
+    $("#comment-div").html('');
+    $("#comment-div").append('<button id="load-comments-btn" onClick="getComments()" style="display:none"> View comments </button>');
+    checkCommentsExists(post_id);
+    
 
     if ( $('#post'+postid).data('likes') === undefined )
       setData(postid, likes, dislikes, liked, disliked);
@@ -155,7 +168,7 @@
     $('#picture').attr('onerror', 'this.onerror=null;this.src="/images/alt_img.png"');
     $('#dish_name').text(dish_name);
     $('#caption').text('caption: ' + caption);
-    $('#rating').text('rating: ' + rating);
+    
     $('#likes').text(postData.likes);
     $('#dislikes').text(postData.dislikes);
     $('body').css('overflow', 'hidden');
@@ -193,6 +206,74 @@
     $('body').css('overflow', 'auto');
     $('#postModal').modal('hide');
   });
+
+  // check if post has comments
+  // if it does, display button to view comments, otherwise show text saying none exists
+  function checkCommentsExists(post_id) {
+    const limit = 2;
+    $.ajax({
+      url: '/api/comments/all/' + post_id + '?idx='+commentOffset+'&limit='+limit,
+      type: 'GET',
+      success: (data) => {
+        if (data.length == 0 && commentOffset == 0) { // post has no comments
+          $("#comment-div").append('<p>There are no comments for this post. Be the first to comment!</p>');
+        }
+        else if (data.length != 0) // has comments; show button to load comments
+          $('#load-comments-btn').show();
+      },
+      error: (err) => {
+        $('.close-modal').click();
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        let alertText = "";
+        if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+          alertText = err.responseJSON.error.message + " Please log in and try again.";
+        else // other error
+          alertText = err.responseJSON.message;
+        
+        alertModal(alertTitle, alertText);
+      },
+    });
+  }
+
+  // function to load comments
+  function getComments() {
+    const limit = 5;
+    $.ajax({
+      url: '/api/comments/all/' + post_id + '?idx='+commentOffset+'&limit='+limit,
+      type: 'GET',
+      success: (data) => {
+        if (data.length != 0) { // post has comments; show button to load comments
+          $('#load-comments-btn').show();
+          $('#load-comments-btn').text('View more comments');
+          data.forEach(comment => {
+            let html = 
+            `<p> 
+              <img src="`+comment.profile_picture+`"width="5%"> `+comment.username+`: `+comment.comment_text +`
+             </p>`;
+            $(html).insertBefore($('#load-comments-btn'))
+            // $("#comment-div").insertBefore(html);
+          })
+          
+          commentOffset = data[data.length - 1].comment_id;
+        }
+
+        if (data.length < limit) // all comments have been loaded; hide button to load comments
+          $('#load-comments-btn').hide();
+        
+      },
+      error: (err) => {
+        $('.close-modal').click();
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        let alertText = "";
+        if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+          alertText = err.responseJSON.error.message + " Please log in and try again.";
+        else // other error
+          alertText = err.responseJSON.message;
+        
+        alertModal(alertTitle, alertText);
+      },
+    });
+  }
 
 
   $('#likes').click( () => { like(); } );
