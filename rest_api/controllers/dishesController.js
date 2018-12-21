@@ -38,13 +38,27 @@ exports.suggestions = (req, res) => {
   */
 exports.search = (req, res) => {
   const dish_name = req.query.dish;
+  const requestee_uid = req.userData.id;
+
   const query = 
-    `SELECT *, likes - dislikes AS difference 
+    `SELECT users.username, users.profile_picture, posts.*,
+       restaurants.name AS restaurant_name, likes - dislikes AS difference,
+     CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
+     CASE 
+        WHEN EXISTS (SELECT 1 FROM likes 
+          WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+        THEN true ELSE false END AS liked,
+     CASE 
+        WHEN EXISTS (SELECT 1 FROM likes 
+          WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+        THEN true ELSE false END AS disliked
      FROM posts 
+     INNER JOIN users ON users.user_id=posts.author_id 
+     LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
      WHERE dish_name=?
      ORDER BY difference DESC`;
 
-  mysql.query(query, [dish_name], (err, results) => {
+  mysql.query(query, [requestee_uid, requestee_uid, requestee_uid, dish_name], (err, results) => {
     if (err) {
       res.status(500).json(err);
       throw err;

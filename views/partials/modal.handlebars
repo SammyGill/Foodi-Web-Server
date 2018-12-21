@@ -131,11 +131,11 @@
 
     //fill in rating stars
     for (let i = 1; i <= 5; i ++) {
-      $('#star'+i).removeClass(); //clear class
-      if ( i <= rating )
-        $('#star'+i).addClass('fa fa-star') //filled in star
+      $('#star'+i).removeClass('fa-star-o fa-star'); //clear class
+      if ( i <= rating ) 
+        $('#star'+i).addClass('fa-star') //filled in star
       else
-        $('#star'+i).addClass('fa fa-star-o') //star outline
+        $('#star'+i).addClass('fa-star-o') //star outline
     }
 
     $('#profile_picture').attr('src', profile_picture);

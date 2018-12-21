@@ -67,12 +67,26 @@ function initMap() {
   });
 }
 
-// so autocomplete works; dunno why this is needed
-jQuery.curCSS = function(element, prop, val) {
-  return jQuery(element).css(prop, val);
-};
 
-$(function() {
+
+$(document).ready( () => {
+  // so autocomplete works; dunno why this is needed
+  jQuery.curCSS = function(element, prop, val) {
+    return jQuery(element).css(prop, val);
+  };
+
+  getCookie = (name) => {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+  const accessToken = getCookie('accessToken');
+
+
+  //=================================================//
+  //============= AUTOCOMPLETE FOR USER==============//
+  //=================================================//
+
+  /** autocomplete when searching for users */
   $("#input_user").autocomplete({
     source: (request, response) => {
       $.ajax({
@@ -91,20 +105,91 @@ $(function() {
         }
       });
     },
-    select: (event, ui) => {
+    select: (event, ui) => { // goes to the profile page when selected
       window.location.href = "/profiles/" + ui.item.label;
     }
-  }).data('autocomplete')._renderItem = (ul, item) => {
+  })
+  // add image to the autocomplete list and highlight (bold) matched text
+  .data('autocomplete')._renderItem = (ul, item) => {
+    // for highlighting matched text
     let regex = new RegExp( $('#input_user').val(), 'ig' );
     let str = item.label  + ' (' + item.first_name + ' ' + item.last_name; 
     
+    // appending image and text
     let html = '<a><img src="' + item.profile_picture + '" alt="" style="width:10%; cursor:pointer"/></a> ';
     html += '<a style="cursor:pointer">' + str.replace( regex , "<b>$&</b>" ) + ')</a>';
     return $('<li>')
       .data('item.autocomplete', item)
       .append(html)
       .appendTo(ul);
-  };;
+  };
+
+
+
+  //=================================================//
+  //============= AUTOCOMPLETE FOR DISH==============//
+  //=================================================//
+
+  // append post to div when selecting
+  function appendPost(div_id, post) {
+    let htmlStr = 
+    `<div id="post`+post.post_id+`" class = "post_pics" style="width: 40%; display:inline-block; text-align: center">
+      <div class="card card_profile" style="margin-bottom:100px;">
+        <h6>`+post.restaurant_name+`</h6>
+        <img class="card-img-top card-img_profile" src="/api/photos/`+post.picture+`" 
+              alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"' style="cursor:pointer">
+      </div>
+      </div>`;
+
+    // onClick function for the post; shows modal when clicked
+    let element = document.createElement('a');
+    element.innerHTML = htmlStr;
+    element.firstChild.addEventListener( 'click', () => {
+      showModal(post.profile_picture, post.username, post.date, 
+        post.picture, post.dish_name, post.caption, post.rating, 
+        post.likes, post.dislikes, post.restaurant_id, post.restaurant_name,
+        post.post_id, post.canEdit, post.liked, post.disliked);
+    });
+
+    $('#'+div_id).append( element.firstChild );
+  }
+
+  /** autocomplete when discovering dish */
+  $("#input_dish").autocomplete({
+    source: (request, response) => {
+      $('#search_div').html(''); //clear div
+      // get suggestions for the autocomplete
+      $.ajax({
+        url: '/api/dishes/suggestions?dish=' + request.term,
+        dataType: "json",
+        type: 'GET',
+        success: (data) => {
+          response(data);
+        }
+      });
+    },
+    select: (event, ui) => {
+      $("#input_dish").val(ui.item.label); // fill in input with selected text
+
+      // get top post of dish matching the search term from each restaurant
+      $.ajax({
+        url: '/api/dishes/search?dish=' + ui.item.label,
+        dataType: "json",
+        type: 'GET',
+        beforeSend: function (xhr) {   //Include the bearer token in header
+          xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
+        },
+        success: (data) => {
+          $('#search_div').html(''); //clear div
+
+          // append each post to the div
+          data.posts.forEach( post => {
+            appendPost('search_div', post);
+          })
+          
+        }
+      });
+    }
+  });
 
 });
-
