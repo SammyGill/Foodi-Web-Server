@@ -97,16 +97,13 @@ function initMap() {
     
     // check if restaurant exists; if it doesn't, create restaurant
     checkRestaurantExists(restaurant, (success) => {
-      // goes to the restaurant page
+      // go to the restaurant page
       if (success) {
         window.location.href = '/restaurants/' + place.place_id;
-      }
-      
+      }   
     });
+
   })
-    
-
-
     
 }
 
@@ -115,11 +112,11 @@ function checkRestaurantExists(restaurant, callback) {
     url: '/api/restaurants/' + restaurant.restaurant_id,
     dataType: "json",
     type: 'GET',
-    success: (data) => {
+    success: (data) => { // restaurant exists
       callback(true);
     },
     error: (err) => {
-      if (err.status == 404) { // restaurant doesn't exist error
+      if (err.status == 404) { // restaurant doesn't exist; create restaurant
         createRestaurant(restaurant, callback);
       }
       else { // other error
@@ -137,10 +134,10 @@ function createRestaurant(restaurant, callback) {
     url: '/api/restaurants/create',
     type: 'POST',
     data: restaurant,
-    success: (data) => {
+    success: (data) => { // restaurant successfully created
       callback(true);
     },
-    error: (err) => {
+    error: (err) => { // error when creating restaurant 
       const alertTitle = "Error " + err.status + ": " + err.statusText;
       const alertText = err.responseJSON.message;
       alertModal(alertTitle, alertText);

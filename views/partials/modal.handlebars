@@ -317,26 +317,30 @@
   })
 
   $('#delete-yes').click( () => {
-    $('#post'+post_id).hide();
-    $('#delete-no').click();
-    $('.close-modal').click();
-    alertModal("Post deleted");
-    
-    // shareModal("Link to This Post", url);
-
-    // $.ajax({
-    //   url: '/api/posts/' + post_id + '/delete',
-    //   type: 'DELETE',
-    //   beforeSend: function (xhr) {   //Include the bearer token in header
-    //     xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
-    //   },
-    //   success: (data) => {
-    //     alert('deleted')
-    //   },
-    //   error: (err) => {
-    //     alert(JSON.stringify(err));
-    //   },
-    // });
+    $.ajax({
+      url: '/api/posts/' + post_id + '/delete',
+      type: 'DELETE',
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
+      },
+      success: (data) => {
+        $('#post'+post_id).hide();
+        $('#delete-no').click();
+        $('.close-modal').click();
+        alertModal("Post deleted");
+      },
+      error: (err) => {
+        $('.close-modal').click();
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        let alertText = "";
+        if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+          alertText = err.responseJSON.error.message + " Please log in and try again.";
+        else // other error
+          alertText = err.responseJSON.message;
+        
+        alertModal(alertTitle, alertText);
+      },
+    });
   })
 
   $('#share').click( () => {
