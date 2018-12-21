@@ -9,13 +9,7 @@ function showDish(dishName) {
 
 function hideDish(dishName) {
   document.getElementById("galleries").hidden = false;
-
-  let div;
-  if ( document.getElementById(dishName) )
-    div = document.getElementById(dishName);
-  else
-    div = $('#'+dishName);
-  div.hidden = true;
+  document.getElementById(dishName).hidden = true;
 }
 
 // takes user to view specific post

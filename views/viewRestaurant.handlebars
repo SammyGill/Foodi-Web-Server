@@ -34,6 +34,9 @@
         <div class="banner_content text-center">
           <h2>{{name}}</h2>
           <div class="page_link">
+            <h5> {{street_number}} {{route}}, {{locality}}, 
+             {{administrative_area_level_1}} {{postal_code}} </h5>
+            
             <!-- <a href="index.html">Home</a> -->
             <!-- <a href="gallery.html">Gallery</a> -->
           </div>
@@ -42,9 +45,19 @@
     </div>
   </section>
 
+  <div class="banner_content text-center">
+    {{#unless dishes.length}}        
+      <br>
+      <br>
+      <br>
+      <h6> There are no posts for this restaurant yet. Be the first to post! </h6>
+    {{/unless}}
+  </div>
 
   <!-- gallery; top post of each dish -->
-  <div id = galleries class="gallery_f_inner row imageGallery1">         
+  <div id = galleries class="gallery_f_inner row imageGallery1"> 
+    
+
     {{#each dishes as |dish|}} 
       <div class = "col-sm-4">
         <br>

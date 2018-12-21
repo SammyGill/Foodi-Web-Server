@@ -28,6 +28,34 @@
 </style>
 
 <script>
+
+  // modal stuff
+
+
+  $('#shareModal').on('shown.bs.modal', function (e) {
+    $('html').addClass('freezePage'); 
+    $('body').addClass('freezePage');
+  });
+  
+  $('#shareModal_close').click( () => {
+    $('#shareModal').modal('hide'); 
+
+  })
+
+
+  $(function(){
+    if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
+      $('iframe').wrap(function(){
+        var $this = $(this);
+        return $('<div />').css({
+          width: $this.attr('width'),
+          height: $this.attr('height'),
+          overflow: 'scroll',
+          '-webkit-overflow-scrolling': 'touch'
+        });
+      });
+    }
+  })
   function shareModal(titleMessage, bodyMessage) {
 
     if (bodyMessage) {
@@ -42,9 +70,6 @@
     $('#shareModal').modal();
   }
 
-  $('#shareModal_close').click( () => {
-    $('#shareModal').modal('hide'); 
-  })
 
 </script>
 

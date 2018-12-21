@@ -40,7 +40,7 @@ function initMap() {
     var place = autocomplete.getPlace();
     var restaurant = {};
     var a = place.address_components;
-    $('#restaurant_id').val(place.place_id);
+
     if (!place.geometry) {
       return;
     }
@@ -60,11 +60,94 @@ function initMap() {
     marker.setVisible(true);
 
     infowindowContent.children['place-name'].textContent = place.name;
-//infowindowContent.children['place-id'].textContent = place.place_id;
     infowindowContent.children['place-address'].textContent =
         place.formatted_address;
     infowindow.open(map, marker);
+
+    // grab restaurant info
+    var componentForm = {
+      street_number: 'short_name',
+      route: 'long_name',
+      locality: 'long_name',
+      administrative_area_level_1: 'short_name',
+      country: 'long_name',
+      postal_code: 'short_name'
+    };
+
+    // automatically fill in fields
+    for (let i = 0; i < place.address_components.length; i++) {
+      let addressType = place.address_components[i].types[0];
+
+      if (componentForm[addressType]) {
+        var val = place.address_components[i][componentForm[addressType]];
+        restaurant[addressType] = val;
+      }
+    }
+    
+    const hours = place.opening_hours.weekday_text;
+    restaurant['hours'] = '';
+    for (let i = 0; i < hours.length; i++) {
+      restaurant.hours += hours[i];
+      if (i != hours.length - 1)
+        restaurant.hours += ', ';
+    }
+    restaurant.restaurant_id = place.place_id;
+    restaurant.phone_number = place.international_phone_number;
+    restaurant.name = place.name;
+    
+    // check if restaurant exists; if it doesn't, create restaurant
+    checkRestaurantExists(restaurant, (success) => {
+      // goes to the restaurant page
+      if (success) {
+        window.location.href = '/restaurants/' + place.place_id;
+      }
+      
+    });
+  })
+    
+
+
+    
+}
+
+function checkRestaurantExists(restaurant, callback) {
+  $.ajax({
+    url: '/api/restaurants/' + restaurant.restaurant_id,
+    dataType: "json",
+    type: 'GET',
+    success: (data) => {
+      callback(true);
+    },
+    error: (err) => {
+      if (err.status == 404) { // restaurant doesn't exist error
+        createRestaurant(restaurant, callback);
+      }
+      else { // other error
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        const alertText = err.responseJSON.message;
+        alertModal(alertTitle, alertText);
+        callback(false);
+      }
+    }
   });
+}
+
+function createRestaurant(restaurant, callback) {
+  $.ajax({
+    url: '/api/restaurants/create',
+    type: 'POST',
+    data: restaurant,
+    success: (data) => {
+      callback(true);
+    },
+    error: (err) => {
+      const alertTitle = "Error " + err.status + ": " + err.statusText;
+      const alertText = err.responseJSON.message;
+      alertModal(alertTitle, alertText);
+      callback(false);
+    }
+  });
+  
 }
 
 

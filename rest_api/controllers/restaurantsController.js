@@ -100,12 +100,13 @@ exports.get_info = (req, res) => {
          ORDER BY difference DESC`;
 
       mysql.query(getPostsQuery, [requester_uid, requester_uid, requester_uid, restaurant_id], (err, results) => { 
-        console.log(results[0]);
         
         // group posts by dish name, then sort dishes by median rating
         sortByRating(results, (dishes) => {
           body.dishes = dishes;
-          body.most_popular = dishes[0].posts[0]; // most popular post of most popular food
+          
+          // most popular post of most popular food
+          body.most_popular = (dishes.length == 0)? {} : dishes[0].posts[0]; 
 
           res.status(200).json( body );
         });
