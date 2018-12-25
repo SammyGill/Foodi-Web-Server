@@ -1,7 +1,15 @@
 <style type="text/css">
   .modal-body p {
     word-wrap: break-word;
-}
+  }
+
+  [contenteditable] {padding:12px; background:#eee; }
+
+  [data-placeholder]:empty:before{
+    content: attr(data-placeholder);
+    color: #888;
+    font-style: italic;
+  }
 </style>
 <!-- Modal -->
 <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -32,38 +40,47 @@
 
       <div class="modal-body" style="margin: 1px; padding: 1px;">
         <img id="picture" class="card-img-top" style="width: 100%; height: 100%;"src="" alt="Not Found" onerror='this.onerror=null;this.src="/images/alt_img.png"'>
+
+        <!-- stars for rating -->
+        <div id="stars">
+          <i class="fa fa-star-o" id="star1" aria-hidden="true"></i>
+          <i class="fa fa-star-o" id="star2" aria-hidden="true"></i>
+          <i class="fa fa-star-o" id="star3" aria-hidden="true"></i>
+          <i class="fa fa-star-o" id="star4" aria-hidden="true"></i>
+          <i class="fa fa-star-o" id="star5" aria-hidden="true"></i>
+        </div>
+
+        <!-- Like and dislike buttons and count -->
+        <img src="/images/fork_outline.png" id="like-btn" onClick="like()" width="10rem" height="20rem"style="cursor:pointer">
+        <img src="/images/fork_filled.png" id="undo-like-btn" onClick="like()" width="10rem" height="20rem" style="cursor:pointer">
+        <span id="likes" style="cursor:pointer"></span>
+
+        <img src="/images/knife_outline.png" id="dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
+        <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
+        <span id="dislikes" style="cursor:pointer"></span>
+
+        <button id="share" class="btn btn-primary" style="float:right;"> Share </button>
+
         <p id="caption"></p>
         <hr>
 
+        <div id="added-comments" style="background-color: #F5F5BE"></div>
+
         <div id="comment-div" style="margin: 1px; padding: 1px;"> 
-          <button id="load-comments-btn" style="display:none"> View comments </button>
+          
         </div>
+        <button id="load-comments-btn" onClick="getComments()" style="display:none"> View comments </button>
 
       </div>
       
 
       <div class="modal-footer">
         <span class="mr-auto">
-          <div id="stars">
-            <i class="fa fa-star-o" id="star1" aria-hidden="true"></i>
-            <i class="fa fa-star-o" id="star2" aria-hidden="true"></i>
-            <i class="fa fa-star-o" id="star3" aria-hidden="true"></i>
-            <i class="fa fa-star-o" id="star4" aria-hidden="true"></i>
-            <i class="fa fa-star-o" id="star5" aria-hidden="true"></i>
-          </div>
-
-          <img src="/images/fork_outline.png" id="like-btn" onClick="like()" width="10rem" height="20rem"style="cursor:pointer">
-          <img src="/images/fork_filled.png" id="undo-like-btn" onClick="like()" width="10rem" height="20rem" style="cursor:pointer">
-          <span id="likes" style="cursor:pointer"></span>
-
-          <img src="/images/knife_outline.png" id="dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
-          <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
-          <span id="dislikes" style="cursor:pointer"></span>
-          
+          <span id="comment" contenteditable="true" style="display: inline-block; border: solid 1px black; min-width: 250px; max-width: 250px" data-placeholder="Write a comment..."></span>   
+          <button id="comment-btn" onClick="postComment()" class="btn btn-secondary"> Post </button>       
         </span>
 
 
-        <button id="share" class="btn btn-primary"> Share </button>
         <p id="delete-message" style="display:none"> Are you sure? </p>
         <button id="delete-yes" style="display:none" class="btn btn-danger"> Yes </button>
         <button id="delete-no" style="display:none" class="btn btn-secondary"> No </button>
@@ -136,7 +153,9 @@
     // for viewing comments
     commentOffset = 0;
     $("#comment-div").html('');
-    $("#comment-div").append('<button id="load-comments-btn" onClick="getComments()" style="display:none"> View comments </button>');
+    $('#added-comments').html('');
+    $('#comment').text('');
+    $('#comment-btn').prop('disabled', true); //disable button initially
     checkCommentsExists(post_id);
     
 
@@ -216,10 +235,12 @@
       type: 'GET',
       success: (data) => {
         if (data.length == 0 && commentOffset == 0) { // post has no comments
-          $("#comment-div").append('<p>There are no comments for this post. Be the first to comment!</p>');
+          $("#comment-div").append('<p id="no_comments">There are no comments for this post. Be the first to comment!</p>');
+          $('#load-comments-btn').hide();
         }
         else if (data.length != 0) // has comments; show button to load comments
           $('#load-comments-btn').show();
+
       },
       error: (err) => {
         $('.close-modal').click();
@@ -250,8 +271,7 @@
             `<p> 
               <img src="`+comment.profile_picture+`"width="5%"> `+comment.username+`: `+comment.comment_text +`
              </p>`;
-            $(html).insertBefore($('#load-comments-btn'))
-            // $("#comment-div").insertBefore(html);
+            $("#comment-div").append(html);
           })
           
           commentOffset = data[data.length - 1].comment_id;
@@ -273,6 +293,50 @@
         alertModal(alertTitle, alertText);
       },
     });
+  }
+
+  //enable or disable the post comment button depending on whether comment field is empty
+  $("#comment").keyup(function () {
+     if ($(this).text() != '') {
+        $('#comment-btn').prop('disabled', false);
+     }
+     else {
+        $('#comment-btn').prop('disabled', true);
+     }
+  });
+
+  /** function to post comments */
+  function postComment() {
+    const obj = {comment_text: $('#comment').text(), post_id: post_id};
+    $.ajax({
+      url: '/api/comments/create',
+      type: 'POST',
+      datatype: 'json',
+      data: obj,
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
+      },
+      success: (data) => {
+        let html = 
+        `<p> 
+          <img src="`+data.profile_picture+`"width="5%"> `+data.username+`: `+$('#comment').text() +`
+         </p>`;
+        $("#added-comments").append(html);
+        $('#no_comments').text('');
+      },
+      error: (err) => {
+        $('.close-modal').click();
+        const alertTitle = "Error " + err.status + ": " + err.statusText;
+        let alertText = "";
+        if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
+          alertText = err.responseJSON.error.message + " Please log in and try again.";
+        else // other error
+          alertText = err.responseJSON.message;
+        
+        alertModal(alertTitle, alertText);
+      },
+    });
+
   }
 
 
@@ -387,6 +451,7 @@
     $('#delete-yes').show();
     $('#delete-no').show();
     $('#share').hide();
+    $('#comment-btn').hide();
   })
 
   $('#delete-no').click( () => {
@@ -395,6 +460,7 @@
     $('#delete-yes').hide();
     $('#delete-no').hide();
     $('#share').show();
+    $('#comment-btn').show();
   })
 
   $('#delete-yes').click( () => {

@@ -15,7 +15,7 @@ exports.create_comment = (req, res) => {
   const date = new Date();
   const comment_text = req.body.comment_text;
 
-  const query = 
+  let query = 
     `INSERT INTO comments (user_id, post_id, date, comment_text) 
      VALUES (?, ?, ?, ?);
      SELECT MAX(comment_id) FROM comments;`;
@@ -25,7 +25,16 @@ exports.create_comment = (req, res) => {
       res.status(500).json(err);
       throw err;
     }
-    res.status(201).json( {comment_id: result[0].insertId} );
+    const comment_id = result[0].insertId;
+    query = "SELECT username, profile_picture FROM users WHERE user_id=?";
+    mysql.query(query, [user_id], (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+        throw err;   
+      }
+      result[0].comment_id = comment_id;
+      res.status(201).json( result[0] );
+    });
   });
 }
 
@@ -70,25 +79,7 @@ exports.get_comments = (req, res) => {
   const post_id = req.params.post_id;
   const idx = (req.query.idx)? parseInt(req.query.idx) : 0;
   const limit = (req.query.limit)? req.query.limit : 100000;
-  // `SELECT DISTINCT 
-  //     users.username, users.profile_picture, posts.*,
-  //     restaurants.name AS restaurant_name,
-  //     CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
-  //     CASE 
-  //       WHEN EXISTS (SELECT 1 FROM likes 
-  //         WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
-  //       THEN true ELSE false END AS liked,
-  //     CASE 
-  //       WHEN EXISTS (SELECT 1 FROM likes 
-  //         WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
-  //       THEN true ELSE false END AS disliked
-  //    FROM posts
-  //    INNER JOIN users ON users.user_id=posts.author_id 
-  //    INNER JOIN following ON posts.author_id=following.followee_id
-  //    LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
-  //    WHERE following.follower_id = ? OR posts.author_id=?
-  //    GROUP BY post_id
-  //    ORDER BY post_id DESC`;
+
   const query = 
   `SELECT comments.*, users.username, users.profile_picture
    FROM comments 
