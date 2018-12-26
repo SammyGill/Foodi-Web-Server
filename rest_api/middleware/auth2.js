@@ -39,7 +39,12 @@ module.exports = (req, res, next) => {
     url: url + access_token
   }
   request(options, (err, response, body) => {
-    req.userData = (response.statusCode == 200)? body : {};
+    if (response.statusCode == 200){ 
+      body.picture.data.url = 'https://graph.facebook.com/'+body.id+'/picture?width=720';
+      req.userData = body;
+    }
+    else
+      req.userData = {};
     next();
   });
 }

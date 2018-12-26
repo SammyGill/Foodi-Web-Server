@@ -76,19 +76,21 @@ exports.delete_comment = (req, res) => {
 /** Function to get all comments for a post
  */
 exports.get_comments = (req, res) => {
+  const user_id = req.userData.id;
   const post_id = req.params.post_id;
   const idx = (req.query.idx)? parseInt(req.query.idx) : 0;
   const limit = (req.query.limit)? req.query.limit : 100000;
 
   const query = 
-  `SELECT comments.*, users.username, users.profile_picture
+  `SELECT comments.*, users.username, users.profile_picture,
+   CASE WHEN users.user_id = ? THEN true ELSE false END AS canEdit
    FROM comments 
    INNER JOIN users ON comments.user_id=users.user_id
    WHERE post_id = ? AND comment_id > ? 
    ORDER BY date ASC 
    LIMIT `+limit;
 
-  mysql.query(query, [post_id, idx], (err, result) => {
+  mysql.query(query, [user_id, post_id, idx], (err, result) => {
     if(err) {
       res.status(500).json(err).json(err);
       throw err;

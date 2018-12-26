@@ -10,7 +10,32 @@
     color: #888;
     font-style: italic;
   }
+  table td{
+      display:table-cell;
+      vertical-align:top;
+  }
+  table {
+      border: none;
+      border-collapse: collapse;
+      border-spacing: 0px;
+      margin: 0;
+      margin-bottom: 1rem;
+      padding: 0;
+  }
+  td {
+    padding-right: 0.5rem;
+  }
+
+  .table_img {
+      border: none;
+      margin: 0;
+      margin-top:0.5rem;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+  }
 </style>
+
 <!-- Modal -->
 <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-custom" role="document">
@@ -59,7 +84,22 @@
         <img src="/images/knife_filled.png" id="undo-dislike-btn" onClick="dislike()" width="10rem" height="20rem" style="cursor:pointer">
         <span id="dislikes" style="cursor:pointer"></span>
 
+        
+
         <button id="share" class="btn btn-primary" style="float:right;"> Share </button>
+
+        <div id="delete-post-dropdown" style="float:right; padding-right:1rem; display:none">
+          <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
+          </span>
+          <div class="dropdown-menu">
+            <span class="dropdown-item" id="delete-post-option" style="cursor:pointer">Delete Post</span>
+          </div>
+        </div>
+
+        <div class="d-flex">
+
+      </div>
 
         <p id="caption"></p>
         <hr>
@@ -69,7 +109,7 @@
         <div id="comment-div" style="margin: 1px; padding: 1px;"> 
           
         </div>
-        <button id="load-comments-btn" onClick="getComments()" style="display:none"> View comments </button>
+        <button id="load-comments-btn" class="btn btn-secondary" onClick="getComments()" style="display:none"> View comments </button>
 
       </div>
       
@@ -80,17 +120,11 @@
           <button id="comment-btn" onClick="postComment()" class="btn btn-secondary"> Post </button>       
         </span>
 
-
-        <p id="delete-message" style="display:none"> Are you sure? </p>
-        <button id="delete-yes" style="display:none" class="btn btn-danger"> Yes </button>
-        <button id="delete-no" style="display:none" class="btn btn-secondary"> No </button>
-        <button id="delete-btn" class="btn btn-secondary"> Delete post </button>
         <button type="button" class="btn btn-secondary close-modal">Close</button>
 
     </div>
   </div>
 </div>
-
 
 <!-- JS for modal -->
 <script>
@@ -186,7 +220,11 @@
     $('#picture').attr('src', '/api/photos/' + picture);
     $('#picture').attr('onerror', 'this.onerror=null;this.src="/images/alt_img.png"');
     $('#dish_name').text(dish_name);
-    $('#caption').text('caption: ' + caption);
+
+    $('#caption').html('');
+    let html = 
+    `<br><h4><img src="`+profile_picture+`"width="7%"> `+caption +`</h4>`;
+    $('#caption').append(html);
     
     $('#likes').text(postData.likes);
     $('#dislikes').text(postData.dislikes);
@@ -195,10 +233,12 @@
     $('#restaurant_name').text(restaurant_name);
     
     //SQL doesn't support boolean in CASE statement, so values are set as 1 or 0
-    if (canEdit == '1') // only show delete button for your own post
-      $('#delete-btn').show();
+    if (canEdit == '1') {// only show delete button for your own post
+      $('#delete-post-dropdown').show();
+      $('#delete-post-option').attr('onClick', 'deleteModal("post", '+post_id+')');
+    }
     else
-      $('#delete-btn').hide();
+      $('#delete-post-dropdown').hide();
 
 
     //check if the user has liked/disliked post and display the appropriate buttons
@@ -216,6 +256,7 @@
       $('#undo-dislike-btn').show();
     else
       $('#dislike-btn').show();
+
 
     $("#postModal").modal()
   }
@@ -238,12 +279,13 @@
           $("#comment-div").append('<p id="no_comments">There are no comments for this post. Be the first to comment!</p>');
           $('#load-comments-btn').hide();
         }
-        else if (data.length != 0) // has comments; show button to load comments
+        else if (data.length != 0) { // has comments; show button to load comments
           $('#load-comments-btn').show();
+          $('#load-comments-btn').text('View comments');
+        }
 
       },
       error: (err) => {
-        $('.close-modal').click();
         const alertTitle = "Error " + err.status + ": " + err.statusText;
         let alertText = "";
         if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
@@ -262,15 +304,39 @@
     $.ajax({
       url: '/api/comments/all/' + post_id + '?idx='+commentOffset+'&limit='+limit,
       type: 'GET',
+      beforeSend: function (xhr) {   //Include the bearer token in header
+        xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
+      },
       success: (data) => {
         if (data.length != 0) { // post has comments; show button to load comments
           $('#load-comments-btn').show();
           $('#load-comments-btn').text('View more comments');
           data.forEach(comment => {
+            let dropdown = '';
+            if (comment.canEdit) {
+              dropdown =
+              `<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
+              </span>
+              <div class="dropdown-menu">
+                <span class="dropdown-item" onClick="deleteModal('comment',`+comment.comment_id+`)" style="cursor:pointer">Delete Comment</span>
+              </div>`;
+            }
+
             let html = 
-            `<p> 
-              <img src="`+comment.profile_picture+`"width="5%"> `+comment.username+`: `+comment.comment_text +`
-             </p>`;
+            `<table id="comment`+comment.comment_id+`" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td>
+                  <a href="/profiles/`+comment.username+`"><img class="table_img" src="`+comment.profile_picture+`"width="5%"></a>
+                </td>
+                <td>
+                  <a href="/profiles/`+comment.username+`">`+comment.username+`</a>`
+                  + dropdown + `
+                  <br>
+                  `+comment.comment_text+`
+                </td>
+              </tr>
+            </table>`;
             $("#comment-div").append(html);
           })
           
@@ -282,7 +348,6 @@
         
       },
       error: (err) => {
-        $('.close-modal').click();
         const alertTitle = "Error " + err.status + ": " + err.statusText;
         let alertText = "";
         if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
@@ -317,15 +382,35 @@
         xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
       },
       success: (data) => {
+        let dropdown =
+          `<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
+          </span>
+          <div class="dropdown-menu">
+            <span class="dropdown-item" onClick="deleteModal('comment',`+comment.comment_id+`)" style="cursor:pointer">Delete Comment</span>
+          </div>`;
         let html = 
-        `<p> 
-          <img src="`+data.profile_picture+`"width="5%"> `+data.username+`: `+$('#comment').text() +`
-         </p>`;
+        `<table id="comment`+data.comment_id+`" cellspacing="0" cellpadding="0" border="0">
+          <tr>
+            <td>
+              <a href="/profiles/`+data.username+`"><img class="table_img" src="`+data.profile_picture+`"width="5%"></a>
+            </td>
+            <td>
+              <a href="/profiles/`+data.username+`">`+data.username+`</a>`
+              + dropdown + `
+              <br>
+              `+$('#comment').text()+`
+            </td>
+          </tr>
+        </table>`;
+        // let html = 
+        // `<p> 
+        //   <img src="`+data.profile_picture+`"width="5%"> `+data.username+`: `+$('#comment').text() +`
+        //  </p>`;
         $("#added-comments").append(html);
         $('#no_comments').text('');
       },
       error: (err) => {
-        $('.close-modal').click();
         const alertTitle = "Error " + err.status + ": " + err.statusText;
         let alertText = "";
         if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
@@ -338,6 +423,7 @@
     });
 
   }
+
 
 
   $('#likes').click( () => { like(); } );
@@ -377,7 +463,6 @@
           dislike( () => like() );
         }
         else {
-          $('.close-modal').click();
           const alertTitle = "Error " + err.status + ": " + err.statusText;
           let alertText = "";
           if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
@@ -429,7 +514,6 @@
           like( () => dislike() );
         }
         else {
-          $('.close-modal').click();
           const alertTitle = "Error " + err.status + ": " + err.statusText;
           let alertText = "";
           if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
@@ -443,52 +527,6 @@
       },
     });
   };
-
-
-  $('#delete-btn').click( () => {
-    $('#delete-btn').hide();
-    $('#delete-message').show();
-    $('#delete-yes').show();
-    $('#delete-no').show();
-    $('#share').hide();
-    $('#comment-btn').hide();
-  })
-
-  $('#delete-no').click( () => {
-    $('#delete-btn').show();
-    $('#delete-message').hide();
-    $('#delete-yes').hide();
-    $('#delete-no').hide();
-    $('#share').show();
-    $('#comment-btn').show();
-  })
-
-  $('#delete-yes').click( () => {
-    $.ajax({
-      url: '/api/posts/' + post_id + '/delete',
-      type: 'DELETE',
-      beforeSend: function (xhr) {   //Include the bearer token in header
-        xhr.setRequestHeader("Authorization", 'Bearer '+access_token);
-      },
-      success: (data) => {
-        $('#post'+post_id).hide();
-        $('#delete-no').click();
-        $('.close-modal').click();
-        alertModal("Post deleted");
-      },
-      error: (err) => {
-        $('.close-modal').click();
-        const alertTitle = "Error " + err.status + ": " + err.statusText;
-        let alertText = "";
-        if (err.responseJSON.error && err.responseJSON.error.code == 190) // auth error
-          alertText = err.responseJSON.error.message + " Please log in and try again.";
-        else // other error
-          alertText = err.responseJSON.message;
-        
-        alertModal(alertTitle, alertText);
-      },
-    });
-  })
 
   $('#share').click( () => {
     shareModal("Link to This Post", url); 

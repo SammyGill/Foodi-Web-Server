@@ -28,7 +28,9 @@
 </style>
 
 <script>
+  let title;
   function alertModal(titleMessage, bodyMessage) {
+    title = titleMessage;
     if (bodyMessage) {
       $('#modal-body').show();
       $('#modal-body-text').text(bodyMessage);
@@ -43,6 +45,8 @@
 
   $('#alertModal_close').click( () => {
     $('#alertModal').modal('hide'); 
+    if (title == 'Post deleted') 
+      $('.close-modal').click();
   })
 
 </script>

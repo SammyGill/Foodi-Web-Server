@@ -13,7 +13,6 @@ const deleteEntry = "DELETE FROM likes WHERE post_id = ? AND user_id = ? AND val
 const insertEntry = `INSERT INTO likes (post_id, user_id, value) VALUES (?, ?, ?)`;
 const updateLikeCount = "UPDATE posts SET likes=? WHERE post_id=?";
 const updateDislikeCount = "UPDATE posts SET dislikes=? WHERE post_id=?";
-const deletePost = "DELETE FROM posts WHERE post_id = ? AND author_id=?";
 const newComment = `INSERT INTO comments (comment_text, date, user_id, post_id) 
       VALUES (?, ?, ?, ?); SELECT MAX(comment_id) FROM comments);`;
 /** Function for creating a post
@@ -205,9 +204,13 @@ function like_dislike (query, post_id, user_id, value, count, message, res) {
 exports.delete_post = (req, res) => {
   const post_id = req.params.post_id;
   const user_id = req.userData.id;
+
+  const deletePost = "DELETE FROM posts WHERE post_id = ? AND author_id=?";
+  const deleteLikes = "DELETE FROM likes WHERE post_id=?";
+  const deleteComments = "DELETE FROM comments WHERE post_id=?";
   mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
     if (err) {
-      res.status(500).json({"Internal Service Error": err});
+      res.status(500).json( {message: err} );
       throw err;
     }
     else {
@@ -215,49 +218,31 @@ exports.delete_post = (req, res) => {
       if (user_id != author_id)
         res.status(403).json({message: "Cannot delete post that is not yours"});
       else {
-        mysql.query(deletePost, [post_id, user_id], (err, result) => {
-          if (err) {
-            res.status(500).json( {"Internal Service Error": err} );
-           throw err;
-           }
-          else{
-            res.status(200).end("Post deleted");
+        // delete likes associated with the post
+        mysql.query(deleteLikes, [post_id], (err, result) => {
+          if (err) { res.status(500).json( {message: err} ); throw err; }
+          else {
+            // delete comments associated with the post
+            mysql.query(deleteComments, [post_id], (err, result) => {
+              if (err) { res.status(500).json( {message: err} ); throw err; }
+              else {
+                // delete the post
+                mysql.query(deletePost, [post_id, user_id], (err, result) => {
+                  if (err) { res.status(500).json( {message: err} ); throw err; }
+                  else {
+                    res.status(200).json( {message: "Post deleted"} );
+                  }
+                });
+              }
+            });
           }
-        });
+        })
       }
       
     }
   });
 }
 
-
-/** Function to addd comment to a post */
-exports.add_comment = (req, res) => {
-  const post_id = req.params.post_id;
-  const user_id = req.body.user_id;
-  const comment_text = req.body.comment_text;
-  const date = req.body.date;
-
-  mysql.query(checkPostExistsQuery, [post_id], (err, result) => {
-    if(err) {
-      res.status(500).json({"Internal Service Error": err});
-      throw err;
-    }
-    else{
-      const newComment = `INSERT INTO comments (comment_text, date, user_id, post_id) VALUES (?, ?, ?, ?)`;
-      mysql.query(newComment, [comment_text, date, user_id, post_id], (err, result) => {
-        if(err) {
-          res.status(500).json( {"Internal Service Error": err} );
-          throw err;
-        }
-        res.status(201).json({
-          Created: "Comment created",
-          comment_id: result[0].insertId
-          });
-      });
-    }
- })
-}
 
 /** Function to get posts for feed **/
 exports.get_feed = (req, res) => {

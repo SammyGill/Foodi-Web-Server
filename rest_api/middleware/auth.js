@@ -19,6 +19,7 @@ module.exports = (req, res, next) => {
       res.status(response.statusCode).json(body);
     }
     else {
+      body.picture.data.url = 'https://graph.facebook.com/'+body.id+'/picture?width=720';
       req.userData = body;
       next();
     }
