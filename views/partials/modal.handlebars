@@ -85,10 +85,9 @@
         <span id="dislikes" style="cursor:pointer"></span>
 
         
+        <i id="share" class="fa fa-share-alt" style="color: #f08d8c; font-size: 1.5rem; float:right; padding-right: 1rem; padding-top: 0.2rem; cursor:pointer"></i>
 
-        <button id="share" class="btn btn-primary" style="float:right;"> Share </button>
-
-        <div id="delete-post-dropdown" style="float:right; padding-right:1rem; display:none">
+        <div id="delete-post-dropdown" style="color: #828080; font-size: 1.5rem; float:right; padding-right:1rem; display:none">
           <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
           </span>
@@ -99,7 +98,7 @@
 
         <div class="d-flex">
 
-      </div>
+       </div>
 
         <p id="caption"></p>
         <hr>
@@ -316,7 +315,7 @@
             if (comment.canEdit) {
               dropdown =
               `<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
+                <i class="fa fa-ellipsis-v" style="color: #828080; cursor:pointer; padding-left:0.3rem;"></i>
               </span>
               <div class="dropdown-menu">
                 <span class="dropdown-item" onClick="deleteModal('comment',`+comment.comment_id+`)" style="cursor:pointer">Delete Comment</span>
@@ -382,13 +381,6 @@
         xhr.setRequestHeader("Authorization", 'Bearer '+accessToken);
       },
       success: (data) => {
-        let dropdown =
-          `<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-ellipsis-v" style="cursor:pointer; padding-left:0.3rem;"></i>
-          </span>
-          <div class="dropdown-menu">
-            <span class="dropdown-item" onClick="deleteModal('comment',`+comment.comment_id+`)" style="cursor:pointer">Delete Comment</span>
-          </div>`;
         let html = 
         `<table id="comment`+data.comment_id+`" cellspacing="0" cellpadding="0" border="0">
           <tr>
@@ -396,17 +388,18 @@
               <a href="/profiles/`+data.username+`"><img class="table_img" src="`+data.profile_picture+`"width="5%"></a>
             </td>
             <td>
-              <a href="/profiles/`+data.username+`">`+data.username+`</a>`
-              + dropdown + `
+              <a href="/profiles/`+data.username+`">`+data.username+`</a>
+              <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-ellipsis-v" style="color: #828080; cursor:pointer; padding-left:0.3rem;"></i>
+              </span>
+              <div class="dropdown-menu">
+                <span class="dropdown-item" onClick="deleteModal('comment',`+data.comment_id+`)" style="cursor:pointer">Delete Comment</span>
+              </div>
               <br>
               `+$('#comment').text()+`
             </td>
           </tr>
         </table>`;
-        // let html = 
-        // `<p> 
-        //   <img src="`+data.profile_picture+`"width="5%"> `+data.username+`: `+$('#comment').text() +`
-        //  </p>`;
         $("#added-comments").append(html);
         $('#no_comments').text('');
       },
