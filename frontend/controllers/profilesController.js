@@ -50,7 +50,3 @@ exports.view = (req, res) => {
   });
 }
 
-/* View all of the user's posts */
-exports.view_posts = (req, res) => {
-  res.render('viewPosts');
-}

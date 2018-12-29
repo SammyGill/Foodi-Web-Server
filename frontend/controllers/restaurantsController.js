@@ -11,11 +11,6 @@ function getErrorMessage(err, response) {
 }
 
 
-/** Renders the page used for creating restaurants */
-exports.create = (req, res) => {
-  res.render('createRestaurantPage');
-}
-
 /** Function to view a restaurant. Takes restaurant_id as path parameter
   * Makes request to server to fetch information about the restaurant with
   * the given ID
