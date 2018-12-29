@@ -49,11 +49,14 @@
               <span id="place-name" class="title"></span><br>
               <span id="place-address"></span>
             </div>
-          <input id="restaurant_id" type="text" autocomplete="off" placeholder="Enter Restaurant ID" name="restaurant_id" style="display:none">
+          <br>
+          <div id="discover_restaurant_div"></div>
         </div>
+
         <div id="user" class="tab-pane fade">
           <input id="input_user" type="text" placeholder="Search users...">
         </div>
+
         <div id="dish" class="tab-pane fade">
           <input id="input_dish" type="text" placeholder="Search dishes...">
           <div id="search_div">
@@ -67,7 +70,7 @@
   {{>modal}}
   {{>shareModal}}
   <script src="/js/discover.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places&callback=initMap"
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6ATDZBleVEUdqGRj5ViySw_L6RVjOZzE&libraries=places,geometry&callback=initMap"
         async defer></script>
   
 </body>

@@ -8,7 +8,7 @@ const auth2 = require('../middleware/auth2');
 router.post('/create', restaurants_controller.create_restaurant);
 
 // GET request when trying to discover restaurants
-router.get('/discover', restaurants_controller.discover);
+router.get('/discover', auth2, restaurants_controller.discover);
 
 // GET request for getting all restaurants in the database
 router.get('/', restaurants_controller.get_all_restaurants);

@@ -183,17 +183,35 @@ exports.get_dish_list = (req, res) => {
 }
 
 exports.discover = (req, res) => {
-  
+  const user_id = req.userData.id;
   const arr = req.query.restaurants.split(',');
-  let query =  `SELECT *, likes - dislikes AS difference FROM posts WHERE `;
+  let query = 
+  `SELECT DISTINCT 
+    users.username, users.profile_picture, posts.*,
+    restaurants.name AS restaurant_name,
+    CASE WHEN author_id = ? THEN true ELSE false END AS canEdit,
+    CASE 
+      WHEN EXISTS (SELECT 1 FROM likes 
+        WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=1)
+      THEN true ELSE false END AS liked,
+    CASE 
+      WHEN EXISTS (SELECT 1 FROM likes 
+        WHERE likes.user_id=? AND likes.post_id=posts.post_id AND likes.value=-1)
+      THEN true ELSE false END AS disliked
+   FROM posts
+   INNER JOIN users ON users.user_id=posts.author_id 
+   INNER JOIN following ON posts.author_id=following.followee_id
+   LEFT JOIN restaurants ON restaurants.restaurant_id=posts.restaurant_id
+   WHERE `;
   
   for (let i = 0; i < arr.length; i++) {
-    query += `restaurant_id='` + arr[i] + `'`;
+    query += `posts.restaurant_id='` + arr[i] + `'`;
     if (i != arr.length - 1)
       query += ` OR `;
   }
-  query += ` ORDER BY difference DESC`;
-  mysql.query(query, (err, results) => {
+  query += ` GROUP BY post_id ORDER BY post_id DESC`;
+
+  mysql.query(query, [user_id, user_id, user_id], (err, results) => {
     if (err) {
       res.status(500).json(err);
       throw err;
